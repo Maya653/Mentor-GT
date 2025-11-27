@@ -1,0 +1,28 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Admin - {% block admin_title %}{% endblock %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="list-group">
+            <a href="{{ url_for('admin.dashboard') }}" class="list-group-item list-group-item-action">Dashboard</a>
+            <a href="{{ url_for('admin.usuarios') }}" class="list-group-item list-group-item-action">Usuarios</a>
+            <a href="{{ url_for('admin.configuracion') }}" class="list-group-item list-group-item-action">Configuración</a>
+            <a href="{{ url_for('admin.reportes') }}" class="list-group-item list-group-item-action">Reportes</a>
+        </div>
+    </div>
+    <div class="col-md-9">
+        {% block admin_content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}
+

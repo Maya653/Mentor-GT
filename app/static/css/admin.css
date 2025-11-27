@@ -1,0 +1,33 @@
+/* Estilos específicos para administrador */
+.list-group-item.active {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+.card.text-white {
+    border-radius: 8px;
+}
+
+.card.text-white .card-body {
+    padding: 1.5rem;
+}
+
+/* Tablas */
+.table {
+    background-color: white;
+}
+
+.table thead {
+    background-color: #f8f9fa;
+}
+
+/* Badges */
+.badge {
+    font-size: 0.85em;
+    padding: 0.35em 0.65em;
+}
+

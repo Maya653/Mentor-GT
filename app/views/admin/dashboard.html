@@ -1,0 +1,44 @@
+{% extends "layouts/admin_layout.html" %}
+
+{% block admin_title %}Dashboard{% endblock %}
+
+{% block admin_content %}
+<h2>Dashboard Administrador</h2>
+<hr>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Profesores</h5>
+                <h2>{{ total_profesores }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Publicaciones</h5>
+                <h2>{{ total_publicaciones }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Eventos</h5>
+                <h2>{{ total_eventos }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Activos</h5>
+                <h2>{{ profesores_activos }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

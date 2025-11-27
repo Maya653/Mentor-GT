@@ -1,0 +1,44 @@
+{% extends "layouts/admin_layout.html" %}
+
+{% block admin_title %}Reportes{% endblock %}
+
+{% block admin_content %}
+<h2>Reportes y Estadísticas</h2>
+<hr>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Estadísticas Generales</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item">Total Usuarios: {{ estadisticas.total_usuarios }}</li>
+                    <li class="list-group-item">Total Profesores: {{ estadisticas.total_profesores }}</li>
+                    <li class="list-group-item">Usuarios Activos: {{ estadisticas.usuarios_activos }}</li>
+                    <li class="list-group-item">Total Publicaciones: {{ estadisticas.total_publicaciones }}</li>
+                    <li class="list-group-item">Publicaciones Indizadas: {{ estadisticas.publicaciones_indizadas }}</li>
+                    <li class="list-group-item">Total Eventos: {{ estadisticas.total_eventos }}</li>
+                    <li class="list-group-item">Total Docencias: {{ estadisticas.total_docencias }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Publicaciones por Año</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for año, cantidad in estadisticas.publicaciones_por_año.items() %}
+                    <li class="list-group-item">{{ año }}: {{ cantidad }} publicaciones</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

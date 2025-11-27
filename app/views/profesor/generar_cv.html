@@ -1,0 +1,29 @@
+{% extends "layouts/profesor_layout.html" %}
+
+{% block profesor_title %}Generar CV{% endblock %}
+
+{% block profesor_content %}
+<h2>Generar Curriculum Vitae</h2>
+<hr>
+
+<form method="POST" action="{{ url_for('cv.generar') }}">
+    <div class="mb-3">
+        <label for="formato" class="form-label">Formato</label>
+        <select class="form-select" id="formato" name="formato" required>
+            <option value="pdf">PDF</option>
+            <option value="word">Word (DOCX)</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="tipo_cv" class="form-label">Tipo de CV</label>
+        <select class="form-select" id="tipo_cv" name="tipo_cv" required>
+            <option value="academico">Académico</option>
+            <option value="sni">SNI (Sistema Nacional de Investigadores)</option>
+            <option value="conacyt">CONACyT</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Generar CV</button>
+    <a href="{{ url_for('cv.vista_previa') }}" class="btn btn-secondary">Vista Previa</a>
+</form>
+{% endblock %}
+

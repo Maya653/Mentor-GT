@@ -1,0 +1,31 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Profesor - {% block profesor_title %}{% endblock %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profesor.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="list-group">
+            <a href="{{ url_for('profesor.dashboard') }}" class="list-group-item list-group-item-action">Dashboard</a>
+            <a href="{{ url_for('profesor.datos_personales') }}" class="list-group-item list-group-item-action">Datos Personales</a>
+            <a href="{{ url_for('profesor.publicaciones') }}" class="list-group-item list-group-item-action">Publicaciones</a>
+            <a href="{{ url_for('profesor.eventos') }}" class="list-group-item list-group-item-action">Eventos</a>
+            <a href="{{ url_for('profesor.docencia') }}" class="list-group-item list-group-item-action">Docencia</a>
+            <a href="{{ url_for('cv.generar') }}" class="list-group-item list-group-item-action">Generar CV</a>
+            <a href="{{ url_for('sync.index') }}" class="list-group-item list-group-item-action">Sincronizar</a>
+        </div>
+    </div>
+    <div class="col-md-9">
+        {% block profesor_content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/profesor.js') }}"></script>
+{% endblock %}
+

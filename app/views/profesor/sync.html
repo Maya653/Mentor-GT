@@ -1,0 +1,56 @@
+{% extends "layouts/profesor_layout.html" %}
+
+{% block profesor_title %}Sincronizar{% endblock %}
+
+{% block profesor_content %}
+<h2>Sincronizar con APIs Externas</h2>
+<hr>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Google Scholar</h5>
+                <p class="card-text">Sincroniza tus publicaciones desde Google Scholar.</p>
+                <form method="POST" action="{{ url_for('sync.sync_google_scholar') }}">
+                    <button type="submit" class="btn btn-primary">Sincronizar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Scopus</h5>
+                <p class="card-text">Sincroniza tus publicaciones desde Scopus.</p>
+                <form method="POST" action="{{ url_for('sync.sync_scopus') }}">
+                    <button type="submit" class="btn btn-primary">Sincronizar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">ORCID</h5>
+                <p class="card-text">Sincroniza tus publicaciones desde ORCID.</p>
+                <form method="POST" action="{{ url_for('sync.sync_orcid') }}">
+                    <button type="submit" class="btn btn-primary">Sincronizar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">PubMed</h5>
+                <p class="card-text">Sincroniza tus publicaciones desde PubMed.</p>
+                <form method="POST" action="{{ url_for('sync.sync_pubmed') }}">
+                    <button type="submit" class="btn btn-primary">Sincronizar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

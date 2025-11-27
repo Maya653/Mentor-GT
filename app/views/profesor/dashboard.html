@@ -1,0 +1,49 @@
+{% extends "layouts/profesor_layout.html" %}
+
+{% block profesor_title %}Dashboard{% endblock %}
+
+{% block profesor_content %}
+<h2>Dashboard Profesor</h2>
+<hr>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Publicaciones</h5>
+                <h2>{{ total_publicaciones }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Eventos</h5>
+                <h2>{{ total_eventos }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Docencias</h5>
+                <h2>{{ total_docencias }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3 class="mt-4">Publicaciones Recientes</h3>
+<div class="list-group">
+    {% for pub in publicaciones_recientes %}
+    <div class="list-group-item">
+        <h5>{{ pub.titulo }}</h5>
+        <p class="mb-1">
+            {% if pub.revista %}{{ pub.revista }}{% endif %}
+            {% if pub.año %}, {{ pub.año }}{% endif %}
+        </p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,60 @@
+{% extends "layouts/profesor_layout.html" %}
+
+{% block profesor_title %}Vista Previa CV{% endblock %}
+
+{% block profesor_content %}
+<h2>Vista Previa del CV</h2>
+<hr>
+
+<div class="card">
+    <div class="card-body">
+        <h3>{{ usuario.nombre }} {{ usuario.apellidos or '' }}</h3>
+        <p>{{ usuario.email }}</p>
+        {% if usuario.orcid_id %}
+        <p>ORCID: {{ usuario.orcid_id }}</p>
+        {% endif %}
+        
+        <hr>
+        
+        <h4>Publicaciones</h4>
+        <ol>
+            {% for pub in publicaciones %}
+            <li>
+                <strong>{{ pub.titulo }}</strong><br>
+                {% if pub.autores %}{{ pub.autores }}<br>{% endif %}
+                {% if pub.revista %}{{ pub.revista }}{% endif %}
+                {% if pub.año %}, {{ pub.año }}{% endif %}
+                {% if pub.doi %}<br>DOI: {{ pub.doi }}{% endif %}
+            </li>
+            {% endfor %}
+        </ol>
+        
+        <hr>
+        
+        <h4>Eventos Académicos</h4>
+        <ul>
+            {% for evento in eventos %}
+            <li>
+                <strong>{{ evento.nombre }}</strong><br>
+                {% if evento.lugar %}{{ evento.lugar }}{% endif %}
+                {% if evento.fecha_inicio %}, {{ evento.fecha_inicio.strftime('%Y') }}{% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        
+        <hr>
+        
+        <h4>Experiencia Docente</h4>
+        <ul>
+            {% for docencia in docencias %}
+            <li>
+                <strong>{{ docencia.nombre_curso }}</strong><br>
+                {% if docencia.institucion %}{{ docencia.institucion }}{% endif %}
+                {% if docencia.año %}, {{ docencia.año }}{% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
+

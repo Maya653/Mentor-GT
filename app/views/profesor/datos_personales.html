@@ -1,0 +1,40 @@
+{% extends "layouts/profesor_layout.html" %}
+
+{% block profesor_title %}Datos Personales{% endblock %}
+
+{% block profesor_content %}
+<h2>Datos Personales</h2>
+<hr>
+
+<form method="POST" action="{{ url_for('profesor.datos_personales') }}">
+    <div class="mb-3">
+        <label for="nombre" class="form-label">Nombre</label>
+        <input type="text" class="form-control" id="nombre" name="nombre" value="{{ current_user.nombre }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="apellidos" class="form-label">Apellidos</label>
+        <input type="text" class="form-control" id="apellidos" name="apellidos" value="{{ current_user.apellidos or '' }}">
+    </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" value="{{ current_user.email }}" disabled>
+    </div>
+    <div class="mb-3">
+        <label for="google_scholar_id" class="form-label">Google Scholar ID</label>
+        <input type="text" class="form-control" id="google_scholar_id" name="google_scholar_id" 
+               value="{{ current_user.google_scholar_id or '' }}">
+    </div>
+    <div class="mb-3">
+        <label for="scopus_id" class="form-label">Scopus ID</label>
+        <input type="text" class="form-control" id="scopus_id" name="scopus_id" 
+               value="{{ current_user.scopus_id or '' }}">
+    </div>
+    <div class="mb-3">
+        <label for="orcid_id" class="form-label">ORCID ID</label>
+        <input type="text" class="form-control" id="orcid_id" name="orcid_id" 
+               value="{{ current_user.orcid_id or '' }}">
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+</form>
+{% endblock %}
+

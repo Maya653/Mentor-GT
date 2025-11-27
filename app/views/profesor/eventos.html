@@ -1,0 +1,24 @@
+{% extends "layouts/profesor_layout.html" %}
+
+{% block profesor_title %}Eventos{% endblock %}
+
+{% block profesor_content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Eventos Académicos</h2>
+    <a href="#" class="btn btn-primary">Nuevo Evento</a>
+</div>
+
+<div class="list-group">
+    {% for evento in eventos %}
+    <div class="list-group-item">
+        <h5>{{ evento.nombre }}</h5>
+        <p class="mb-1">
+            {% if evento.lugar %}{{ evento.lugar }}{% endif %}
+            {% if evento.fecha_inicio %}, {{ evento.fecha_inicio.strftime('%Y-%m-%d') }}{% endif %}
+        </p>
+        <small>{{ evento.tipo }}</small>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,30 @@
+/* Estilos específicos para profesor */
+.list-group-item.active {
+    background-color: #198754;
+    border-color: #198754;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* Cards de estadísticas */
+.card.text-white {
+    transition: transform 0.3s ease;
+}
+
+.card.text-white:hover {
+    transform: translateY(-5px);
+}
+
+/* Lista de publicaciones */
+.list-group-item h5 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.list-group-item p {
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+}
+

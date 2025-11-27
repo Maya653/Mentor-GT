@@ -1,0 +1,33 @@
+{% extends "layouts/admin_layout.html" %}
+
+{% block admin_title %}Configuración{% endblock %}
+
+{% block admin_content %}
+<h2>Configuración de APIs Externas</h2>
+<hr>
+
+<form method="POST" action="{{ url_for('admin.configuracion') }}">
+    <div class="mb-3">
+        <label for="google_scholar_api" class="form-label">Google Scholar API Key</label>
+        <input type="text" class="form-control" id="google_scholar_api" name="google_scholar_api" 
+               value="{{ config.google_scholar_api }}">
+    </div>
+    <div class="mb-3">
+        <label for="scopus_api_key" class="form-label">Scopus API Key</label>
+        <input type="text" class="form-control" id="scopus_api_key" name="scopus_api_key" 
+               value="{{ config.scopus_api_key }}">
+    </div>
+    <div class="mb-3">
+        <label for="orcid_client_id" class="form-label">ORCID Client ID</label>
+        <input type="text" class="form-control" id="orcid_client_id" name="orcid_client_id" 
+               value="{{ config.orcid_client_id }}">
+    </div>
+    <div class="mb-3">
+        <label for="pubmed_api_key" class="form-label">PubMed API Key</label>
+        <input type="text" class="form-control" id="pubmed_api_key" name="pubmed_api_key" 
+               value="{{ config.pubmed_api_key }}">
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar Configuración</button>
+</form>
+{% endblock %}
+
