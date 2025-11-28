@@ -35,7 +35,7 @@ def create_app(config_class=Config):
     login_manager.login_view = 'auth.login'
     login_manager.login_message = 'Por favor inicia sesión para acceder.'
     
-    # Registro de Blueprints
+    # ⬇️ MOVER TODAS LAS IMPORTACIONES DE BLUEPRINTS AQUÍ (dentro de create_app)
     from app.controllers.auth_controller import auth_bp
     from app.controllers.admin_controller import admin_bp
     from app.controllers.docente_controller import docente_bp
@@ -43,6 +43,21 @@ def create_app(config_class=Config):
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(docente_bp, url_prefix='/docente')
+
+    from app.controllers.profesor_controller import profesor_bp
+    from app.controllers.cv_controller import cv_bp
+    from app.controllers.publicacion_controller import publicacion_bp
+    from app.controllers.sync_controller import sync_bp
+    from app.controllers.chatbot_controller import chatbot_bp  # ⬅️ Aquí
+    
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(admin_bp, url_prefix='/admin')
+    app.register_blueprint(profesor_bp, url_prefix='/profesor')
+    app.register_blueprint(cv_bp, url_prefix='/cv')
+    app.register_blueprint(publicacion_bp, url_prefix='/publicaciones')
+    app.register_blueprint(sync_bp, url_prefix='/sync')
+    app.register_blueprint(chatbot_bp, url_prefix='/chatbot')  # ⬅️ Aquí
+
     
     # Ruta raíz
     @app.route('/')
@@ -61,4 +76,7 @@ def create_app(config_class=Config):
 def load_user(user_id):
     from app.models.user import User
     return User.query.get(int(user_id))
+
+    from app.models.usuario import Usuario
+    return Usuario.query.get(int(user_id))
 

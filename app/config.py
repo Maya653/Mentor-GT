@@ -22,4 +22,4 @@ class Config:
     SCOPUS_API_KEY = os.environ.get('SCOPUS_API_KEY', '')
     ORCID_CLIENT_ID = os.environ.get('ORCID_CLIENT_ID', '')
     PUBMED_API_KEY = os.environ.get('PUBMED_API_KEY', '')
-
+    GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')
