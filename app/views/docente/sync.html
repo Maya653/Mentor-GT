@@ -1,0 +1,46 @@
+{% extends "layouts/docente_layout.html" %}
+
+{% block docente_title %}Sincronizar ORCID{% endblock %}
+
+{% block docente_content %}
+<div class="container-fluid">
+    <h2>Sincronizar con ORCID</h2>
+    
+    <div class="card mt-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="bi bi-link-45deg"></i> ORCID</h5>
+        </div>
+        <div class="card-body">
+            {% if docente and docente.orcid %}
+                <p>Tu ORCID actual: <strong>{{ docente.orcid }}</strong></p>
+                <p class="text-muted">Al sincronizar, se importarán las publicaciones de tu perfil ORCID que no estén ya registradas.</p>
+                
+                <form method="POST" action="{{ url_for('sync.sync_orcid') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-cloud-download"></i> Sincronizar ahora
+                    </button>
+                </form>
+            {% else %}
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    No tienes un ORCID configurado. 
+                    <a href="{{ url_for('docente.perfil') }}">Agrégalo en tu perfil</a> para poder sincronizar.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="card mt-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0"><i class="bi bi-info-circle"></i> ¿Qué es ORCID?</h5>
+        </div>
+        <div class="card-body">
+            <p>ORCID (Open Researcher and Contributor ID) es un identificador único para investigadores. 
+            Si tienes un perfil ORCID con publicaciones registradas, puedes importarlas automáticamente.</p>
+            <p>Visita <a href="https://orcid.org" target="_blank">orcid.org</a> para crear tu perfil si aún no lo tienes.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

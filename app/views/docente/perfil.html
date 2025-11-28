@@ -6,6 +6,19 @@
 <div class="container-fluid">
     <h2>Mi Perfil</h2>
     
+    {% if form.errors %}
+    <div class="alert alert-danger">
+        <h5>Por favor corrige los siguientes errores:</h5>
+        <ul class="mb-0">
+        {% for field, errors in form.errors.items() %}
+            {% for error in errors %}
+                <li><strong>{{ form[field].label.text }}:</strong> {{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    
     <form method="POST" action="{{ url_for('docente.perfil') }}">
         {{ form.hidden_tag() }}
         
@@ -14,12 +27,18 @@
                 <div class="mb-3">
                     {{ form.cvu.label(class="form-label") }}
                     {{ form.cvu(class="form-control") }}
+                    {% if form.cvu.errors %}
+                        <div class="text-danger small">{{ form.cvu.errors[0] }}</div>
+                    {% endif %}
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="mb-3">
-                    {{ form.nombre_completo.label(class="form-label") }}
-                    {{ form.nombre_completo(class="form-control") }}
+                    {{ form.nombre_completo.label(class="form-label") }} <span class="text-danger">*</span>
+                    {{ form.nombre_completo(class="form-control" + (" is-invalid" if form.nombre_completo.errors else "")) }}
+                    {% if form.nombre_completo.errors %}
+                        <div class="invalid-feedback">{{ form.nombre_completo.errors[0] }}</div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -29,12 +48,18 @@
                 <div class="mb-3">
                     {{ form.curp.label(class="form-label") }}
                     {{ form.curp(class="form-control") }}
+                    {% if form.curp.errors %}
+                        <div class="text-danger small">{{ form.curp.errors[0] }}</div>
+                    {% endif %}
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="mb-3">
                     {{ form.rfc.label(class="form-label") }}
                     {{ form.rfc(class="form-control") }}
+                    {% if form.rfc.errors %}
+                        <div class="text-danger small">{{ form.rfc.errors[0] }}</div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -49,7 +74,10 @@
             <div class="col-md-4">
                 <div class="mb-3">
                     {{ form.fecha_nacimiento.label(class="form-label") }}
-                    {{ form.fecha_nacimiento(class="form-control") }}
+                    {{ form.fecha_nacimiento(class="form-control", type="date") }}
+                    {% if form.fecha_nacimiento.errors %}
+                        <div class="text-danger small">{{ form.fecha_nacimiento.errors[0] }}</div>
+                    {% endif %}
                 </div>
             </div>
             <div class="col-md-4">
@@ -85,12 +113,15 @@
                 <div class="mb-3">
                     {{ form.correo_principal.label(class="form-label") }}
                     {{ form.correo_principal(class="form-control") }}
+                    {% if form.correo_principal.errors %}
+                        <div class="text-danger small">{{ form.correo_principal.errors[0] }}</div>
+                    {% endif %}
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="mb-3">
                     {{ form.orcid.label(class="form-label") }}
-                    {{ form.orcid(class="form-control") }}
+                    {{ form.orcid(class="form-control", placeholder="Ej: 0000-0002-1234-5678") }}
                 </div>
             </div>
         </div>
@@ -101,10 +132,9 @@
         </div>
         
         <div class="mb-3">
-            {{ form.submit(class="btn btn-primary") }}
+            {{ form.submit(class="btn btn-primary btn-lg") }}
             <a href="{{ url_for('docente.dashboard') }}" class="btn btn-secondary">Cancelar</a>
         </div>
     </form>
 </div>
 {% endblock %}
-

@@ -1,0 +1,126 @@
+{% extends "layouts/docente_layout.html" %}
+
+{% block docente_title %}Vista Previa CV{% endblock %}
+
+{% block docente_content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Vista Previa del CV</h2>
+        <a href="{{ url_for('cv.generar') }}" class="btn btn-primary">
+            <i class="bi bi-download"></i> Generar CV
+        </a>
+    </div>
+    
+    <!-- Datos Personales -->
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Datos Personales</h5>
+        </div>
+        <div class="card-body">
+            <h3>{{ docente.nombre_completo }}</h3>
+            {% if docente.correo_principal %}<p><i class="bi bi-envelope"></i> {{ docente.correo_principal }}</p>{% endif %}
+            {% if docente.orcid %}<p><i class="bi bi-link"></i> ORCID: {{ docente.orcid }}</p>{% endif %}
+            {% if docente.cvu %}<p><strong>CVU:</strong> {{ docente.cvu }}</p>{% endif %}
+        </div>
+    </div>
+    
+    <!-- Formación Académica -->
+    {% if formaciones %}
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">Formación Académica</h5>
+        </div>
+        <div class="card-body">
+            {% for f in formaciones %}
+            <div class="mb-3 {% if not loop.last %}border-bottom pb-3{% endif %}">
+                <h6>{{ f.grado_obtenido or f.nivel }}</h6>
+                <p class="mb-1"><strong>{{ f.institucion }}</strong> - {{ f.pais or '' }}</p>
+                <p class="text-muted small">
+                    {{ f.fecha_inicio.strftime('%Y') if f.fecha_inicio else '' }} - 
+                    {{ f.fecha_fin.strftime('%Y') if f.fecha_fin else 'Actual' }}
+                </p>
+                {% if f.titulo_trabajo %}<p class="small"><em>{{ f.titulo_trabajo }}</em></p>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Empleos -->
+    {% if empleos %}
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Experiencia Laboral</h5>
+        </div>
+        <div class="card-body">
+            {% for e in empleos %}
+            <div class="mb-3 {% if not loop.last %}border-bottom pb-3{% endif %}">
+                <h6>{{ e.puesto }}</h6>
+                <p class="mb-1"><strong>{{ e.institucion }}</strong></p>
+                <p class="text-muted small">
+                    {{ e.fecha_inicio.strftime('%Y') if e.fecha_inicio else '' }} - 
+                    {% if e.actual %}Actual{% else %}{{ e.fecha_fin.strftime('%Y') if e.fecha_fin else '' }}{% endif %}
+                </p>
+                {% if e.logros %}<p class="small">{{ e.logros }}</p>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Artículos -->
+    {% if articulos %}
+    <div class="card mb-4">
+        <div class="card-header bg-warning">
+            <h5 class="mb-0">Artículos Científicos</h5>
+        </div>
+        <div class="card-body">
+            {% for a in articulos %}
+            <div class="mb-3 {% if not loop.last %}border-bottom pb-3{% endif %}">
+                <h6>{{ a.titulo }}</h6>
+                <p class="mb-1">{{ a.revista or '' }} {% if a.anio %}({{ a.anio }}){% endif %}</p>
+                {% if a.doi %}<p class="small"><a href="https://doi.org/{{ a.doi }}" target="_blank">DOI: {{ a.doi }}</a></p>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Libros -->
+    {% if libros %}
+    <div class="card mb-4">
+        <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0">Libros</h5>
+        </div>
+        <div class="card-body">
+            {% for l in libros %}
+            <div class="mb-3 {% if not loop.last %}border-bottom pb-3{% endif %}">
+                <h6>{{ l.titulo }}</h6>
+                <p class="mb-1">{{ l.editorial or '' }} {% if l.anio %}({{ l.anio }}){% endif %}</p>
+                {% if l.isbn %}<p class="small">ISBN: {{ l.isbn }}</p>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Congresos -->
+    {% if congresos %}
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Participación en Congresos</h5>
+        </div>
+        <div class="card-body">
+            {% for c in congresos %}
+            <div class="mb-3 {% if not loop.last %}border-bottom pb-3{% endif %}">
+                <h6>{{ c.titulo_ponencia or c.nombre_congreso }}</h6>
+                <p class="mb-1">{{ c.nombre_congreso }} - {{ c.ciudad or '' }}, {{ c.pais or '' }}</p>
+                <p class="text-muted small">{{ c.fecha.strftime('%d/%m/%Y') if c.fecha else '' }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

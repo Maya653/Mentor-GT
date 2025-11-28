@@ -1,9 +1,12 @@
 from groq import Groq
 from flask import current_app
-from app.models.usuario import Usuario
-from app.models.publicacion import Publicacion
-from app.models.evento import Evento
-from app.models.docencia import Docencia
+from app.models.user import User
+from app.models.docente import Docente
+from app.models.articulo import Articulo
+from app.models.formacion_academica import FormacionAcademica
+from app.models.empleo import Empleo
+from app.models.congreso import Congreso
+from app.models.curso_impartido import CursoImpartido
 from datetime import datetime
 
 class ChatbotService:
@@ -18,24 +21,26 @@ class ChatbotService:
     def generar_respuesta(self, pregunta: str, usuario_id: int, historial: list = None) -> dict:
         """
         Genera respuesta usando Groq (Llama 3.3)
-        
-        Args:
-            pregunta: Pregunta del usuario
-            usuario_id: ID del usuario
-            historial: Lista de mensajes previos (opcional)
-        
-        Returns:
-            dict con 'respuesta' y 'metadata'
         """
         
         # Obtener datos del usuario
-        usuario = Usuario.query.get(usuario_id)
-        publicaciones = Publicacion.query.filter_by(usuario_id=usuario_id).all()
-        eventos = Evento.query.filter_by(usuario_id=usuario_id).all()
-        docencias = Docencia.query.filter_by(usuario_id=usuario_id).all()
+        user = User.query.get(usuario_id)
+        docente = Docente.query.filter_by(user_id=usuario_id).first()
+        
+        if not docente:
+            return {
+                'respuesta': "Por favor, completa tu perfil primero para que pueda ayudarte mejor.",
+                'metadata': {'timestamp': datetime.now().isoformat(), 'error': False}
+            }
+        
+        articulos = Articulo.query.filter_by(docente_id=docente.id).all()
+        formaciones = FormacionAcademica.query.filter_by(docente_id=docente.id).all()
+        empleos = Empleo.query.filter_by(docente_id=docente.id).all()
+        congresos = Congreso.query.filter_by(docente_id=docente.id).all()
+        cursos = CursoImpartido.query.filter_by(docente_id=docente.id).all()
         
         # Construir contexto del CV
-        contexto = self._construir_contexto_cv(usuario, publicaciones, eventos, docencias)
+        contexto = self._construir_contexto_cv(user, docente, articulos, formaciones, empleos, congresos, cursos)
         
         # Construir el sistema prompt
         system_prompt = f"""Eres un asistente académico especializado en ayudar a profesores universitarios con sus CVs.
@@ -71,8 +76,8 @@ INSTRUCCIONES:
             # Llamar a Groq API
             chat_completion = self.client.chat.completions.create(
                 messages=messages,
-                model="llama-3.3-70b-versatile",  # Modelo más potente de Groq
-                temperature=0.7,  # Balance entre creatividad y coherencia
+                model="llama-3.3-70b-versatile",
+                temperature=0.7,
                 max_tokens=1024,
                 top_p=1,
                 stream=False
@@ -102,67 +107,63 @@ INSTRUCCIONES:
                 }
             }
     
-    def _construir_contexto_cv(self, usuario, publicaciones, eventos, docencias):
+    def _construir_contexto_cv(self, user, docente, articulos, formaciones, empleos, congresos, cursos):
         """Construye el contexto del CV para el chatbot"""
         
         contexto = f"""
 DATOS PERSONALES:
-- Nombre: {usuario.nombre} {usuario.apellidos or ''}
-- Email: {usuario.email}
-- ORCID ID: {usuario.orcid_id or 'No configurado'}
-- Scopus ID: {usuario.scopus_id or 'No configurado'}
-- Google Scholar ID: {usuario.google_scholar_id or 'No configurado'}
+- Nombre: {docente.nombre_completo or 'No especificado'}
+- Email: {user.email}
+- ORCID ID: {docente.orcid or 'No configurado'}
+- CVU: {docente.cvu or 'No configurado'}
 
-PUBLICACIONES ({len(publicaciones)} total):
+FORMACIÓN ACADÉMICA ({len(formaciones)} total):
 """
         
-        if publicaciones:
-            # Ordenar por año descendente
-            pubs_ordenadas = sorted(publicaciones, key=lambda x: x.año or 0, reverse=True)
-            
-            # Mostrar las 10 más recientes
-            for pub in pubs_ordenadas[:10]:
-                contexto += f"- [{pub.año or 'N/A'}] {pub.titulo}\n"
-                if pub.revista:
-                    contexto += f"  Revista: {pub.revista}\n"
-                if pub.doi:
-                    contexto += f"  DOI: {pub.doi}\n"
-            
-            if len(publicaciones) > 10:
-                contexto += f"\n... y {len(publicaciones) - 10} publicaciones más\n"
-            
-            # Estadísticas por año
-            por_año = {}
-            for pub in publicaciones:
-                año = pub.año or "Sin año"
-                por_año[año] = por_año.get(año, 0) + 1
-            
-            contexto += f"\nDistribución por año:\n"
-            for año, cant in sorted(por_año.items(), reverse=True):
-                contexto += f"- {año}: {cant} publicación{'es' if cant != 1 else ''}\n"
+        if formaciones:
+            for f in formaciones[:5]:
+                contexto += f"- {f.grado_obtenido or f.nivel} - {f.institucion} ({f.fecha_fin.year if f.fecha_fin else 'En curso'})\n"
         else:
-            contexto += "No hay publicaciones registradas aún.\n"
+            contexto += "No hay formación académica registrada.\n"
         
-        contexto += f"\nEVENTOS ACADÉMICOS ({len(eventos)} total):\n"
-        if eventos:
-            for evento in eventos[:5]:
-                fecha = evento.fecha_inicio.strftime('%Y-%m-%d') if evento.fecha_inicio else 'N/A'
-                contexto += f"- {evento.nombre} ({fecha}) - Rol: {evento.rol or 'N/A'}\n"
-            
-            if len(eventos) > 5:
-                contexto += f"... y {len(eventos) - 5} eventos más\n"
-        else:
-            contexto += "No hay eventos registrados aún.\n"
+        contexto += f"\nARTÍCULOS CIENTÍFICOS ({len(articulos)} total):\n"
         
-        contexto += f"\nEXPERIENCIA DOCENTE ({len(docencias)} total):\n"
-        if docencias:
-            for doc in docencias[:5]:
-                contexto += f"- {doc.nombre_curso} ({doc.año or 'N/A'}) - {doc.nivel or 'N/A'}\n"
+        if articulos:
+            articulos_ordenados = sorted(articulos, key=lambda x: x.anio or 0, reverse=True)
             
-            if len(docencias) > 5:
-                contexto += f"... y {len(docencias) - 5} cursos más\n"
+            for art in articulos_ordenados[:10]:
+                contexto += f"- [{art.anio or 'N/A'}] {art.titulo}\n"
+                if art.revista:
+                    contexto += f"  Revista: {art.revista}\n"
+                if art.doi:
+                    contexto += f"  DOI: {art.doi}\n"
+            
+            if len(articulos) > 10:
+                contexto += f"\n... y {len(articulos) - 10} artículos más\n"
         else:
-            contexto += "No hay experiencia docente registrada aún.\n"
+            contexto += "No hay artículos registrados aún.\n"
+        
+        contexto += f"\nEXPERIENCIA LABORAL ({len(empleos)} total):\n"
+        if empleos:
+            for emp in empleos[:5]:
+                periodo = f"{emp.fecha_inicio.year if emp.fecha_inicio else 'N/A'} - {'Actual' if emp.actual else (emp.fecha_fin.year if emp.fecha_fin else 'N/A')}"
+                contexto += f"- {emp.puesto} en {emp.institucion} ({periodo})\n"
+        else:
+            contexto += "No hay experiencia laboral registrada.\n"
+        
+        contexto += f"\nCONGRESOS ({len(congresos)} total):\n"
+        if congresos:
+            for cong in congresos[:5]:
+                contexto += f"- {cong.titulo_ponencia or cong.nombre_congreso} ({cong.fecha.year if cong.fecha else 'N/A'})\n"
+        else:
+            contexto += "No hay congresos registrados.\n"
+        
+        contexto += f"\nCURSOS IMPARTIDOS ({len(cursos)} total):\n"
+        if cursos:
+            for curso in cursos[:5]:
+                contexto += f"- {curso.nombre_curso} - {curso.nivel or 'N/A'}\n"
+        else:
+            contexto += "No hay cursos registrados.\n"
         
         return contexto
     
@@ -177,12 +178,20 @@ PUBLICACIONES ({len(publicaciones)} total):
         """
         Genera respuesta en modo streaming (para efecto de "escribiendo")
         """
-        usuario = Usuario.query.get(usuario_id)
-        publicaciones = Publicacion.query.filter_by(usuario_id=usuario_id).all()
-        eventos = Evento.query.filter_by(usuario_id=usuario_id).all()
-        docencias = Docencia.query.filter_by(usuario_id=usuario_id).all()
+        user = User.query.get(usuario_id)
+        docente = Docente.query.filter_by(user_id=usuario_id).first()
         
-        contexto = self._construir_contexto_cv(usuario, publicaciones, eventos, docencias)
+        if not docente:
+            yield "Por favor, completa tu perfil primero."
+            return
+        
+        articulos = Articulo.query.filter_by(docente_id=docente.id).all()
+        formaciones = FormacionAcademica.query.filter_by(docente_id=docente.id).all()
+        empleos = Empleo.query.filter_by(docente_id=docente.id).all()
+        congresos = Congreso.query.filter_by(docente_id=docente.id).all()
+        cursos = CursoImpartido.query.filter_by(docente_id=docente.id).all()
+        
+        contexto = self._construir_contexto_cv(user, docente, articulos, formaciones, empleos, congresos, cursos)
         
         system_prompt = f"""Eres un asistente académico especializado.
 

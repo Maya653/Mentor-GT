@@ -190,21 +190,45 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="{{ url_for('docente.perfil') }}" class="{% if request.endpoint == 'docente.perfil' %}active{% endif %}">
                     <i class="bi bi-person"></i>
-                    <span>Ver CV</span>
+                    <span>Mi Perfil</span>
                 </a>
             </li>
             <li>
-                <a href="{{ url_for('docente.perfil') }}">
-                    <i class="bi bi-pencil"></i>
-                    <span>Editar Información</span>
+                <a href="{{ url_for('docente.formacion') }}" class="{% if 'formacion' in request.endpoint %}active{% endif %}">
+                    <i class="bi bi-mortarboard"></i>
+                    <span>Formación</span>
                 </a>
             </li>
             <li>
-                <a href="#">
-                    <i class="bi bi-download"></i>
+                <a href="{{ url_for('docente.empleos') }}" class="{% if 'empleo' in request.endpoint %}active{% endif %}">
+                    <i class="bi bi-briefcase"></i>
+                    <span>Empleos</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('docente.articulos') }}" class="{% if 'articulo' in request.endpoint %}active{% endif %}">
+                    <i class="bi bi-journal-text"></i>
+                    <span>Artículos</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('sync.index') }}" class="{% if 'sync' in request.endpoint %}active{% endif %}">
+                    <i class="bi bi-cloud-download"></i>
+                    <span>Sincronizar ORCID</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('cv.generar') }}" class="{% if 'cv' in request.endpoint %}active{% endif %}">
+                    <i class="bi bi-file-earmark-pdf"></i>
                     <span>Generar CV</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('chatbot.index') }}" class="{% if 'chatbot' in request.endpoint %}active{% endif %}" style="background: linear-gradient(135deg, #e94560 0%, #533483 100%); color: white;">
+                    <i class="bi bi-robot"></i>
+                    <span>🤖 Asistente IA</span>
                 </a>
             </li>
         </ul>
