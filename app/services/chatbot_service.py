@@ -1,183 +1,204 @@
+import os
+import re
+import json
 from groq import Groq
 from flask import current_app
 from app.models.user import User
 from app.models.docente import Docente
 from app.models.articulo import Articulo
-from app.models.formacion_academica import FormacionAcademica
-from app.models.empleo import Empleo
 from app.models.congreso import Congreso
 from app.models.curso_impartido import CursoImpartido
-from datetime import datetime
+from app.models.proyecto_investigacion import ProyectoInvestigacion
+from app.models.formacion_academica import FormacionAcademica
+from app.models.empleo import Empleo
 
 class ChatbotService:
-    """Chatbot con IA usando Groq (Llama 3.3)"""
-    
     def __init__(self):
-        api_key = current_app.config.get('GROQ_API_KEY')
+        # Intentar obtener API key de dos formas
+        api_key = os.getenv('GROQ_API_KEY') or current_app.config.get('GROQ_API_KEY')
         if not api_key:
-            raise ValueError("GROQ_API_KEY no configurada")
+            raise ValueError("GROQ_API_KEY no está configurada")
+        
         self.client = Groq(api_key=api_key)
+        self.model = "llama-3.3-70b-versatile"
     
-    def generar_respuesta(self, pregunta: str, usuario_id: int, historial: list = None) -> dict:
-        """
-        Genera respuesta usando Groq (Llama 3.3)
-        """
-        
-        # Obtener datos del usuario
-        user = User.query.get(usuario_id)
-        docente = Docente.query.filter_by(user_id=usuario_id).first()
-        
-        if not docente:
-            return {
-                'respuesta': "Por favor, completa tu perfil primero para que pueda ayudarte mejor.",
-                'metadata': {'timestamp': datetime.now().isoformat(), 'error': False}
-            }
-        
-        articulos = Articulo.query.filter_by(docente_id=docente.id).all()
-        formaciones = FormacionAcademica.query.filter_by(docente_id=docente.id).all()
-        empleos = Empleo.query.filter_by(docente_id=docente.id).all()
-        congresos = Congreso.query.filter_by(docente_id=docente.id).all()
-        cursos = CursoImpartido.query.filter_by(docente_id=docente.id).all()
-        
-        # Construir contexto del CV
-        contexto = self._construir_contexto_cv(user, docente, articulos, formaciones, empleos, congresos, cursos)
-        
-        # Construir el sistema prompt
-        system_prompt = f"""Eres un asistente académico especializado en ayudar a profesores universitarios con sus CVs.
+    def generar_respuesta(self, mensaje, user_id, historial=None):
+        """Generar respuesta del chatbot"""
+        try:
+            # Obtener docente
+            user = User.query.get(user_id)
+            if not user:
+                return "Error: Usuario no encontrado"
+            
+            docente = Docente.query.filter_by(user_id=user.id).first()
+            if not docente:
+                return "Por favor, completa tu perfil primero."
+            
+            # ✨ DETECTAR MENSAJE ESPECIAL CON SECCIONES PERSONALIZADAS (del modal)
+            if mensaje.startswith('GENERAR_CV_PERSONALIZADO|'):
+                return self._procesar_cv_personalizado(mensaje, docente)
+            
+            # Respuesta conversacional normal
+            return self._generar_respuesta_conversacional(mensaje, docente, historial)
+            
+        except Exception as e:
+            print(f"Error en ChatbotService: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return f"Lo siento, ocurrió un error: {str(e)}"
+    
+    def _procesar_cv_personalizado(self, mensaje, docente):
+        """Procesar solicitud de CV con secciones personalizadas del modal"""
+        try:
+            # Parsear mensaje: GENERAR_CV_PERSONALIZADO|plantilla:conacyt|secciones:{...}
+            parts = mensaje.split('|')
+            plantilla = parts[1].split(':')[1]
+            secciones_json = parts[2].split(':', 1)[1]
+            secciones = json.loads(secciones_json)
+            
+            print(f"🎨 Generando CV personalizado - Plantilla: {plantilla}")
+            print(f"📋 Secciones seleccionadas: {secciones}")
+            
+            # Generar PDF
+            from app.services.cv_pdf_generator import CVPDFGenerator
+            generator = CVPDFGenerator()
+            pdf_filename = generator.generar_pdf(docente, secciones, plantilla)
+            
+            print(f"✅ PDF generado: {pdf_filename}")
+            
+            # Construir respuesta
+            respuesta = f"""✅ ¡Perfecto! He generado tu CV en formato **{plantilla.upper()}**.
 
-INFORMACIÓN DEL PROFESOR:
+📋 **Secciones incluidas:**
+"""
+            
+            # Listar secciones incluidas
+            secciones_nombres = {
+                'datos_generales': 'Datos Generales',
+                'formacion_academica': 'Formación Académica',
+                'experiencia_laboral': 'Experiencia Laboral',
+                'articulos_cientificos': 'Artículos Científicos',
+                'libros_capitulos': 'Libros y Capítulos',
+                'congresos_ponencias': 'Congresos y Ponencias',
+                'proyectos_investigacion': 'Proyectos de Investigación',
+                'cursos_impartidos': 'Cursos Impartidos',
+                'tesis_dirigidas': 'Tesis Dirigidas',
+                'desarrollos_tecnologicos': 'Desarrollos Tecnológicos'
+            }
+            
+            for key, incluida in secciones.items():
+                if incluida:
+                    respuesta += f"✓ {secciones_nombres.get(key, key)}\n"
+            
+            respuesta += f"""
+📥 **[Haz clic aquí para descargar tu CV](/static/pdfs/{pdf_filename})**
+
+💡 **Tip:** Puedes generar otro CV con diferentes opciones cuando quieras.
+"""
+            
+            return respuesta
+            
+        except Exception as e:
+            print(f"❌ Error al generar CV personalizado: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return f"❌ Error al generar el CV: {str(e)}"
+    
+    def _generar_respuesta_conversacional(self, mensaje, docente, historial=None):
+        """Generar respuesta conversacional normal"""
+        contexto = self._construir_contexto_cv(docente)
+        
+        system_message = f"""Eres un asistente virtual especializado en ayudar a docentes con su CV académico.
+Tienes acceso a la siguiente información del docente:
+
 {contexto}
 
-INSTRUCCIONES:
-- Responde de manera clara, profesional y útil
-- Si te preguntan sobre datos del CV, usa la información proporcionada
-- Si te piden generar un CV, explica los pasos para hacerlo
-- Si te piden sincronizar, explica cómo configurar ORCID
-- Sé conciso pero informativo
-- Usa emojis ocasionalmente para hacer la conversación más amigable
-- Si no tienes información, sugiere al usuario agregarla al sistema"""
+Tu trabajo es:
+1. Responder preguntas sobre el CV del docente
+2. Ayudar a mejorar su perfil académico
+3. Proporcionar información útil sobre sus logros y trayectoria
 
-        # Preparar mensajes para la API
-        messages = [
-            {"role": "system", "content": system_prompt}
-        ]
+Sé amable, profesional y conciso en tus respuestas. Usa emojis ocasionalmente."""
+
+        messages = [{"role": "system", "content": system_message}]
         
-        # Agregar historial si existe
         if historial:
             messages.extend(historial)
         
-        # Agregar pregunta actual
-        messages.append({
-            "role": "user",
-            "content": pregunta
-        })
+        messages.append({"role": "user", "content": mensaje})
         
-        try:
-            # Llamar a Groq API
-            chat_completion = self.client.chat.completions.create(
-                messages=messages,
-                model="llama-3.3-70b-versatile",
-                temperature=0.7,
-                max_tokens=1024,
-                top_p=1,
-                stream=False
-            )
-            
-            respuesta = chat_completion.choices[0].message.content
-            
-            # Detectar si el usuario quiere generar CV
-            es_solicitud_cv = self._detectar_intencion_generar_cv(pregunta)
-            
-            return {
-                'respuesta': respuesta,
-                'metadata': {
-                    'timestamp': datetime.now().isoformat(),
-                    'modelo': 'llama-3.3-70b',
-                    'tokens_usados': chat_completion.usage.total_tokens,
-                    'es_solicitud_cv': es_solicitud_cv
-                }
-            }
-            
-        except Exception as e:
-            return {
-                'respuesta': f"Lo siento, hubo un error al procesar tu pregunta: {str(e)}",
-                'metadata': {
-                    'timestamp': datetime.now().isoformat(),
-                    'error': True
-                }
-            }
+        chat_completion = self.client.chat.completions.create(
+            messages=messages,
+            model=self.model,
+            temperature=0.7,
+            max_tokens=1024,
+            top_p=1,
+            stream=False
+        )
+        
+        return chat_completion.choices[0].message.content
     
-    def _construir_contexto_cv(self, user, docente, articulos, formaciones, empleos, congresos, cursos):
-        """Construye el contexto del CV para el chatbot"""
+    def _construir_contexto_cv(self, docente):
+        """Construir contexto con información del CV"""
+        contexto_partes = []
         
-        contexto = f"""
-DATOS PERSONALES:
-- Nombre: {docente.nombre_completo or 'No especificado'}
-- Email: {user.email}
-- ORCID ID: {docente.orcid or 'No configurado'}
-- CVU: {docente.cvu or 'No configurado'}
-
-FORMACIÓN ACADÉMICA ({len(formaciones)} total):
-"""
+        contexto_partes.append(f"INFORMACIÓN PERSONAL:")
+        contexto_partes.append(f"- Nombre: {docente.nombre_completo or 'No especificado'}")
+        contexto_partes.append(f"- Email: {docente.correo_principal or 'No especificado'}")
+        if docente.cvu:
+            contexto_partes.append(f"- CVU: {docente.cvu}")
+        if docente.orcid:
+            contexto_partes.append(f"- ORCID: {docente.orcid}")
         
-        if formaciones:
-            for f in formaciones[:5]:
-                contexto += f"- {f.grado_obtenido or f.nivel} - {f.institucion} ({f.fecha_fin.year if f.fecha_fin else 'En curso'})\n"
-        else:
-            contexto += "No hay formación académica registrada.\n"
-        
-        contexto += f"\nARTÍCULOS CIENTÍFICOS ({len(articulos)} total):\n"
-        
+        # Artículos
+        articulos = Articulo.query.filter_by(docente_id=docente.id).order_by(Articulo.anio.desc()).limit(10).all()
         if articulos:
-            articulos_ordenados = sorted(articulos, key=lambda x: x.anio or 0, reverse=True)
+            contexto_partes.append(f"\nARTÍCULOS CIENTÍFICOS ({len(articulos)} más recientes):")
+            for art in articulos:
+                contexto_partes.append(f"- {art.titulo} ({art.anio})")
             
-            for art in articulos_ordenados[:10]:
-                contexto += f"- [{art.anio or 'N/A'}] {art.titulo}\n"
-                if art.revista:
-                    contexto += f"  Revista: {art.revista}\n"
-                if art.doi:
-                    contexto += f"  DOI: {art.doi}\n"
-            
-            if len(articulos) > 10:
-                contexto += f"\n... y {len(articulos) - 10} artículos más\n"
-        else:
-            contexto += "No hay artículos registrados aún.\n"
+            total_articulos = Articulo.query.filter_by(docente_id=docente.id).count()
+            contexto_partes.append(f"\nTotal de artículos: {total_articulos}")
         
-        contexto += f"\nEXPERIENCIA LABORAL ({len(empleos)} total):\n"
+        # Formación
+        formaciones = FormacionAcademica.query.filter_by(docente_id=docente.id).all()
+        if formaciones:
+            contexto_partes.append(f"\nFORMACIÓN ACADÉMICA:")
+            for form in formaciones[:3]:
+                contexto_partes.append(f"- {form.nivel or 'N/A'}: {form.grado_obtenido or 'Sin título'}")
+        
+        # Empleos
+        empleos = Empleo.query.filter_by(docente_id=docente.id).order_by(Empleo.fecha_inicio.desc()).limit(3).all()
         if empleos:
-            for emp in empleos[:5]:
-                periodo = f"{emp.fecha_inicio.year if emp.fecha_inicio else 'N/A'} - {'Actual' if emp.actual else (emp.fecha_fin.year if emp.fecha_fin else 'N/A')}"
-                contexto += f"- {emp.puesto} en {emp.institucion} ({periodo})\n"
-        else:
-            contexto += "No hay experiencia laboral registrada.\n"
+            contexto_partes.append(f"\nEXPERIENCIA LABORAL:")
+            for emp in empleos:
+                contexto_partes.append(f"- {emp.puesto or 'Sin puesto'} en {emp.institucion or 'Sin institución'}")
         
-        contexto += f"\nCONGRESOS ({len(congresos)} total):\n"
+        # Congresos
+        congresos = Congreso.query.filter_by(docente_id=docente.id).order_by(Congreso.fecha.desc()).limit(5).all()
         if congresos:
-            for cong in congresos[:5]:
-                contexto += f"- {cong.titulo_ponencia or cong.nombre_congreso} ({cong.fecha.year if cong.fecha else 'N/A'})\n"
-        else:
-            contexto += "No hay congresos registrados.\n"
+            contexto_partes.append(f"\nCONGRESOS:")
+            for cong in congresos:
+                contexto_partes.append(f"- {cong.nombre_congreso}")
         
-        contexto += f"\nCURSOS IMPARTIDOS ({len(cursos)} total):\n"
+        # Cursos
+        cursos = CursoImpartido.query.filter_by(docente_id=docente.id).limit(5).all()
         if cursos:
-            for curso in cursos[:5]:
-                contexto += f"- {curso.nombre_curso} - {curso.nivel or 'N/A'}\n"
-        else:
-            contexto += "No hay cursos registrados.\n"
+            contexto_partes.append(f"\nCURSOS IMPARTIDOS:")
+            for curso in cursos:
+                contexto_partes.append(f"- {curso.nombre_curso}")
         
-        return contexto
-    
-    def _detectar_intencion_generar_cv(self, pregunta: str) -> bool:
-        """Detecta si el usuario quiere generar un CV"""
-        palabras_clave = ['genera', 'generar', 'crear', 'crea', 'cv', 'curriculum', 
-                          'reporte', 'documento', 'pdf', 'word', 'descargar']
-        pregunta_lower = pregunta.lower()
-        return any(palabra in pregunta_lower for palabra in palabras_clave)
+        # Proyectos
+        proyectos = ProyectoInvestigacion.query.filter_by(docente_id=docente.id).all()
+        if proyectos:
+            contexto_partes.append(f"\nPROYECTOS DE INVESTIGACIÓN:")
+            for proy in proyectos:
+                contexto_partes.append(f"- {proy.nombre_proyecto}")
+        
+        return "\n".join(contexto_partes)
     
     def generar_respuesta_streaming(self, pregunta: str, usuario_id: int):
-        """
-        Genera respuesta en modo streaming (para efecto de "escribiendo")
-        """
+        """Generar respuesta en modo streaming (para efecto de escritura)"""
         user = User.query.get(usuario_id)
         docente = Docente.query.filter_by(user_id=usuario_id).first()
         
@@ -185,13 +206,7 @@ FORMACIÓN ACADÉMICA ({len(formaciones)} total):
             yield "Por favor, completa tu perfil primero."
             return
         
-        articulos = Articulo.query.filter_by(docente_id=docente.id).all()
-        formaciones = FormacionAcademica.query.filter_by(docente_id=docente.id).all()
-        empleos = Empleo.query.filter_by(docente_id=docente.id).all()
-        congresos = Congreso.query.filter_by(docente_id=docente.id).all()
-        cursos = CursoImpartido.query.filter_by(docente_id=docente.id).all()
-        
-        contexto = self._construir_contexto_cv(user, docente, articulos, formaciones, empleos, congresos, cursos)
+        contexto = self._construir_contexto_cv(docente)
         
         system_prompt = f"""Eres un asistente académico especializado.
 
@@ -206,7 +221,7 @@ Responde de manera clara y profesional."""
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": pregunta}
                 ],
-                model="llama-3.3-70b-versatile",
+                model=self.model,
                 temperature=0.7,
                 max_tokens=1024,
                 stream=True

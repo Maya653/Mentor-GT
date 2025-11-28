@@ -1,0 +1,442 @@
+{% extends "layouts/docente_layout.html" %}
+
+{% block docente_title %}Asistente Virtual{% endblock %}
+
+{% block docente_content %}
+<div class="container-fluid">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">🤖 Asistente Académico IA</h4>
+            <small>Tu asistente personal para gestión de CV académico</small>
+        </div>
+        <div class="card-body">
+            <!-- Área de chat -->
+            <div id="chat-container" style="height: 500px; overflow-y: auto; border: 1px solid #ddd; padding: 20px; border-radius: 8px; background-color: #f8f9fa; margin-bottom: 20px;">
+                <div class="bot-message">
+                    <strong>🤖 Asistente:</strong>
+                    <p>¡Hola! 👋 Soy tu asistente académico. Puedo ayudarte con:</p>
+                    <ul>
+                        <li>📊 Consultar información de tu CV</li>
+                        <li>📄 <strong>Generar CVs en PDF personalizados</strong></li>
+                        <li>📈 Analizar tu producción científica</li>
+                        <li>💡 Sugerencias para mejorar tu perfil</li>
+                    </ul>
+                    <p class="mb-0"><strong>Prueba:</strong> "Genera mi CV"</p>
+                </div>
+            </div>
+
+            <!-- Input de mensaje -->
+            <div class="input-group">
+                <input type="text" id="mensaje-input" class="form-control" placeholder="Escribe tu mensaje..." onkeypress="if(event.keyCode==13) enviarMensaje()">
+                <button class="btn btn-primary" onclick="enviarMensaje()" id="btn-enviar">
+                    <i class="bi bi-send"></i> Enviar
+                </button>
+                <button class="btn btn-secondary" onclick="limpiarChat()">
+                    <i class="bi bi-trash"></i> Limpiar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para seleccionar secciones del CV -->
+<div class="modal fade" id="cvSelectorModal" tabindex="-1" aria-labelledby="cvSelectorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="cvSelectorModalLabel">📋 Personaliza tu CV</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">Selecciona las secciones que deseas incluir en tu CV:</p>
+                
+                <!-- Plantilla -->
+                <div class="mb-4">
+                    <h6 class="fw-bold">🎨 Tipo de Plantilla:</h6>
+                    <div class="btn-group w-100" role="group">
+                        <input type="radio" class="btn-check" name="plantilla" id="plantilla-conacyt" value="conacyt" checked>
+                        <label class="btn btn-outline-primary" for="plantilla-conacyt">CONACYT</label>
+                        
+                        <input type="radio" class="btn-check" name="plantilla" id="plantilla-profesional" value="profesional">
+                        <label class="btn btn-outline-primary" for="plantilla-profesional">Profesional</label>
+                        
+                        <input type="radio" class="btn-check" name="plantilla" id="plantilla-academico" value="academico">
+                        <label class="btn btn-outline-primary" for="plantilla-academico">Académico</label>
+                    </div>
+                </div>
+
+                <!-- Secciones -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="sec-datos" value="datos_generales" checked disabled>
+                            <label class="form-check-label fw-bold" for="sec-datos">
+                                Datos Generales <small class="text-muted">(Obligatorio)</small>
+                            </label>
+                        </div>
+                        
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="sec-formacion" value="formacion_academica" checked>
+                            <label class="form-check-label" for="sec-formacion">
+                                Formación Académica
+                            </label>
+                        </div>
+                        
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="sec-experiencia" value="experiencia_laboral" checked>
+                            <label class="form-check-label" for="sec-experiencia">
+                                Experiencia Laboral
+                            </label>
+                        </div>
+                        
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="sec-articulos" value="articulos_cientificos" checked>
+                            <label class="form-check-label" for="sec-articulos">
+                                Artículos Científicos
+                            </label>
+                        </div>
+                        
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="sec-libros" value="libros_capitulos">
+                            <label class="form-check-label" for="sec-libros">
+                                Libros y Capítulos
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="sec-congresos" value="congresos_ponencias" checked>
+                            <label class="form-check-label" for="sec-congresos">
+                                Congresos y Ponencias
+                            </label>
+                        </div>
+                        
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="sec-proyectos" value="proyectos_investigacion">
+                            <label class="form-check-label" for="sec-proyectos">
+                                Proyectos de Investigación
+                            </label>
+                        </div>
+                        
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="sec-cursos" value="cursos_impartidos" checked>
+                            <label class="form-check-label" for="sec-cursos">
+                                Cursos Impartidos
+                            </label>
+                        </div>
+                        
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="sec-tesis" value="tesis_dirigidas">
+                            <label class="form-check-label" for="sec-tesis">
+                                Tesis Dirigidas
+                            </label>
+                        </div>
+                        
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="sec-desarrollos" value="desarrollos_tecnologicos">
+                            <label class="form-check-label" for="sec-desarrollos">
+                                Desarrollos Tecnológicos
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones rápidos -->
+                <div class="mt-3">
+                    <button class="btn btn-sm btn-outline-secondary me-2" onclick="seleccionarTodas()">
+                        ✓ Seleccionar todas
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="deseleccionarTodas()">
+                        ✗ Deseleccionar todas
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" onclick="generarCVConSeleccion()">
+                    <i class="bi bi-file-earmark-pdf"></i> Generar CV
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+#chat-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.bot-message {
+    background-color: #e3f2fd;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    max-width: 85%;
+    align-self: flex-start;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.user-message {
+    background-color: #f5f5f5;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    max-width: 85%;
+    align-self: flex-end;
+    text-align: right;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.bot-message strong,
+.user-message strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.loading {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #999;
+    margin: 0 2px;
+    animation: loading 1.4s infinite both;
+}
+
+.loading:nth-child(1) { animation-delay: -0.32s; }
+.loading:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes loading {
+    0%, 80%, 100% { opacity: 0; }
+    40% { opacity: 1; }
+}
+
+.btn-download-cv {
+    display: inline-block;
+    padding: 15px 30px;
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white !important;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 16px;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-download-cv:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    color: white !important;
+}
+
+.btn-download-cv i {
+    margin-right: 8px;
+}
+</style>
+
+<script>
+let modalBootstrap;
+
+function enviarMensaje() {
+    const input = document.getElementById('mensaje-input');
+    const mensaje = input.value.trim();
+    
+    if (!mensaje) return;
+    
+    // Detectar si es una solicitud de generar CV
+    const esGenerarCV = /genera|generar|crea|crear|dame|descarga/i.test(mensaje) && 
+                        /cv|curriculum|documento|pdf|reporte/i.test(mensaje);
+    
+    if (esGenerarCV) {
+        // Mostrar modal en lugar de enviar directamente
+        agregarMensaje(mensaje, 'user');
+        input.value = '';
+        
+        agregarMensaje('📋 Perfecto, voy a generar tu CV. Primero, selecciona las secciones que deseas incluir:', 'bot');
+        
+        // Mostrar modal
+        const modal = new bootstrap.Modal(document.getElementById('cvSelectorModal'));
+        modalBootstrap = modal;
+        modal.show();
+        return;
+    }
+    
+    // Conversación normal
+    enviarMensajeAlServidor(mensaje);
+}
+
+function enviarMensajeAlServidor(mensaje) {
+    const input = document.getElementById('mensaje-input');
+    
+    // Deshabilitar input mientras procesa
+    input.disabled = true;
+    document.getElementById('btn-enviar').disabled = true;
+    
+    // Mostrar mensaje del usuario si no se ha mostrado ya
+    if (!document.querySelector('.user-message:last-child')?.textContent.includes(mensaje)) {
+        agregarMensaje(mensaje, 'user');
+    }
+    input.value = '';
+    
+    // Mostrar indicador de "escribiendo..."
+    const loadingId = mostrarCargando();
+    
+    // Enviar al servidor
+    fetch('/chatbot/mensaje', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ mensaje: mensaje })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Quitar indicador de carga
+        quitarCargando(loadingId);
+        
+        if (data.error) {
+            agregarMensaje('❌ Error: ' + data.error, 'bot');
+        } else {
+            // Manejar respuesta
+            const respuesta = data.respuesta || data;
+            agregarMensaje(respuesta, 'bot');
+        }
+    })
+    .catch(error => {
+        console.error('Error completo:', error);
+        quitarCargando(loadingId);
+        agregarMensaje('❌ Error al procesar la respuesta. Por favor, intenta de nuevo.', 'bot');
+    })
+    .finally(() => {
+        // Rehabilitar input
+        input.disabled = false;
+        document.getElementById('btn-enviar').disabled = false;
+        input.focus();
+    });
+}
+
+function generarCVConSeleccion() {
+    // Obtener plantilla seleccionada
+    const plantilla = document.querySelector('input[name="plantilla"]:checked').value;
+    
+    // Obtener secciones seleccionadas
+    const secciones = {};
+    document.querySelectorAll('.form-check-input[type="checkbox"]').forEach(checkbox => {
+        secciones[checkbox.value] = checkbox.checked;
+    });
+    
+    // Construir mensaje especial para el servidor
+    const mensaje = `GENERAR_CV_PERSONALIZADO|plantilla:${plantilla}|secciones:${JSON.stringify(secciones)}`;
+    
+    // Cerrar modal
+    if (modalBootstrap) {
+        modalBootstrap.hide();
+    }
+    
+    // Mostrar mensaje de generación
+    agregarMensaje('⏳ Generando tu CV personalizado...', 'bot');
+    
+    // Enviar al servidor
+    enviarMensajeAlServidor(mensaje);
+}
+
+function seleccionarTodas() {
+    document.querySelectorAll('.form-check-input[type="checkbox"]:not(:disabled)').forEach(checkbox => {
+        checkbox.checked = true;
+    });
+}
+
+function deseleccionarTodas() {
+    document.querySelectorAll('.form-check-input[type="checkbox"]:not(:disabled)').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+}
+
+function agregarMensaje(texto, tipo) {
+    const container = document.getElementById('chat-container');
+    const div = document.createElement('div');
+    div.className = tipo === 'user' ? 'user-message' : 'bot-message';
+    
+    const label = tipo === 'user' ? '👤 Tú:' : '🤖 Asistente:';
+    
+    // Detectar si hay un link de descarga de PDF
+    const linkMatch = texto.match(/\[Haz clic aquí para descargar tu CV\]\((\/static\/pdfs\/[^)]+)\)/);
+    
+    if (linkMatch) {
+        const pdfUrl = linkMatch[1];
+        const filename = pdfUrl.split('/').pop();
+        
+        // Reemplazar el link con un botón
+        texto = texto.replace(
+            /\[Haz clic aquí para descargar tu CV\]\([^)]+\)/,
+            `<div style="margin-top: 15px; text-align: center;">
+                <a href="${pdfUrl}" download="${filename}" class="btn-download-cv">
+                    <i class="bi bi-download"></i> 📥 DESCARGAR MI CV EN PDF
+                </a>
+                <p style="margin-top: 10px; font-size: 12px; color: #666;">
+                    <i class="bi bi-info-circle"></i> Click para guardar el archivo
+                </p>
+            </div>`
+        );
+    }
+    
+    // Convertir markdown y saltos de línea
+    let textoFormateado = texto
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>');
+    
+    div.innerHTML = `<strong>${label}</strong><div>${textoFormateado}</div>`;
+    
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+}
+
+function mostrarCargando() {
+    const container = document.getElementById('chat-container');
+    const div = document.createElement('div');
+    div.className = 'bot-message';
+    div.id = 'loading-indicator';
+    div.innerHTML = `<strong>🤖 Asistente:</strong><div>
+        <span class="loading"></span>
+        <span class="loading"></span>
+        <span class="loading"></span>
+    </div>`;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+    return 'loading-indicator';
+}
+
+function quitarCargando(id) {
+    const elemento = document.getElementById(id);
+    if (elemento) {
+        elemento.remove();
+    }
+}
+
+function limpiarChat() {
+    const container = document.getElementById('chat-container');
+    container.innerHTML = `
+        <div class="bot-message">
+            <strong>🤖 Asistente:</strong>
+            <p>Chat limpiado. ¿En qué puedo ayudarte?</p>
+        </div>
+    `;
+    
+    fetch('/chatbot/limpiar', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('mensaje-input').focus();
+});
+</script>
+{% endblock %}
