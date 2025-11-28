@@ -2,13 +2,16 @@
 
 {% block admin_content %}
 <!-- Page Title -->
-<h3 class="mb-4">Buscar Docentes</h3>
+<div class="mb-4">
+    <h3 class="mb-1">Buscar Docentes</h3>
+    <p class="text-muted small mb-0">Encuentra y gestiona la información de los docentes</p>
+</div>
 
 <!-- Search and Filter Section -->
-<div class="card mb-4" style="border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-    <div class="card-body p-4">
+<div class="card mb-4" style="border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: none;">
+    <div class="card-body p-3 p-md-4">
         <form method="GET" action="{{ url_for('admin.docentes') }}" class="mb-3">
-            <div class="input-group" style="max-width: 600px;">
+            <div class="input-group">
                 <span class="input-group-text bg-white border-end-0">
                     <i class="bi bi-search text-muted"></i>
                 </span>
@@ -17,20 +20,21 @@
                        name="q" 
                        value="{{ request.args.get('q', '') }}"
                        placeholder="Buscar por nombre, RFC, CURP, ORCID o CVU...">
+                <button type="submit" class="btn btn-primary d-none d-sm-block">Buscar</button>
             </div>
         </form>
         
-        <div class="row">
-            <div class="col-md-6">
-                <select class="form-select" name="area" id="areaFilter" style="max-width: 300px;">
+        <div class="row g-2">
+            <div class="col-6 col-md-4">
+                <select class="form-select form-select-sm" name="area" id="areaFilter">
                     <option value="">Todas las áreas</option>
                     {% for area in areas_disponibles %}
                     <option value="{{ area }}" {% if request.args.get('area') == area %}selected{% endif %}>{{ area }}</option>
                     {% endfor %}
                 </select>
             </div>
-            <div class="col-md-6">
-                <select class="form-select" name="nivel" id="nivelFilter" style="max-width: 300px;">
+            <div class="col-6 col-md-4">
+                <select class="form-select form-select-sm" name="nivel" id="nivelFilter">
                     <option value="">Todos los niveles</option>
                     <option value="doctorado" {% if request.args.get('nivel') == 'doctorado' %}selected{% endif %}>Doctorado</option>
                     <option value="maestria" {% if request.args.get('nivel') == 'maestria' %}selected{% endif %}>Maestría</option>
@@ -42,21 +46,24 @@
 </div>
 
 <!-- Search Results -->
-<div class="card" style="border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-    <div class="card-body p-4">
-        <h5 class="mb-3">Resultados de búsqueda</h5>
-        <p class="text-muted mb-4">{{ docentes_con_nivel|length }} docentes encontrados</p>
+<div class="card" style="border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: none;">
+    <div class="card-body p-3 p-md-4">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 gap-2">
+            <h5 class="mb-0">Resultados de búsqueda</h5>
+            <span class="badge bg-primary">{{ docentes_con_nivel|length }} docentes</span>
+        </div>
         
         {% if docentes_con_nivel %}
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
+        <!-- Vista de tabla para pantallas grandes -->
+        <div class="table-responsive d-none d-lg-block">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
                     <tr>
                         <th>Nombre</th>
                         <th>CVU</th>
                         <th>Adscripción</th>
-                        <th>Nivel</th>
-                        <th>Acciones</th>
+                        <th class="text-center">Nivel</th>
+                        <th class="text-end">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -71,7 +78,7 @@
                                 </div>
                                 <div>
                                     <div style="font-weight: 500;">{{ docente.nombre_completo }}</div>
-                                    <div style="font-size: 14px; color: #666;">
+                                    <div style="font-size: 13px; color: #666;">
                                         {{ docente.user.email if docente.user else '-' }}
                                     </div>
                                 </div>
@@ -79,13 +86,15 @@
                         </td>
                         <td>{{ docente.cvu or '-' }}</td>
                         <td>
+                            <div class="text-truncate" style="max-width: 200px;">
                             {% if item.empleo_actual %}
                                 {{ item.empleo_actual.area_adscripcion or '-' }}
                             {% else %}
                                 -
                             {% endif %}
+                            </div>
                         </td>
-                        <td>
+                        <td class="text-center">
                             {% if nivel_maximo %}
                                 {% if nivel_maximo == 'doctorado' %}
                                     <span class="badge bg-primary">Doctorado</span>
@@ -100,13 +109,13 @@
                                 <span class="text-muted">-</span>
                             {% endif %}
                         </td>
-                        <td>
-                            <div class="d-flex flex-wrap gap-2">
-                                <a href="{{ url_for('admin.ver_docente', id=docente.id) }}" class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-eye"></i> Ver perfil
+                        <td class="text-end">
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ url_for('admin.ver_docente', id=docente.id) }}" class="btn btn-outline-primary" title="Ver perfil">
+                                    <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="{{ url_for('admin.docente_cv', id=docente.id) }}" class="btn btn-sm btn-outline-success">
-                                    <i class="bi bi-file-text"></i> Generar CV
+                                <a href="{{ url_for('admin.docente_cv', id=docente.id) }}" class="btn btn-outline-success" title="Generar CV">
+                                    <i class="bi bi-file-text"></i>
                                 </a>
                             </div>
                         </td>
@@ -115,14 +124,104 @@
                 </tbody>
             </table>
         </div>
+        
+        <!-- Vista de tarjetas para móviles y tablets -->
+        <div class="d-lg-none">
+            {% for item in docentes_con_nivel %}
+            {% set docente = item.docente %}
+            {% set nivel_maximo = item.nivel_maximo %}
+            <div class="docente-card p-3 mb-3">
+                <div class="d-flex align-items-start">
+                    <div class="user-avatar me-3 flex-shrink-0" style="width: 45px; height: 45px; font-size: 18px;">
+                        {{ docente.nombre_completo[0] if docente.nombre_completo else 'D' }}
+                    </div>
+                    <div class="flex-grow-1 min-width-0">
+                        <h6 class="mb-1 text-truncate">{{ docente.nombre_completo }}</h6>
+                        <p class="text-muted small mb-1 text-truncate">
+                            {{ docente.user.email if docente.user else '-' }}
+                        </p>
+                        <div class="d-flex flex-wrap gap-1 mb-2">
+                            {% if docente.cvu %}
+                            <span class="badge bg-light text-dark">CVU: {{ docente.cvu }}</span>
+                            {% endif %}
+                            {% if nivel_maximo %}
+                                {% if nivel_maximo == 'doctorado' %}
+                                    <span class="badge bg-primary">Doctorado</span>
+                                {% elif nivel_maximo == 'maestria' %}
+                                    <span class="badge bg-info">Maestría</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ nivel_maximo|title }}</span>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        {% if item.empleo_actual and item.empleo_actual.area_adscripcion %}
+                        <p class="text-muted small mb-0">
+                            <i class="bi bi-building me-1"></i>{{ item.empleo_actual.area_adscripcion }}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="d-flex gap-2 mt-3">
+                    <a href="{{ url_for('admin.ver_docente', id=docente.id) }}" class="btn btn-sm btn-outline-primary flex-grow-1">
+                        <i class="bi bi-eye me-1"></i>Ver perfil
+                    </a>
+                    <a href="{{ url_for('admin.docente_cv', id=docente.id) }}" class="btn btn-sm btn-outline-success flex-grow-1">
+                        <i class="bi bi-file-text me-1"></i>Generar CV
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
         {% else %}
         <div class="text-center py-5">
-            <i class="bi bi-search" style="font-size: 48px; color: #ccc;"></i>
-            <p class="text-muted mt-3">No se encontraron docentes</p>
+            <i class="bi bi-search display-1 text-muted" style="opacity: 0.3;"></i>
+            <p class="text-muted mt-3 mb-0">No se encontraron docentes</p>
+            <p class="text-muted small">Intenta con otros términos de búsqueda</p>
         </div>
         {% endif %}
     </div>
 </div>
+
+<style>
+.docente-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    transition: background 0.2s;
+}
+
+.docente-card:hover {
+    background: #e9ecef;
+}
+
+.min-width-0 {
+    min-width: 0;
+}
+
+.table th {
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6c757d;
+    border-top: none;
+}
+
+.table td {
+    padding: 1rem 0.75rem;
+}
+
+@media (max-width: 576px) {
+    .docente-card {
+        padding: 12px !important;
+    }
+    
+    .docente-card .user-avatar {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 16px !important;
+    }
+}
+</style>
 
 <script>
 // Filtros con JavaScript para actualizar la búsqueda

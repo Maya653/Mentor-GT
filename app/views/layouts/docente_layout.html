@@ -9,9 +9,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/profesor.css') }}">
     {% block extra_css %}{% endblock %}
     <style>
+        * {
+            box-sizing: border-box;
+        }
+        
         body {
             background-color: #f5f5f5;
+            overflow-x: hidden;
         }
+        
+        /* Sidebar */
         .sidebar {
             position: fixed;
             top: 0;
@@ -22,7 +29,10 @@
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
             z-index: 1000;
             padding: 20px;
+            transition: transform 0.3s ease;
+            overflow-y: auto;
         }
+        
         .sidebar-logo {
             display: flex;
             align-items: center;
@@ -30,6 +40,7 @@
             padding-bottom: 20px;
             border-bottom: 1px solid #e0e0e0;
         }
+        
         .logo-icon {
             width: 40px;
             height: 40px;
@@ -41,15 +52,20 @@
             color: white;
             font-size: 20px;
             margin-right: 10px;
+            flex-shrink: 0;
         }
+        
         .sidebar-menu {
             list-style: none;
             padding: 0;
             margin: 0;
+            padding-bottom: 80px;
         }
+        
         .sidebar-menu li {
             margin-bottom: 5px;
         }
+        
         .sidebar-menu a {
             display: flex;
             align-items: center;
@@ -59,21 +75,27 @@
             border-radius: 8px;
             transition: all 0.3s;
         }
+        
         .sidebar-menu a:hover,
         .sidebar-menu a.active {
             background-color: #e7f1ff;
             color: #0d6efd;
         }
+        
         .sidebar-menu a i {
             margin-right: 10px;
             width: 20px;
+            flex-shrink: 0;
         }
+        
         .sidebar-logout {
             position: absolute;
             bottom: 20px;
             left: 20px;
             right: 20px;
+            background: #fff;
         }
+        
         .sidebar-logout a {
             color: #dc3545;
             text-decoration: none;
@@ -81,37 +103,56 @@
             align-items: center;
             padding: 10px;
         }
+        
         .sidebar-logout a:hover {
             color: #c82333;
         }
+        
+        /* Main Content */
         .main-content {
             margin-left: 250px;
             min-height: 100vh;
+            transition: margin-left 0.3s ease;
         }
+        
+        /* Top Header */
         .top-header {
             background-color: #fff;
-            padding: 20px 30px;
+            padding: 15px 30px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
+            gap: 1rem;
+            flex-wrap: wrap;
         }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
+            flex-wrap: wrap;
         }
+        
         .header-actions i {
             font-size: 20px;
             color: #666;
             cursor: pointer;
         }
+        
         .user-profile {
             display: flex;
             align-items: center;
             gap: 10px;
         }
+        
         .user-avatar {
             width: 40px;
             height: 40px;
@@ -122,10 +163,13 @@
             justify-content: center;
             color: white;
             font-weight: bold;
+            flex-shrink: 0;
         }
+        
         .content-area {
             padding: 0 30px 30px;
         }
+        
         .summary-card {
             background: white;
             border-radius: 12px;
@@ -134,10 +178,12 @@
             height: 100%;
             transition: transform 0.2s;
         }
+        
         .summary-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
+        
         .summary-card-icon {
             width: 50px;
             height: 50px;
@@ -147,6 +193,7 @@
             justify-content: center;
             margin-bottom: 15px;
         }
+        
         .help-icon {
             position: fixed;
             bottom: 30px;
@@ -164,14 +211,185 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             z-index: 1000;
         }
+        
         .help-icon:hover {
             background-color: #000;
+        }
+        
+        /* Botón hamburguesa para móvil */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #333;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+        
+        /* Overlay para cerrar menú en móvil */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+        
+        /* Header buttons */
+        .header-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        /* Responsive para tablets */
+        @media (max-width: 992px) {
+            .top-header {
+                padding: 15px 20px;
+            }
+            
+            .content-area {
+                padding: 0 20px 20px;
+            }
+            
+            .user-profile .user-info {
+                display: none;
+            }
+            
+            .header-actions .header-icons {
+                display: none;
+            }
+            
+            .header-buttons {
+                flex-direction: column;
+            }
+            
+            .header-buttons .btn {
+                font-size: 0.85rem;
+                padding: 0.4rem 0.75rem;
+            }
+        }
+        
+        /* Responsive para móviles */
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .sidebar-overlay.active {
+                display: block;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .top-header {
+                padding: 12px 15px;
+            }
+            
+            .top-header h3 {
+                font-size: 1rem;
+                flex: 1;
+                margin: 0;
+            }
+            
+            .content-area {
+                padding: 0 15px 15px;
+            }
+            
+            .header-actions {
+                gap: 8px;
+            }
+            
+            .user-avatar {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+            
+            .summary-card {
+                padding: 15px;
+            }
+            
+            .summary-card:hover {
+                transform: none;
+            }
+            
+            .summary-card-icon {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .help-icon {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+            
+            .header-buttons {
+                display: none;
+            }
+            
+            /* Mostrar solo el avatar en móvil */
+            .user-profile {
+                gap: 0;
+            }
+        }
+        
+        /* Responsive para móviles pequeños */
+        @media (max-width: 480px) {
+            .top-header {
+                padding: 10px;
+            }
+            
+            .top-header h3 {
+                font-size: 0.95rem;
+            }
+            
+            .content-area {
+                padding: 0 10px 10px;
+            }
+            
+            .summary-card {
+                padding: 12px;
+            }
+            
+            .summary-card h2 {
+                font-size: 1.5rem;
+            }
+            
+            .summary-card p {
+                font-size: 0.85rem;
+            }
+            
+            .mobile-menu-btn {
+                font-size: 1.25rem;
+                padding: 0.25rem;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Overlay para cerrar sidebar en móvil -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <div class="sidebar-logo">
             <div class="logo-icon">
                 <i class="bi bi-book"></i>
@@ -210,7 +428,7 @@
             <li>
                 <a href="{{ url_for('chatbot.index') }}" class="{% if 'chatbot' in request.endpoint %}active{% endif %}" style="background: linear-gradient(135deg, #e94560 0%, #533483 100%); color: white;">
                     <i class="bi bi-robot"></i>
-                    <span>🤖 Asistente IA</span>
+                    <span>Asistente IA</span>
                 </a>
             </li>
         </ul>
@@ -227,21 +445,30 @@
     <div class="main-content">
         <!-- Top Header -->
         <div class="top-header">
-            <h3 class="mb-0">{% block page_title %}Mi Portafolio{% endblock %}</h3>
+            <div class="header-left">
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="bi bi-list"></i>
+                </button>
+                <h3 class="mb-0">{% block page_title %}Mi Portafolio{% endblock %}</h3>
+            </div>
             <div class="header-actions">
-                <i class="bi bi-bell"></i>
-                <i class="bi bi-gear"></i>
+                <span class="header-icons">
+                    <i class="bi bi-bell"></i>
+                    <i class="bi bi-gear"></i>
+                </span>
                 <div class="user-profile">
                     <div class="user-avatar">
                         {{ current_docente.nombre_completo[0] if current_docente and current_docente.nombre_completo else current_user.email[0].upper() }}
                     </div>
-                    <div>
+                    <div class="user-info">
                         <div style="font-weight: bold;">{{ current_docente.nombre_completo if current_docente and current_docente.nombre_completo else 'Docente' }}</div>
                         <div style="font-size: 12px; color: #666;">{{ current_user.email }}</div>
                     </div>
                 </div>
-                <button class="btn btn-outline-primary">Ver mi CV</button>
-                <button class="btn btn-primary">Generar CV</button>
+                <div class="header-buttons">
+                    <a href="{{ url_for('cv.generar') }}" class="btn btn-outline-primary btn-sm">Ver mi CV</a>
+                    <a href="{{ url_for('cv.generar') }}" class="btn btn-primary btn-sm">Generar CV</a>
+                </div>
             </div>
         </div>
         
@@ -263,12 +490,51 @@
     </div>
     
     <!-- Help Icon -->
-    <div class="help-icon">
+    <a href="{{ url_for('chatbot.index') }}" class="help-icon" title="Asistente IA">
         <i class="bi bi-question"></i>
-    </div>
+    </a>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/profesor.js') }}"></script>
+    <script>
+        // Toggle sidebar en móvil
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                sidebarOverlay.classList.toggle('active');
+            });
+        }
+        
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', function() {
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+            });
+        }
+        
+        // Cerrar sidebar al hacer click en un link (móvil)
+        const sidebarLinks = document.querySelectorAll('.sidebar-menu a, .sidebar-logout a');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('active');
+                    sidebarOverlay.classList.remove('active');
+                }
+            });
+        });
+        
+        // Cerrar sidebar al cambiar tamaño de ventana
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+            }
+        });
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

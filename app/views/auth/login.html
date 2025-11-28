@@ -3,52 +3,125 @@
 {% block title %}Iniciar Sesión{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-5">
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">Iniciar Sesión</h4>
+<div class="login-wrapper">
+    <div class="row justify-content-center align-items-center min-vh-75">
+        <div class="col-11 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+            <div class="card shadow login-card">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h4 class="mb-0">
+                        <i class="bi bi-person-circle me-2"></i>Iniciar Sesión
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('auth.login') }}">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            {{ form.email.label(class="form-label") }}
+                            {{ form.email(class="form-control form-control-lg", placeholder="correo@ejemplo.com") }}
+                            {% if form.email.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.email.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.password.label(class="form-label") }}
+                            {{ form.password(class="form-control form-control-lg", placeholder="••••••••") }}
+                            {% if form.password.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.password.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-4 form-check">
+                            {{ form.remember(class="form-check-input") }}
+                            {{ form.remember.label(class="form-check-label") }}
+                        </div>
+                        <div class="d-grid">
+                            {{ form.submit(class="btn btn-primary btn-lg") }}
+                        </div>
+                    </form>
+                    <hr class="my-4">
+                    <p class="text-center mb-0">
+                        ¿No tienes cuenta? <a href="{{ url_for('auth.register') }}" class="fw-bold">Regístrate aquí</a>
+                    </p>
+                </div>
             </div>
-            <div class="card-body">
-                <form method="POST" action="{{ url_for('auth.login') }}">
-                    {{ form.hidden_tag() }}
-                    <div class="mb-3">
-                        {{ form.email.label(class="form-label") }}
-                        {{ form.email(class="form-control") }}
-                        {% if form.email.errors %}
-                            <div class="text-danger">
-                                {% for error in form.email.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.password.label(class="form-label") }}
-                        {{ form.password(class="form-control") }}
-                        {% if form.password.errors %}
-                            <div class="text-danger">
-                                {% for error in form.password.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3 form-check">
-                        {{ form.remember(class="form-check-input") }}
-                        {{ form.remember.label(class="form-check-label") }}
-                    </div>
-                    <div class="d-grid">
-                        {{ form.submit(class="btn btn-primary") }}
-                    </div>
-                </form>
-                <hr>
-                <p class="text-center mb-0">
-                    ¿No tienes cuenta? <a href="{{ url_for('auth.register') }}">Regístrate aquí</a>
-                </p>
+            
+            <!-- Info adicional -->
+            <div class="text-center mt-4 text-muted">
+                <small>
+                    <i class="bi bi-shield-check me-1"></i>
+                    Sistema de CVs Académicos - UTTEC
+                </small>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
 
+<style>
+.login-wrapper {
+    min-height: calc(100vh - 120px);
+    display: flex;
+    align-items: center;
+    padding: 20px 0;
+}
+
+.min-vh-75 {
+    min-height: 75vh;
+}
+
+.login-card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.login-card .card-header {
+    border-bottom: none;
+}
+
+.login-card .form-control {
+    border-radius: 8px;
+    padding: 12px 15px;
+}
+
+.login-card .form-control:focus {
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+}
+
+.login-card .btn-primary {
+    border-radius: 8px;
+    padding: 12px;
+    font-weight: 600;
+}
+
+@media (max-width: 576px) {
+    .login-wrapper {
+        padding: 15px 0;
+    }
+    
+    .login-card .card-body {
+        padding: 20px !important;
+    }
+    
+    .login-card h4 {
+        font-size: 1.25rem;
+    }
+    
+    .login-card .form-control-lg {
+        font-size: 1rem;
+        padding: 10px 12px;
+    }
+    
+    .login-card .btn-lg {
+        font-size: 1rem;
+        padding: 10px;
+    }
+}
+</style>
+{% endblock %}

@@ -1,33 +1,44 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{% if current_user.is_authenticated %}{% if current_user.es_admin() %}{{ url_for('admin.dashboard') }}{% else %}{{ url_for('docente.dashboard') }}{% endif %}{% else %}{{ url_for('auth.login') }}{% endif %}">
-            Sistema CV Académico
+        <a class="navbar-brand d-flex align-items-center" href="{% if current_user.is_authenticated %}{% if current_user.es_admin() %}{{ url_for('admin.dashboard') }}{% else %}{{ url_for('docente.dashboard') }}{% endif %}{% else %}{{ url_for('auth.login') }}{% endif %}">
+            <i class="bi bi-mortarboard me-2"></i>
+            <span class="d-none d-sm-inline">Sistema CV Académico</span>
+            <span class="d-sm-none">CV Académico</span>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
                 {% if current_user.is_authenticated %}
                     <li class="nav-item">
-                        <span class="navbar-text me-3 text-white">
-                            {{ current_user.email }}
+                        <span class="navbar-text me-lg-3 text-white-50 d-block d-lg-inline py-2 py-lg-0">
+                            <i class="bi bi-person-circle me-1"></i>
+                            <span class="user-email">{{ current_user.email }}</span>
                         </span>
                     </li>
                     {% if current_user.es_admin() %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('admin.dashboard') }}">Admin</a>
+                            <a class="nav-link" href="{{ url_for('admin.dashboard') }}">
+                                <i class="bi bi-speedometer2 me-1"></i>Admin
+                            </a>
                         </li>
                     {% endif %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('auth.logout') }}">Cerrar Sesión</a>
+                        <a class="nav-link text-danger-emphasis" href="{{ url_for('auth.logout') }}">
+                            <i class="bi bi-box-arrow-right me-1"></i>Cerrar Sesión
+                        </a>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('auth.login') }}">Iniciar Sesión</a>
+                        <a class="nav-link" href="{{ url_for('auth.login') }}">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Iniciar Sesión
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('auth.register') }}">Registrarse</a>
+                        <a class="nav-link" href="{{ url_for('auth.register') }}">
+                            <i class="bi bi-person-plus me-1"></i>Registrarse
+                        </a>
                     </li>
                 {% endif %}
             </ul>
@@ -35,3 +46,58 @@
     </div>
 </nav>
 
+<style>
+.navbar {
+    padding: 0.75rem 1rem;
+}
+
+.navbar-brand {
+    font-weight: 600;
+}
+
+.navbar-nav .nav-link {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.navbar-nav .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 991px) {
+    .navbar-collapse {
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 0.75rem;
+    }
+    
+    .navbar-nav .nav-link {
+        padding: 0.75rem 1rem;
+    }
+    
+    .user-email {
+        max-width: 200px;
+        display: inline-block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+}
+
+@media (max-width: 576px) {
+    .navbar {
+        padding: 0.5rem 0.75rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1rem;
+    }
+    
+    .user-email {
+        max-width: 150px;
+        font-size: 0.85rem;
+    }
+}
+</style>

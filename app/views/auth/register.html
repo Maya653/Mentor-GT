@@ -3,74 +3,146 @@
 {% block title %}Registrarse{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card shadow">
-            <div class="card-header bg-success text-white">
-                <h4 class="mb-0">Registrarse</h4>
+<div class="register-wrapper">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-11 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+            <div class="card shadow register-card">
+                <div class="card-header bg-success text-white text-center py-3">
+                    <h4 class="mb-0">
+                        <i class="bi bi-person-plus me-2"></i>Crear Cuenta
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('auth.register') }}">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            {{ form.email.label(class="form-label") }}
+                            {{ form.email(class="form-control", placeholder="correo@ejemplo.com") }}
+                            {% if form.email.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.email.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row g-3 mb-3">
+                            <div class="col-12 col-sm-6">
+                                {{ form.nombre.label(class="form-label") }}
+                                {{ form.nombre(class="form-control", placeholder="Tu nombre") }}
+                                {% if form.nombre.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.nombre.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                {{ form.apellidos.label(class="form-label") }}
+                                {{ form.apellidos(class="form-control", placeholder="Tus apellidos") }}
+                            </div>
+                        </div>
+                        
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-sm-6">
+                                {{ form.password.label(class="form-label") }}
+                                {{ form.password(class="form-control", placeholder="••••••••") }}
+                                {% if form.password.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.password.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                {{ form.password_confirm.label(class="form-label") }}
+                                {{ form.password_confirm(class="form-control", placeholder="••••••••") }}
+                                {% if form.password_confirm.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.password_confirm.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            {{ form.submit(class="btn btn-success btn-lg") }}
+                        </div>
+                    </form>
+                    <hr class="my-4">
+                    <p class="text-center mb-0">
+                        ¿Ya tienes cuenta? <a href="{{ url_for('auth.login') }}" class="fw-bold text-success">Inicia sesión aquí</a>
+                    </p>
+                </div>
             </div>
-            <div class="card-body">
-                <form method="POST" action="{{ url_for('auth.register') }}">
-                    {{ form.hidden_tag() }}
-                    <div class="mb-3">
-                        {{ form.email.label(class="form-label") }}
-                        {{ form.email(class="form-control") }}
-                        {% if form.email.errors %}
-                            <div class="text-danger">
-                                {% for error in form.email.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.nombre.label(class="form-label") }}
-                        {{ form.nombre(class="form-control") }}
-                        {% if form.nombre.errors %}
-                            <div class="text-danger">
-                                {% for error in form.nombre.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.apellidos.label(class="form-label") }}
-                        {{ form.apellidos(class="form-control") }}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.password.label(class="form-label") }}
-                        {{ form.password(class="form-control") }}
-                        {% if form.password.errors %}
-                            <div class="text-danger">
-                                {% for error in form.password.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.password_confirm.label(class="form-label") }}
-                        {{ form.password_confirm(class="form-control") }}
-                        {% if form.password_confirm.errors %}
-                            <div class="text-danger">
-                                {% for error in form.password_confirm.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="d-grid">
-                        {{ form.submit(class="btn btn-success") }}
-                    </div>
-                </form>
-                <hr>
-                <p class="text-center mb-0">
-                    ¿Ya tienes cuenta? <a href="{{ url_for('auth.login') }}">Inicia sesión aquí</a>
-                </p>
+            
+            <!-- Info adicional -->
+            <div class="text-center mt-4 text-muted">
+                <small>
+                    <i class="bi bi-shield-check me-1"></i>
+                    Sistema de CVs Académicos - UTTEC
+                </small>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
 
+<style>
+.register-wrapper {
+    min-height: calc(100vh - 120px);
+    display: flex;
+    align-items: center;
+    padding: 20px 0;
+}
+
+.register-card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.register-card .card-header {
+    border-bottom: none;
+}
+
+.register-card .form-control {
+    border-radius: 8px;
+    padding: 10px 15px;
+}
+
+.register-card .form-control:focus {
+    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.15);
+}
+
+.register-card .btn-success {
+    border-radius: 8px;
+    padding: 12px;
+    font-weight: 600;
+}
+
+@media (max-width: 576px) {
+    .register-wrapper {
+        padding: 15px 0;
+    }
+    
+    .register-card .card-body {
+        padding: 20px !important;
+    }
+    
+    .register-card h4 {
+        font-size: 1.25rem;
+    }
+    
+    .register-card .btn-lg {
+        font-size: 1rem;
+        padding: 10px;
+    }
+}
+</style>
+{% endblock %}

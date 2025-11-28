@@ -2,12 +2,12 @@
 
 {% block docente_content %}
 <!-- Welcome Section -->
-<div class="d-flex align-items-center mb-4" style="background: white; border-radius: 12px; padding: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-    <div class="user-avatar me-4" style="width: 80px; height: 80px; font-size: 32px;">
+<div class="welcome-section d-flex flex-column flex-sm-row align-items-center align-items-sm-start mb-4" style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <div class="user-avatar mb-3 mb-sm-0 me-sm-4" style="width: 80px; height: 80px; font-size: 32px; flex-shrink: 0;">
         {{ docente.nombre_completo[0] if docente.nombre_completo else 'D' }}
     </div>
-    <div>
-        <h2 class="mb-1" style="font-size: 28px; font-weight: bold;">
+    <div class="text-center text-sm-start">
+        <h2 class="mb-1" style="font-size: clamp(1.25rem, 4vw, 1.75rem); font-weight: bold;">
             Bienvenido, {% if docente.nombre_completo %}{{ docente.nombre_completo.split()[0] }}{% else %}Docente{% endif %}
         </h2>
         {% set empleo_actual = None %}
@@ -16,128 +16,168 @@
                 {% set empleo_actual = empleo %}
             {% endif %}
         {% endfor %}
-        <p class="text-muted mb-1" style="font-size: 16px;">
+        <p class="text-muted mb-1" style="font-size: 14px;">
             {% if empleo_actual and empleo_actual.area_adscripcion %}
                 {{ empleo_actual.area_adscripcion }}
             {% else %}
                 Sin área asignada
             {% endif %}
         </p>
-        <p class="text-muted mb-0" style="font-size: 14px;">
+        <p class="text-muted mb-0" style="font-size: 13px;">
             {{ docente.user.email if docente.user else current_user.email }}
         </p>
     </div>
 </div>
 
 <!-- Summary Cards -->
-<div class="row mb-4">
-    <div class="col-md-4 mb-3">
-        <div class="summary-card">
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-4">
+        <div class="summary-card h-100">
             <div class="summary-card-icon" style="background-color: #6f42c1;">
-                <i class="bi bi-mortarboard text-white" style="font-size: 24px;"></i>
+                <i class="bi bi-mortarboard text-white" style="font-size: 20px;"></i>
             </div>
-            <h5 class="mb-2">Formación Académica</h5>
-            <h2 class="mb-3">{{ total_formaciones }}</h2>
-            <a href="{{ url_for('docente.formacion') }}" class="text-decoration-none" style="color: #6f42c1;">Ver detalles →</a>
+            <h6 class="mb-1">Formación Académica</h6>
+            <h3 class="mb-2">{{ total_formaciones }}</h3>
+            <a href="{{ url_for('docente.formacion') }}" class="text-decoration-none small" style="color: #6f42c1;">Ver detalles →</a>
         </div>
     </div>
-    <div class="col-md-4 mb-3">
-        <div class="summary-card">
+    <div class="col-6 col-lg-4">
+        <div class="summary-card h-100">
             <div class="summary-card-icon" style="background-color: #0d6efd;">
-                <i class="bi bi-briefcase text-white" style="font-size: 24px;"></i>
+                <i class="bi bi-briefcase text-white" style="font-size: 20px;"></i>
             </div>
-            <h5 class="mb-2">Empleos</h5>
-            <h2 class="mb-3">{{ total_empleos }}</h2>
-            <a href="{{ url_for('docente.empleos') }}" class="text-decoration-none" style="color: #0d6efd;">Ver detalles →</a>
+            <h6 class="mb-1">Empleos</h6>
+            <h3 class="mb-2">{{ total_empleos }}</h3>
+            <a href="{{ url_for('docente.empleos') }}" class="text-decoration-none small" style="color: #0d6efd;">Ver detalles →</a>
         </div>
     </div>
-    <div class="col-md-4 mb-3">
-        <div class="summary-card">
+    <div class="col-6 col-lg-4">
+        <div class="summary-card h-100">
             <div class="summary-card-icon" style="background-color: #198754;">
-                <i class="bi bi-file-text text-white" style="font-size: 24px;"></i>
+                <i class="bi bi-file-text text-white" style="font-size: 20px;"></i>
             </div>
-            <h5 class="mb-2">Artículos Científicos</h5>
-            <h2 class="mb-3">{{ total_articulos }}</h2>
-            <a href="{{ url_for('docente.articulos') }}" class="text-decoration-none" style="color: #198754;">Ver detalles →</a>
+            <h6 class="mb-1">Artículos</h6>
+            <h3 class="mb-2">{{ total_articulos }}</h3>
+            <a href="{{ url_for('docente.articulos') }}" class="text-decoration-none small" style="color: #198754;">Ver detalles →</a>
         </div>
     </div>
-    <div class="col-md-4 mb-3">
-        <div class="summary-card">
+    <div class="col-6 col-lg-4">
+        <div class="summary-card h-100">
             <div class="summary-card-icon" style="background-color: #ffc107;">
-                <i class="bi bi-book text-white" style="font-size: 24px;"></i>
+                <i class="bi bi-book text-white" style="font-size: 20px;"></i>
             </div>
-            <h5 class="mb-2">Cursos Impartidos</h5>
-            <h2 class="mb-3">{{ total_cursos }}</h2>
-            <a href="#" class="text-decoration-none" style="color: #ffc107;">Ver detalles →</a>
+            <h6 class="mb-1">Cursos</h6>
+            <h3 class="mb-2">{{ total_cursos }}</h3>
+            <a href="#" class="text-decoration-none small" style="color: #ffc107;">Ver detalles →</a>
         </div>
     </div>
-    <div class="col-md-4 mb-3">
-        <div class="summary-card">
+    <div class="col-6 col-lg-4">
+        <div class="summary-card h-100">
             <div class="summary-card-icon" style="background-color: #fd7e14;">
-                <i class="bi bi-award text-white" style="font-size: 24px;"></i>
+                <i class="bi bi-award text-white" style="font-size: 20px;"></i>
             </div>
-            <h5 class="mb-2">Proyectos</h5>
-            <h2 class="mb-3">{{ total_proyectos }}</h2>
-            <a href="#" class="text-decoration-none" style="color: #fd7e14;">Ver detalles →</a>
+            <h6 class="mb-1">Proyectos</h6>
+            <h3 class="mb-2">{{ total_proyectos }}</h3>
+            <a href="#" class="text-decoration-none small" style="color: #fd7e14;">Ver detalles →</a>
         </div>
     </div>
-    <div class="col-md-4 mb-3">
-        <div class="summary-card">
+    <div class="col-6 col-lg-4">
+        <div class="summary-card h-100">
             <div class="summary-card-icon" style="background-color: #e91e63;">
-                <i class="bi bi-code-slash text-white" style="font-size: 24px;"></i>
+                <i class="bi bi-code-slash text-white" style="font-size: 20px;"></i>
             </div>
-            <h5 class="mb-2">Desarrollos Tecnológicos</h5>
-            <h2 class="mb-3">{{ total_desarrollos }}</h2>
-            <a href="#" class="text-decoration-none" style="color: #e91e63;">Ver detalles →</a>
+            <h6 class="mb-1">Desarrollos</h6>
+            <h3 class="mb-2">{{ total_desarrollos }}</h3>
+            <a href="#" class="text-decoration-none small" style="color: #e91e63;">Ver detalles →</a>
         </div>
     </div>
 </div>
 
 <!-- Bottom Sections -->
-<div class="row">
+<div class="row g-3">
     <!-- Recent Activity -->
-    <div class="col-md-6 mb-3">
-        <div class="card" style="border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <div class="col-12 col-lg-6">
+        <div class="card h-100" style="border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: none;">
             <div class="card-body">
                 <h5 class="mb-3">Actividad Reciente</h5>
                 {% if actividades_recientes %}
                     {% for actividad in actividades_recientes %}
                     <div class="d-flex align-items-start mb-3">
-                        <div class="activity-bullet me-3" style="width: 8px; height: 8px; background-color: {{ actividad.color or '#0d6efd' }}; border-radius: 50%; margin-top: 6px;"></div>
-                        <div>
-                            <div style="font-weight: 500;">{{ actividad.titulo }}</div>
-                            <div style="font-size: 14px; color: #666;">{{ actividad.fecha }}</div>
+                        <div class="activity-bullet me-3" style="width: 8px; height: 8px; background-color: {{ actividad.color or '#0d6efd' }}; border-radius: 50%; margin-top: 6px; flex-shrink: 0;"></div>
+                        <div class="flex-grow-1 overflow-hidden">
+                            <div style="font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ actividad.titulo }}</div>
+                            <div style="font-size: 13px; color: #666;">{{ actividad.fecha }}</div>
                         </div>
                     </div>
                     {% endfor %}
                 {% else %}
-                    <p class="text-muted">No hay actividad reciente</p>
+                    <p class="text-muted mb-0">No hay actividad reciente</p>
                 {% endif %}
             </div>
         </div>
     </div>
     
     <!-- Quick Actions -->
-    <div class="col-md-6 mb-3">
-        <div class="card" style="border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <div class="col-12 col-lg-6">
+        <div class="card h-100" style="border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: none;">
             <div class="card-body">
                 <h5 class="mb-3">Acciones Rápidas</h5>
-                <div class="d-flex flex-column gap-2">
-                    <a href="{{ url_for('docente.nuevo_articulo') }}" class="text-decoration-none d-flex align-items-center">
-                        <i class="bi bi-file-text text-primary me-2"></i>
+                <div class="d-flex flex-column gap-3">
+                    <a href="{{ url_for('docente.nuevo_articulo') }}" class="text-decoration-none d-flex align-items-center p-2 rounded" style="background: #f8f9fa; transition: background 0.2s;">
+                        <i class="bi bi-file-text text-primary me-3" style="font-size: 1.25rem;"></i>
                         <span>Agregar artículo científico</span>
                     </a>
-                    <a href="{{ url_for('docente.nueva_formacion') }}" class="text-decoration-none d-flex align-items-center">
-                        <i class="bi bi-mortarboard text-primary me-2"></i>
+                    <a href="{{ url_for('docente.nueva_formacion') }}" class="text-decoration-none d-flex align-items-center p-2 rounded" style="background: #f8f9fa; transition: background 0.2s;">
+                        <i class="bi bi-mortarboard text-primary me-3" style="font-size: 1.25rem;"></i>
                         <span>Agregar formación académica</span>
                     </a>
-                    <a href="{{ url_for('docente.nuevo_empleo') }}" class="text-decoration-none d-flex align-items-center">
-                        <i class="bi bi-briefcase text-primary me-2"></i>
+                    <a href="{{ url_for('docente.nuevo_empleo') }}" class="text-decoration-none d-flex align-items-center p-2 rounded" style="background: #f8f9fa; transition: background 0.2s;">
+                        <i class="bi bi-briefcase text-primary me-3" style="font-size: 1.25rem;"></i>
                         <span>Agregar empleo</span>
+                    </a>
+                    <a href="{{ url_for('cv.generar') }}" class="text-decoration-none d-flex align-items-center p-2 rounded" style="background: #f8f9fa; transition: background 0.2s;">
+                        <i class="bi bi-file-earmark-pdf text-success me-3" style="font-size: 1.25rem;"></i>
+                        <span>Generar mi CV</span>
                     </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    /* Responsive adjustments for dashboard */
+    @media (max-width: 576px) {
+        .welcome-section {
+            padding: 15px !important;
+        }
+        
+        .welcome-section .user-avatar {
+            width: 60px !important;
+            height: 60px !important;
+            font-size: 24px !important;
+        }
+        
+        .summary-card {
+            padding: 12px !important;
+        }
+        
+        .summary-card h3 {
+            font-size: 1.5rem;
+        }
+        
+        .summary-card h6 {
+            font-size: 0.8rem;
+        }
+        
+        .summary-card-icon {
+            width: 35px !important;
+            height: 35px !important;
+        }
+        
+        .summary-card-icon i {
+            font-size: 16px !important;
+        }
+    }
+</style>
 {% endblock %}

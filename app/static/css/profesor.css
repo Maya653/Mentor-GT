@@ -1,7 +1,16 @@
-/* Estilos específicos para profesor */
+/* Estilos específicos para profesor/docente */
+
+/* Variables CSS */
+:root {
+    --docente-primary: #198754;
+    --docente-secondary: #0d6efd;
+    --docente-sidebar-width: 250px;
+}
+
+/* Sidebar activo */
 .list-group-item.active {
-    background-color: #198754;
-    border-color: #198754;
+    background-color: var(--docente-primary);
+    border-color: var(--docente-primary);
 }
 
 .list-group-item:hover {
@@ -28,3 +37,426 @@
     margin-bottom: 0.25rem;
 }
 
+/* Grid de estadísticas para docente */
+.docente-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Cards de secciones del CV */
+.cv-section-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 1.5rem;
+    transition: box-shadow 0.3s ease;
+}
+
+.cv-section-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.cv-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.cv-section-header h5 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Lista de items del CV */
+.cv-item {
+    padding: 1rem;
+    border-radius: 8px;
+    background: #f8f9fa;
+    margin-bottom: 0.75rem;
+    transition: background 0.2s;
+}
+
+.cv-item:hover {
+    background: #e9ecef;
+}
+
+.cv-item:last-child {
+    margin-bottom: 0;
+}
+
+.cv-item-title {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+.cv-item-subtitle {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.cv-item-meta {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.cv-item-meta span {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* Acciones de item */
+.cv-item-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+/* Timeline de actividades */
+.activity-timeline {
+    position: relative;
+    padding-left: 2rem;
+}
+
+.activity-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e0e0e0;
+}
+
+.activity-timeline-item {
+    position: relative;
+    padding-bottom: 1.5rem;
+}
+
+.activity-timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -2rem;
+    top: 0.5rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--docente-secondary);
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px var(--docente-secondary);
+}
+
+/* Progreso del CV */
+.cv-progress {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.cv-progress-bar {
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #e0e0e0;
+}
+
+.cv-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--docente-primary), var(--docente-secondary));
+    transition: width 0.5s ease;
+}
+
+/* Responsive para tablets */
+@media (max-width: 992px) {
+    .docente-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .cv-section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .cv-section-header .btn {
+        width: 100%;
+    }
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+    .docente-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+    
+    .cv-section-card {
+        padding: 1rem;
+        border-radius: 8px;
+    }
+    
+    .cv-item {
+        padding: 0.75rem;
+    }
+    
+    .cv-item-meta {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .cv-item-actions {
+        flex-direction: column;
+    }
+    
+    .cv-item-actions .btn {
+        width: 100%;
+    }
+    
+    /* Timeline responsivo */
+    .activity-timeline {
+        padding-left: 1.5rem;
+    }
+    
+    .activity-timeline-item::before {
+        left: -1.5rem;
+        width: 10px;
+        height: 10px;
+    }
+    
+    /* Cards de estadísticas */
+    .card.text-white:hover {
+        transform: none;
+    }
+    
+    .summary-card h2,
+    .card h3 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Responsive para móviles pequeños */
+@media (max-width: 480px) {
+    .docente-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .cv-section-card {
+        margin-bottom: 1rem;
+    }
+    
+    .cv-section-header h5 {
+        font-size: 1rem;
+    }
+    
+    .cv-item-title {
+        font-size: 0.95rem;
+    }
+    
+    .cv-item-subtitle {
+        font-size: 0.85rem;
+    }
+}
+
+/* Formularios del docente */
+.docente-form {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.docente-form .form-group {
+    margin-bottom: 1.25rem;
+}
+
+.docente-form .form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .docente-form {
+        padding: 1rem;
+    }
+    
+    .docente-form .form-group {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Botones de acción flotantes */
+.floating-actions {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    z-index: 1000;
+}
+
+.floating-actions .btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+@media (max-width: 768px) {
+    .floating-actions {
+        bottom: 1rem;
+        right: 1rem;
+    }
+    
+    .floating-actions .btn {
+        width: 45px;
+        height: 45px;
+    }
+}
+
+/* Chatbot responsivo */
+.chat-container {
+    height: calc(100vh - 200px);
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.chat-input {
+    border-top: 1px solid #e0e0e0;
+    padding: 1rem;
+    background: white;
+}
+
+@media (max-width: 768px) {
+    .chat-container {
+        height: calc(100vh - 180px);
+        min-height: 300px;
+    }
+    
+    .chat-messages {
+        padding: 0.75rem;
+    }
+    
+    .chat-input {
+        padding: 0.75rem;
+    }
+}
+
+/* Vista previa de CV responsiva */
+.cv-preview {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.cv-preview iframe,
+.cv-preview embed {
+    width: 100%;
+    height: 80vh;
+    min-height: 500px;
+    border: none;
+}
+
+@media (max-width: 768px) {
+    .cv-preview iframe,
+    .cv-preview embed {
+        height: 60vh;
+        min-height: 400px;
+    }
+}
+
+/* Sync ORCID */
+.sync-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.sync-icon {
+    font-size: 4rem;
+    color: var(--docente-secondary);
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .sync-card {
+        padding: 1.5rem;
+    }
+    
+    .sync-icon {
+        font-size: 3rem;
+    }
+}
+
+/* Perfil del docente */
+.profile-header {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--docente-primary), var(--docente-secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 3rem;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    .profile-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-avatar {
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
+    }
+}
