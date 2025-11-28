@@ -1,44 +1,122 @@
 {% extends "layouts/admin_layout.html" %}
 
-{% block admin_title %}Dashboard{% endblock %}
-
 {% block admin_content %}
-<h2>Dashboard Administrador</h2>
-<hr>
+<!-- Welcome Section -->
+<div class="mb-4">
+    <h1 class="mb-2" style="font-size: 32px; font-weight: bold;">Bienvenido al Sistema de Gestión de Docentes</h1>
+    <p class="text-muted" style="font-size: 16px;">Administra la información académica y profesional de los docentes de UTTEC</p>
+</div>
 
-<div class="row">
-    <div class="col-md-3">
-        <div class="card text-white bg-primary mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Docentes</h5>
-                <h2>{{ total_docentes }}</h2>
+<!-- Summary Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="summary-card">
+            <div class="summary-card-icon" style="background-color: #0d6efd;">
+                <i class="bi bi-people text-white" style="font-size: 24px;"></i>
             </div>
+            <h5 class="mb-2">Total Docentes</h5>
+            <h2 class="mb-0">{{ total_docentes }}</h2>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-success mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Artículos</h5>
-                <h2>{{ total_articulos }}</h2>
+    <div class="col-md-3 mb-3">
+        <div class="summary-card">
+            <div class="summary-card-icon" style="background-color: #198754;">
+                <i class="bi bi-file-text text-white" style="font-size: 24px;"></i>
             </div>
+            <h5 class="mb-2">Artículos Registrados</h5>
+            <h2 class="mb-0">{{ total_articulos }}</h2>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-info mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Empleos</h5>
-                <h2>{{ total_empleos }}</h2>
+    <div class="col-md-3 mb-3">
+        <div class="summary-card">
+            <div class="summary-card-icon" style="background-color: #6f42c1;">
+                <i class="bi bi-book text-white" style="font-size: 24px;"></i>
             </div>
+            <h5 class="mb-2">Cursos Impartidos</h5>
+            <h2 class="mb-0">{{ total_cursos or 0 }}</h2>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-warning mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Formaciones</h5>
-                <h2>{{ total_formaciones }}</h2>
+    <div class="col-md-3 mb-3">
+        <div class="summary-card">
+            <div class="summary-card-icon" style="background-color: #fd7e14;">
+                <i class="bi bi-briefcase text-white" style="font-size: 24px;"></i>
             </div>
+            <h5 class="mb-2">Proyectos</h5>
+            <h2 class="mb-0">{{ total_proyectos or 0 }}</h2>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Search Section -->
+<div class="search-section">
+    <div class="search-icon-large">
+        <i class="bi bi-search"></i>
+    </div>
+    <h4 class="mb-2">Búsqueda Rápida</h4>
+    <p class="text-muted mb-4">Encuentra rápidamente a un docente para ver o editar su información</p>
+    <a href="{{ url_for('admin.docentes') }}" class="btn btn-primary btn-lg">Buscar Docente</a>
+</div>
+
+<!-- Bottom Section -->
+<div class="row mt-4">
+    <!-- Recent Teachers -->
+    <div class="col-md-6 mb-3">
+        <div class="recent-section">
+            <h5 class="mb-3">Docentes Recientes</h5>
+            {% if docentes_recientes %}
+                {% for docente in docentes_recientes %}
+                <div class="recent-item">
+                    <div class="user-avatar" style="width: 45px; height: 45px; margin-right: 15px;">
+                        {{ docente.nombre_completo[0] if docente.nombre_completo else 'D' }}
+                    </div>
+                    <div class="flex-grow-1">
+                        <div style="font-weight: bold;">{{ docente.nombre_completo }}</div>
+                        {% if docente.formaciones.first() %}
+                        <div style="font-size: 14px; color: #666;">{{ docente.formaciones.first().area_conocimiento or 'Sin área' }}</div>
+                        {% else %}
+                        <div style="font-size: 14px; color: #666;">Sin información académica</div>
+                        {% endif %}
+                    </div>
+                    <a href="{{ url_for('admin.ver_docente', id=docente.id) }}" class="btn btn-sm btn-primary">Ver</a>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted">No hay docentes registrados aún.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Recent Activity -->
+    <div class="col-md-6 mb-3">
+        <div class="recent-section">
+            <h5 class="mb-3">Actividad Reciente</h5>
+            {% if actividades_recientes %}
+                {% for actividad in actividades_recientes %}
+                <div class="activity-item">
+                    <div class="activity-bullet" style="background-color: {{ actividad.color or '#0d6efd' }};"></div>
+                    <div class="flex-grow-1">
+                        <div style="font-weight: 500;">{{ actividad.titulo }}</div>
+                        <div style="font-size: 14px; color: #666;">{{ actividad.docente }} - {{ actividad.fecha }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="activity-item">
+                    <div class="activity-bullet" style="background-color: #0d6efd;"></div>
+                    <div class="flex-grow-1">
+                        <div style="font-weight: 500;">Nuevo artículo registrado</div>
+                        <div style="font-size: 14px; color: #666;">Sistema - Hace 2 días</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-bullet" style="background-color: #198754;"></div>
+                    <div class="flex-grow-1">
+                        <div style="font-weight: 500;">Proyecto finalizado</div>
+                        <div style="font-size: 14px; color: #666;">Sistema - Hace 5 días</div>
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
 {% endblock %}
-

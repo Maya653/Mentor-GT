@@ -1,46 +1,152 @@
 {% extends "layouts/admin_layout.html" %}
 
-{% block admin_title %}Docentes{% endblock %}
-
 {% block admin_content %}
-<div class="container-fluid">
-    <h2>Lista de Docentes</h2>
-    <hr>
-    
-    {% if docentes %}
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre Completo</th>
-                    <th>CVU</th>
-                    <th>Email</th>
-                    <th>ORCID</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for docente in docentes %}
-                <tr>
-                    <td>{{ docente.id }}</td>
-                    <td>{{ docente.nombre_completo }}</td>
-                    <td>{{ docente.cvu or '-' }}</td>
-                    <td>{{ docente.user.email if docente.user else '-' }}</td>
-                    <td>{{ docente.orcid or '-' }}</td>
-                    <td>
-                        <a href="{{ url_for('admin.ver_docente', id=docente.id) }}" class="btn btn-sm btn-primary">Ver Perfil</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% else %}
-    <div class="alert alert-info">
-        No hay docentes registrados.
-    </div>
-    {% endif %}
-</div>
-{% endblock %}
+<!-- Page Title -->
+<h3 class="mb-4">Buscar Docentes</h3>
 
+<!-- Search and Filter Section -->
+<div class="card mb-4" style="border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <div class="card-body p-4">
+        <form method="GET" action="{{ url_for('admin.docentes') }}" class="mb-3">
+            <div class="input-group" style="max-width: 600px;">
+                <span class="input-group-text bg-white border-end-0">
+                    <i class="bi bi-search text-muted"></i>
+                </span>
+                <input type="text" 
+                       class="form-control border-start-0" 
+                       name="q" 
+                       value="{{ request.args.get('q', '') }}"
+                       placeholder="Buscar por nombre, RFC, CURP, ORCID o CVU...">
+            </div>
+        </form>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <select class="form-select" name="area" id="areaFilter" style="max-width: 300px;">
+                    <option value="">Todas las áreas</option>
+                    {% for area in areas_disponibles %}
+                    <option value="{{ area }}" {% if request.args.get('area') == area %}selected{% endif %}>{{ area }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6">
+                <select class="form-select" name="nivel" id="nivelFilter" style="max-width: 300px;">
+                    <option value="">Todos los niveles</option>
+                    <option value="doctorado" {% if request.args.get('nivel') == 'doctorado' %}selected{% endif %}>Doctorado</option>
+                    <option value="maestria" {% if request.args.get('nivel') == 'maestria' %}selected{% endif %}>Maestría</option>
+                    <option value="licenciatura" {% if request.args.get('nivel') == 'licenciatura' %}selected{% endif %}>Licenciatura</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search Results -->
+<div class="card" style="border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <div class="card-body p-4">
+        <h5 class="mb-3">Resultados de búsqueda</h5>
+        <p class="text-muted mb-4">{{ docentes_con_nivel|length }} docentes encontrados</p>
+        
+        {% if docentes_con_nivel %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>CVU</th>
+                        <th>Adscripción</th>
+                        <th>Nivel</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in docentes_con_nivel %}
+                    {% set docente = item.docente %}
+                    {% set nivel_maximo = item.nivel_maximo %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="user-avatar me-3" style="width: 40px; height: 40px; font-size: 16px;">
+                                    {{ docente.nombre_completo[0] if docente.nombre_completo else 'D' }}
+                                </div>
+                                <div>
+                                    <div style="font-weight: 500;">{{ docente.nombre_completo }}</div>
+                                    <div style="font-size: 14px; color: #666;">
+                                        {{ docente.user.email if docente.user else '-' }}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ docente.cvu or '-' }}</td>
+                        <td>
+                            {% if item.empleo_actual %}
+                                {{ item.empleo_actual.area_adscripcion or '-' }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if nivel_maximo %}
+                                {% if nivel_maximo == 'doctorado' %}
+                                    <span class="badge bg-primary">Doctorado</span>
+                                {% elif nivel_maximo == 'maestria' %}
+                                    <span class="badge bg-info">Maestría</span>
+                                {% elif nivel_maximo == 'licenciatura' %}
+                                    <span class="badge bg-secondary">Licenciatura</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ nivel_maximo|title }}</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="d-flex gap-3">
+                                <a href="{{ url_for('admin.ver_docente', id=docente.id) }}" class="text-decoration-none">
+                                    <i class="bi bi-eye text-primary"></i> Ver
+                                </a>
+                                <a href="#" class="text-decoration-none">
+                                    <i class="bi bi-pencil text-warning"></i> Editar
+                                </a>
+                                <a href="#" class="text-decoration-none">
+                                    <i class="bi bi-file-text text-success"></i> CV
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-search" style="font-size: 48px; color: #ccc;"></i>
+            <p class="text-muted mt-3">No se encontraron docentes</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+// Filtros con JavaScript para actualizar la búsqueda
+document.getElementById('areaFilter').addEventListener('change', function() {
+    const url = new URL(window.location);
+    if (this.value) {
+        url.searchParams.set('area', this.value);
+    } else {
+        url.searchParams.delete('area');
+    }
+    window.location = url;
+});
+
+document.getElementById('nivelFilter').addEventListener('change', function() {
+    const url = new URL(window.location);
+    if (this.value) {
+        url.searchParams.set('nivel', this.value);
+    } else {
+        url.searchParams.delete('nivel');
+    }
+    window.location = url;
+});
+</script>
+{% endblock %}
