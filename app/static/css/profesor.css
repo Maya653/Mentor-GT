@@ -28,3 +28,19 @@
     margin-bottom: 0.25rem;
 }
 
+/* Responsive helpers */
+.table-responsive { overflow-x: auto; }
+
+/* Make images and iframes scale */
+img, iframe { max-width: 100%; height: auto; }
+
+/* Small screens adjustments */
+@media (max-width: 767.98px) {
+    .profile-header { flex-direction: row; gap: 12px; }
+    .profile-avatar { width: 56px; height: 56px; font-size: 22px; }
+    .profile-info h2 { font-size: 18px; }
+    .btn-edit, .btn-add { padding: 10px 12px; }
+    .profile-tabs { gap: 4px; }
+    .help-icon { display: none; }
+}
+
