@@ -7,6 +7,7 @@ from app.models.articulo import Articulo
 from app.models.libro import Libro
 from app.models.congreso import Congreso
 from app.models.curso_impartido import CursoImpartido
+from app.models.proyecto_investigacion import ProyectoInvestigacion
 from app.models.tesis_dirigida import TesisDirigida
 from app.models.desarrollo_tecnologico import DesarrolloTecnologico
 from app.services.cv_generator_service import CVGeneratorService
@@ -25,25 +26,39 @@ def generar():
         flash('Por favor completa tu perfil primero', 'warning')
         return redirect(url_for('docente.perfil'))
     
+    formaciones = FormacionAcademica.query.filter_by(docente_id=docente.id).all()
+    empleos = Empleo.query.filter_by(docente_id=docente.id).all()
+    articulos = Articulo.query.filter_by(docente_id=docente.id).all()
+    libros = Libro.query.filter_by(docente_id=docente.id).all()
+    congresos = Congreso.query.filter_by(docente_id=docente.id).all()
+    cursos = CursoImpartido.query.filter_by(docente_id=docente.id).all()
+    proyectos = ProyectoInvestigacion.query.filter_by(docente_id=docente.id).all()
+    tesis = TesisDirigida.query.filter_by(docente_id=docente.id).all()
+    desarrollos = DesarrolloTecnologico.query.filter_by(docente_id=docente.id).all()
+    
     if request.method == 'POST':
         formato = request.form.get('formato', 'pdf')
         tipo_cv = request.form.get('tipo_cv', 'academico')
+        selected_sections = request.form.getlist('sections') or CVGeneratorService.DEFAULT_SECTIONS
         
         cv_service = CVGeneratorService()
         
-        # Obtener todos los datos del docente
-        formaciones = FormacionAcademica.query.filter_by(docente_id=docente.id).all()
-        empleos = Empleo.query.filter_by(docente_id=docente.id).all()
-        articulos = Articulo.query.filter_by(docente_id=docente.id).all()
-        libros = Libro.query.filter_by(docente_id=docente.id).all()
-        congresos = Congreso.query.filter_by(docente_id=docente.id).all()
-        cursos = CursoImpartido.query.filter_by(docente_id=docente.id).all()
-        tesis = TesisDirigida.query.filter_by(docente_id=docente.id).all()
-        desarrollos = DesarrolloTecnologico.query.filter_by(docente_id=docente.id).all()
-        
         try:
             if formato == 'pdf':
-                pdf_data = cv_service.generar_pdf(docente, formaciones, empleos, articulos, libros, congresos, cursos, tesis, desarrollos, tipo_cv)
+                pdf_data = cv_service.generar_pdf(
+                    docente,
+                    formaciones,
+                    empleos,
+                    articulos,
+                    libros,
+                    congresos,
+                    cursos,
+                    proyectos,
+                    tesis,
+                    desarrollos,
+                    tipo_cv,
+                    selected_sections
+                )
                 nombre_archivo = docente.nombre_completo.replace(' ', '_') if docente.nombre_completo else 'CV'
                 return send_file(
                     io.BytesIO(pdf_data),
@@ -52,7 +67,20 @@ def generar():
                     download_name=f'CV_{nombre_archivo}.pdf'
                 )
             elif formato == 'word':
-                docx_data = cv_service.generar_word(docente, formaciones, empleos, articulos, libros, congresos, cursos, tesis, desarrollos, tipo_cv)
+                docx_data = cv_service.generar_word(
+                    docente,
+                    formaciones,
+                    empleos,
+                    articulos,
+                    libros,
+                    congresos,
+                    cursos,
+                    proyectos,
+                    tesis,
+                    desarrollos,
+                    tipo_cv,
+                    selected_sections
+                )
                 nombre_archivo = docente.nombre_completo.replace(' ', '_') if docente.nombre_completo else 'CV'
                 return send_file(
                     io.BytesIO(docx_data),
@@ -64,7 +92,19 @@ def generar():
             flash(f'Error al generar CV: {str(e)}', 'danger')
             return redirect(url_for('cv.generar'))
     
-    return render_template('docente/generar_cv.html', docente=docente)
+    return render_template(
+        'docente/generar_cv.html',
+        docente=docente,
+        formaciones=formaciones,
+        empleos=empleos,
+        articulos=articulos,
+        libros=libros,
+        congresos=congresos,
+        cursos=cursos,
+        proyectos=proyectos,
+        tesis=tesis,
+        desarrollos=desarrollos
+    )
 
 @cv_bp.route('/vista-previa')
 @login_required

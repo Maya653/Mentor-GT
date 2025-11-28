@@ -196,24 +196,6 @@
                 </a>
             </li>
             <li>
-                <a href="{{ url_for('docente.formacion') }}" class="{% if 'formacion' in request.endpoint %}active{% endif %}">
-                    <i class="bi bi-mortarboard"></i>
-                    <span>Formación</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{ url_for('docente.empleos') }}" class="{% if 'empleo' in request.endpoint %}active{% endif %}">
-                    <i class="bi bi-briefcase"></i>
-                    <span>Empleos</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{ url_for('docente.articulos') }}" class="{% if 'articulo' in request.endpoint %}active{% endif %}">
-                    <i class="bi bi-journal-text"></i>
-                    <span>Artículos</span>
-                </a>
-            </li>
-            <li>
                 <a href="{{ url_for('sync.index') }}" class="{% if 'sync' in request.endpoint %}active{% endif %}">
                     <i class="bi bi-cloud-download"></i>
                     <span>Sincronizar ORCID</span>
