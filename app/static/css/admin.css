@@ -1,11 +1,11 @@
 /* Estilos específicos para administrador */
 .list-group-item.active {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
+    background: linear-gradient(135deg, #211D53 0%, #864F9F 100%);
+    border-color: #864F9F;
 }
 
 .list-group-item:hover {
-    background-color: #f8f9fa;
+    background-color: rgba(191, 226, 204, 0.3);
 }
 
 .card.text-white {
@@ -22,7 +22,8 @@
 }
 
 .table thead {
-    background-color: #f8f9fa;
+    background: linear-gradient(135deg, rgba(191, 226, 204, 0.3) 0%, rgba(191, 226, 204, 0.5) 100%);
+    color: #211D53;
 }
 
 /* Badges */

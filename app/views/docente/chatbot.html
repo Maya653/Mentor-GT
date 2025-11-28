@@ -5,7 +5,7 @@
 {% block docente_content %}
 <div class="container-fluid">
     <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
+        <div class="card-header text-white" style="background: linear-gradient(135deg, #211D53 0%, #4852A2 100%);">
             <h4 class="mb-0">🤖 Asistente Académico IA</h4>
             <small>Tu asistente personal para gestión de CV académico</small>
         </div>
@@ -27,11 +27,11 @@
 
             <!-- Input de mensaje -->
             <div class="input-group">
-                <input type="text" id="mensaje-input" class="form-control" placeholder="Escribe tu mensaje..." onkeypress="if(event.keyCode==13) enviarMensaje()">
-                <button class="btn btn-primary" onclick="enviarMensaje()" id="btn-enviar">
+                <input type="text" id="mensaje-input" class="form-control" placeholder="Escribe tu mensaje..." onkeypress="if(event.keyCode==13) enviarMensaje()" style="border: 2px solid #BFE2CC; padding: 12px 20px; font-size: 15px;">
+                <button class="btn" onclick="enviarMensaje()" id="btn-enviar" style="background: linear-gradient(135deg, #211D53 0%, #4852A2 100%); color: white; border: none; padding: 12px 25px; font-weight: 600;">
                     <i class="bi bi-send"></i> Enviar
                 </button>
-                <button class="btn btn-secondary" onclick="limpiarChat()">
+                <button class="btn" onclick="limpiarChat()" style="background: linear-gradient(135deg, #864F9F 0%, #4852A2 100%); color: white; border: none; padding: 12px 25px; font-weight: 600;">
                     <i class="bi bi-trash"></i> Limpiar
                 </button>
             </div>
@@ -43,7 +43,7 @@
 <div class="modal fade" id="cvSelectorModal" tabindex="-1" aria-labelledby="cvSelectorModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header text-white" style="background: linear-gradient(135deg, #211D53 0%, #4852A2 100%);">
                 <h5 class="modal-title" id="cvSelectorModalLabel">📋 Personaliza tu CV</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -169,13 +169,20 @@
 }
 
 .bot-message {
-    background-color: #e3f2fd;
+    background: linear-gradient(135deg, #864F9F 0%, #4852A2 100%);
+    color: white;
     padding: 15px;
     border-radius: 10px;
     margin-bottom: 15px;
     max-width: 85%;
     align-self: flex-start;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.bot-message p,
+.bot-message ul,
+.bot-message li {
+    color: white;
 }
 
 .user-message {
@@ -189,7 +196,12 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.bot-message strong,
+.bot-message strong {
+    display: block;
+    margin-bottom: 5px;
+    color: white;
+}
+
 .user-message strong {
     display: block;
     margin-bottom: 5px;
@@ -201,7 +213,7 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background-color: #999;
+    background-color: white;
     margin: 0 2px;
     animation: loading 1.4s infinite both;
 }
@@ -217,25 +229,49 @@
 .btn-download-cv {
     display: inline-block;
     padding: 15px 30px;
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    background: linear-gradient(135deg, #4852A2 0%, #211D53 100%);
     color: white !important;
     text-decoration: none;
     border-radius: 10px;
     font-weight: bold;
     font-size: 16px;
-    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    box-shadow: 0 4px 15px rgba(72, 82, 162, 0.3);
     transition: all 0.3s ease;
     margin-top: 10px;
 }
 
 .btn-download-cv:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    box-shadow: 0 6px 20px rgba(72, 82, 162, 0.4);
+    background: linear-gradient(135deg, #211D53 0%, #4852A2 100%);
     color: white !important;
 }
 
 .btn-download-cv i {
     margin-right: 8px;
+}
+
+.btn-outline-primary:hover {
+    background-color: #BFE2CC !important;
+    border-color: #BFE2CC !important;
+    color: #211D53 !important;
+}
+
+#mensaje-input:focus {
+    border-color: #864F9F !important;
+    box-shadow: 0 0 0 0.2rem rgba(134, 79, 159, 0.25) !important;
+}
+
+#btn-enviar:hover {
+    background: linear-gradient(135deg, #4852A2 0%, #864F9F 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(33, 29, 83, 0.3);
+}
+
+.btn:last-child:hover {
+    background: linear-gradient(135deg, #4852A2 0%, #211D53 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(134, 79, 159, 0.3);
 }
 </style>
 
@@ -331,7 +367,7 @@ function generarCVConSeleccion() {
     });
     
     // Construir mensaje especial para el servidor
-    const mensaje = `GENERAR_CV_PERSONALIZADO|plantilla:${plantilla}|secciones:${JSON.stringify(secciones)}`;
+    const mensaje = GENERAR_CV_PERSONALIZADO|plantilla:${plantilla}|secciones:${JSON.stringify(secciones)};
     
     // Cerrar modal
     if (modalBootstrap) {
@@ -387,10 +423,10 @@ function agregarMensaje(texto, tipo) {
     
     // Convertir markdown y saltos de línea
     let textoFormateado = texto
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\\(.?)\\*/g, '<strong>$1</strong>')
         .replace(/\n/g, '<br>');
     
-    div.innerHTML = `<strong>${label}</strong><div>${textoFormateado}</div>`;
+    div.innerHTML = <strong>${label}</strong><div>${textoFormateado}</div>;
     
     container.appendChild(div);
     container.scrollTop = container.scrollHeight;

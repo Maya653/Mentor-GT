@@ -1,53 +1,224 @@
 {% extends "layouts/base.html" %}
 
-{% block title %}Iniciar Sesión{% endblock %}
+{% block title %}Iniciar Sesión - MENTOR GT{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-5">
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">Iniciar Sesión</h4>
-            </div>
-            <div class="card-body">
-                <form method="POST" action="{{ url_for('auth.login') }}">
-                    {{ form.hidden_tag() }}
-                    <div class="mb-3">
-                        {{ form.email.label(class="form-label") }}
-                        {{ form.email(class="form-control") }}
-                        {% if form.email.errors %}
-                            <div class="text-danger">
-                                {% for error in form.email.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.password.label(class="form-label") }}
-                        {{ form.password(class="form-control") }}
-                        {% if form.password.errors %}
-                            <div class="text-danger">
-                                {% for error in form.password.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3 form-check">
-                        {{ form.remember(class="form-check-input") }}
-                        {{ form.remember.label(class="form-check-label") }}
-                    </div>
-                    <div class="d-grid">
-                        {{ form.submit(class="btn btn-primary") }}
-                    </div>
-                </form>
-                <hr>
-                <p class="text-center mb-0">
-                    ¿No tienes cuenta? <a href="{{ url_for('auth.register') }}">Regístrate aquí</a>
-                </p>
-            </div>
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    
+    body {
+        background: linear-gradient(135deg, #211D53 0%, #4852A2 50%, #BFE2CC 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .login-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        padding: 20px;
+    }
+    
+    .login-container {
+        width: 100%;
+        max-width: 450px;
+        padding: 20px;
+    }
+    
+    .login-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 30px;
+        padding: 40px 35px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        position: relative;
+        border: 2px solid rgba(191, 226, 204, 0.5);
+    }
+    
+    .logo-circle {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, #211D53 0%, #4852A2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: -80px auto 30px;
+        box-shadow: 0 10px 30px rgba(33, 29, 83, 0.4);
+        position: relative;
+        z-index: 10;
+        border: 3px solid #BFE2CC;
+    }
+    
+    .logo-circle .logo-text {
+        color: white;
+        font-size: 48px;
+        font-weight: bold;
+        letter-spacing: -2px;
+    }
+    
+    .login-title {
+        text-align: center;
+        color: #211D53;
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    
+    .login-subtitle {
+        text-align: center;
+        color: #864F9F;
+        font-size: 14px;
+        margin-bottom: 30px;
+    }
+    
+    .form-label {
+        color: #211D53;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
+    
+    .form-control {
+        border: none;
+        background: #F5F5F5;
+        border-radius: 12px;
+        padding: 12px 18px;
+        font-size: 15px;
+        color: #211D53;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        background: rgba(191, 226, 204, 0.15);
+        box-shadow: 0 0 0 3px rgba(134, 79, 159, 0.25);
+        border: 2px solid #864F9F;
+        outline: none;
+    }
+    
+    .form-control::placeholder {
+        color: #999;
+    }
+    
+    .btn-login {
+        width: 100%;
+        background: linear-gradient(135deg, #211D53 0%, #4852A2 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: 600;
+        margin-top: 20px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(33, 29, 83, 0.3);
+    }
+    
+    .btn-login:hover {
+        background: linear-gradient(135deg, #864F9F 0%, #4852A2 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(134, 79, 159, 0.4);
+    }
+    
+    .forgot-password {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+    }
+    
+    .forgot-password a {
+        color: #211D53;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .forgot-password a:hover {
+        color: #864F9F;
+    }
+    
+    .brand-header {
+        position: absolute;
+        top: 30px;
+        left: 40px;
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+    }
+    
+    .brand-subtitle {
+        position: absolute;
+        top: 60px;
+        left: 40px;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 12px;
+    }
+    
+    .error-message {
+        background: rgba(191, 226, 204, 0.3);
+        color: #211D53;
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 13px;
+        margin-top: 8px;
+        border-left: 3px solid #864F9F;
+    }
+    
+    .form-control {
+        border: 2px solid transparent;
+    }
+</style>
+
+<div class="login-wrapper">
+    <div class="brand-header">MENTOR GT</div>
+    <div class="brand-subtitle">By Beaver</div>
+
+    <div class="login-container">
+    <div class="login-card">
+        <div class="logo-circle">
+            <div class="logo-text">GT</div>
         </div>
+        
+        <h2 class="login-title">Sistema de Gestión de CVs Académicos</h2>
+        <p class="login-subtitle">Inicia sesión para continuar</p>
+        
+        <form method="POST" action="{{ url_for('auth.login') }}">
+            {{ form.hidden_tag() }}
+            
+            <div class="mb-3">
+                <label class="form-label">Email o Usuario</label>
+                {{ form.email(class="form-control", placeholder="usuario@universidad.edu") }}
+                {% if form.email.errors %}
+                    <div class="error-message">
+                        {% for error in form.email.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Contraseña</label>
+                {{ form.password(class="form-control", placeholder="••••••••") }}
+                {% if form.password.errors %}
+                    <div class="error-message">
+                        {% for error in form.password.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            {{ form.submit(class="btn-login", value="Iniciar sesión") }}
+        </form>
+        
+        <div class="forgot-password">
+            <a href="#">¿Olvidaste tu contraseña?</a>
+        </div>
+    </div>
     </div>
 </div>
 {% endblock %}

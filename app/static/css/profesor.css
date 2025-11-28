@@ -1,11 +1,11 @@
 /* Estilos específicos para profesor */
 .list-group-item.active {
-    background-color: #198754;
-    border-color: #198754;
+    background: linear-gradient(135deg, #211D53 0%, #864F9F 100%);
+    border-color: #864F9F;
 }
 
 .list-group-item:hover {
-    background-color: #f8f9fa;
+    background-color: rgba(191, 226, 204, 0.3);
 }
 
 /* Cards de estadísticas */
@@ -19,7 +19,7 @@
 
 /* Lista de publicaciones */
 .list-group-item h5 {
-    color: #2c3e50;
+    color: #211D53;
     margin-bottom: 0.5rem;
 }
 
@@ -27,4 +27,5 @@
     color: #6c757d;
     margin-bottom: 0.25rem;
 }
+
 

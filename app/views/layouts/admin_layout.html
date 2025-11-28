@@ -10,7 +10,8 @@
     {% block extra_css %}{% endblock %}
     <style>
         body {
-            background-color: #f5f5f5;
+            background: linear-gradient(135deg, #BFE2CC 0%, #E8F5F3 50%, #F3F0FF 100%);
+            min-height: 100vh;
         }
         .sidebar {
             position: fixed;
@@ -19,7 +20,7 @@
             height: 100vh;
             width: 250px;
             background-color: #fff;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            box-shadow: 4px 0 15px rgba(33, 29, 83, 0.15);
             z-index: 1000;
             padding: 20px;
         }
@@ -33,7 +34,7 @@
         .logo-icon {
             width: 40px;
             height: 40px;
-            background-color: #0d6efd;
+            background: linear-gradient(135deg, #211D53 0%, #4852A2 100%);
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -41,6 +42,7 @@
             color: white;
             font-size: 20px;
             margin-right: 10px;
+            box-shadow: 0 4px 10px rgba(33, 29, 83, 0.3);
         }
         .sidebar-menu {
             list-style: none;
@@ -61,8 +63,8 @@
         }
         .sidebar-menu a:hover,
         .sidebar-menu a.active {
-            background-color: #e7f1ff;
-            color: #0d6efd;
+            background: linear-gradient(90deg, #211D53 0%, #864F9F 100%);
+            color: white;
         }
         .sidebar-menu a i {
             margin-right: 10px;
@@ -115,23 +117,31 @@
         .user-avatar {
             width: 40px;
             height: 40px;
-            background-color: #0d6efd;
+            background: linear-gradient(135deg, #864F9F 0%, #4852A2 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: bold;
+            box-shadow: 0 3px 8px rgba(134, 79, 159, 0.3);
         }
         .content-area {
             padding: 0 30px 30px;
         }
         .summary-card {
             background: white;
-            border-radius: 12px;
+            border-radius: 15px;
             padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(134, 79, 159, 0.15);
             height: 100%;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(191, 226, 204, 0.3);
+        }
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(134, 79, 159, 0.25);
+            border-color: rgba(134, 79, 159, 0.4);
         }
         .summary-card-icon {
             width: 50px;
@@ -141,26 +151,30 @@
             align-items: center;
             justify-content: center;
             margin-bottom: 15px;
+            background: linear-gradient(135deg, #211D53 0%, #864F9F 100%);
+            box-shadow: 0 4px 10px rgba(134, 79, 159, 0.3);
         }
         .search-section {
             background: white;
-            border-radius: 12px;
+            border-radius: 15px;
             padding: 40px;
             text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(134, 79, 159, 0.15);
             margin: 30px 0;
+            border: 1px solid rgba(191, 226, 204, 0.3);
         }
         .search-icon-large {
             font-size: 60px;
-            color: #0d6efd;
+            color: #864F9F;
             margin-bottom: 20px;
         }
         .recent-section {
             background: white;
-            border-radius: 12px;
+            border-radius: 15px;
             padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(134, 79, 159, 0.15);
             height: 100%;
+            border: 1px solid rgba(191, 226, 204, 0.3);
         }
         .recent-item {
             display: flex;
@@ -186,6 +200,32 @@
             border-radius: 50%;
             margin-right: 15px;
             margin-top: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        /* Estilos adicionales para mejorar el diseño */
+        .btn-primary {
+            background: linear-gradient(135deg, #211D53 0%, #864F9F 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(134, 79, 159, 0.3);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(134, 79, 159, 0.5);
+            background: linear-gradient(135deg, #864F9F 0%, #4852A2 100%);
+        }
+        
+        h1, h2, h3, h4, h5 {
+            color: #211D53;
+        }
+        
+        .top-header h3 {
+            color: #211D53;
+            font-weight: 600;
         }
     </style>
 </head>

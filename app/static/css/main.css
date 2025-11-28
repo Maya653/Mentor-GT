@@ -4,6 +4,7 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    background: linear-gradient(135deg, #BFE2CC 0%, #E8F5F3 50%, #F3F0FF 100%);
 }
 
 main {
@@ -11,13 +12,22 @@ main {
 }
 
 .card {
-    border: none;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border: 1px solid rgba(191, 226, 204, 0.3);
+    box-shadow: 0 4px 12px rgba(134, 79, 159, 0.15);
     margin-bottom: 1.5rem;
+    border-radius: 15px;
+}
+
+.card:hover {
+    box-shadow: 0 8px 20px rgba(134, 79, 159, 0.25);
+    border-color: rgba(134, 79, 159, 0.4);
 }
 
 .card-header {
     font-weight: 600;
+    background: linear-gradient(135deg, rgba(191, 226, 204, 0.3) 0%, rgba(191, 226, 204, 0.5) 100%);
+    color: #211D53;
+    border-bottom: 1px solid rgba(134, 79, 159, 0.2);
 }
 
 .alert {
