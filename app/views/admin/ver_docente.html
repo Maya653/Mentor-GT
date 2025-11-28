@@ -1,93 +1,189 @@
 {% extends "layouts/admin_layout.html" %}
 
-{% block admin_title %}Perfil de {{ docente.nombre_completo }}{% endblock %}
+{% block admin_title %}Perfil · {{ docente.nombre_completo }}{% endblock %}
 
 {% block admin_content %}
-<div class="container-fluid">
-    <h2>Perfil de {{ docente.nombre_completo }}</h2>
-    <hr>
-    
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card mb-3">
-                <div class="card-header">
-                    <h5>Información Personal</h5>
-                </div>
-                <div class="card-body">
-                    <p><strong>CVU:</strong> {{ docente.cvu or '-' }}</p>
-                    <p><strong>CURP:</strong> {{ docente.curp or '-' }}</p>
-                    <p><strong>RFC:</strong> {{ docente.rfc or '-' }}</p>
-                    <p><strong>Email:</strong> {{ docente.user.email if docente.user else '-' }}</p>
-                    <p><strong>ORCID:</strong> {{ docente.orcid or '-' }}</p>
-                    <p><strong>Researcher ID:</strong> {{ docente.researcher_id or '-' }}</p>
-                </div>
-            </div>
+<style>
+    .profile-hero { background: linear-gradient(135deg,#2563eb,#1d4ed8); border-radius: 20px; padding: 32px; color: #fff; box-shadow: 0 12px 30px rgba(37,99,235,0.2); }
+    .profile-hero .avatar { width: 80px; height: 80px; border-radius: 16px; background: rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:700; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 16px; margin-top: 24px; }
+    .stat-card { background:#fff; border-radius:16px; padding:18px; box-shadow:0 6px 18px rgba(15,23,42,0.08); }
+    .section-card { background:#fff; border-radius:18px; padding:24px; box-shadow:0 8px 22px rgba(15,23,42,0.06); margin-bottom:24px; }
+    .timeline-item { border-left:3px solid #e2e8f0; padding-left:14px; margin-bottom:14px; }
+    .chip { border-radius:999px; padding:4px 12px; background:#e0e7ff; color:#1e3a8a; font-size:13px; }
+</style>
+
+<div class="profile-hero mb-4">
+    <div class="d-flex flex-wrap align-items-center gap-4">
+        <div class="avatar">{{ docente.nombre_completo[0] if docente.nombre_completo else 'D' }}</div>
+        <div>
+            <p class="mb-1 text-uppercase" style="letter-spacing:2px; font-size:12px;">Docente registrado</p>
+            <h2 class="mb-1">{{ docente.nombre_completo }}</h2>
+            <p class="mb-0">{{ docente.correo_principal or (docente.user.email if docente.user else 'Correo no registrado') }}</p>
         </div>
-        <div class="col-md-6">
-            <div class="card mb-3">
-                <div class="card-header">
-                    <h5>Estadísticas</h5>
-                </div>
-                <div class="card-body">
-                    <p><strong>Formaciones:</strong> {{ formaciones|length }}</p>
-                    <p><strong>Empleos:</strong> {{ empleos|length }}</p>
-                    <p><strong>Artículos:</strong> {{ articulos|length }}</p>
-                    <p><strong>Libros:</strong> {{ libros|length }}</p>
-                    <p><strong>Congresos:</strong> {{ congresos|length }}</p>
-                    <p><strong>Tesis Dirigidas:</strong> {{ tesis|length }}</p>
-                </div>
-            </div>
+        <div class="ms-auto d-flex gap-2">
+            <a href="{{ url_for('admin.docente_cv', id=docente.id) }}" class="btn btn-light text-primary"><i class="bi bi-file-text"></i> Generar CV</a>
+            <a href="{{ url_for('admin.docentes') }}" class="btn btn-outline-light">Volver</a>
         </div>
     </div>
-    
-    <div class="row mt-4">
-        <div class="col-12">
-            <h4>Formación Académica</h4>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="text-muted small">Formaciones</div>
+            <div class="h4 mb-0">{{ formaciones|length }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="text-muted small">Empleos</div>
+            <div class="h4 mb-0">{{ empleos|length }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="text-muted small">Artículos</div>
+            <div class="h4 mb-0">{{ articulos|length }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="text-muted small">Proyectos</div>
+            <div class="h4 mb-0">{{ proyectos|length }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-4">
+        <div class="section-card">
+            <h5 class="mb-3">Datos generales</h5>
+            <p class="mb-1"><strong>CVU:</strong> {{ docente.cvu or 'Sin capturar' }}</p>
+            <p class="mb-1"><strong>CURP:</strong> {{ docente.curp or 'Sin capturar' }}</p>
+            <p class="mb-1"><strong>RFC:</strong> {{ docente.rfc or 'Sin capturar' }}</p>
+            <p class="mb-1"><strong>ORCID:</strong> {{ docente.orcid or 'Sin capturar' }}</p>
+            <p class="mb-1"><strong>Researcher ID:</strong> {{ docente.researcher_id or 'Sin capturar' }}</p>
+            <p class="mb-0"><strong>Nacionalidad:</strong> {{ docente.nacionalidad or 'No registrada' }}</p>
+        </div>
+
+        <div class="section-card">
+            <h5 class="mb-3">Idiomas</h5>
+            {% if idiomas %}
+                {% for idioma in idiomas %}
+                    <span class="chip d-inline-flex align-items-center mb-2">{{ idioma.nombre }} · {{ idioma.nivel_hablado or 'Nivel no registrado' }}</span>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted mb-0">Sin idiomas registrados.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="section-card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="mb-0">Formación académica</h5>
+                <span class="text-muted small">{{ formaciones|length }} registros</span>
+            </div>
             {% if formaciones %}
-            <ul>
                 {% for formacion in formaciones %}
-                <li>{{ formacion.nivel }} - {{ formacion.grado_obtenido or formacion.institucion }}</li>
+                    <div class="timeline-item">
+                        <strong>{{ formacion.grado_obtenido or formacion.nivel }}</strong>
+                        <p class="mb-0">{{ formacion.institucion }} · {{ formacion.pais or 'País no registrado' }}</p>
+                        <small class="text-muted">{{ formacion.fecha_inicio.strftime('%Y-%m-%d') if formacion.fecha_inicio else '?' }} - {{ formacion.fecha_fin.strftime('%Y-%m-%d') if formacion.fecha_fin else 'Actualidad' }}</small>
+                    </div>
                 {% endfor %}
-            </ul>
             {% else %}
-            <p class="text-muted">No hay formación académica registrada.</p>
+                <p class="text-muted mb-0">Sin información registrada.</p>
             {% endif %}
         </div>
-    </div>
-    
-    <div class="row mt-4">
-        <div class="col-12">
-            <h4>Empleos</h4>
+
+        <div class="section-card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="mb-0">Experiencia laboral</h5>
+                <span class="text-muted small">{{ empleos|length }} registros</span>
+            </div>
             {% if empleos %}
-            <ul>
                 {% for empleo in empleos %}
-                <li>{{ empleo.puesto }} en {{ empleo.institucion }} {% if empleo.actual %}(Actual){% endif %}</li>
+                    <div class="timeline-item">
+                        <strong>{{ empleo.puesto }}</strong>
+                        <p class="mb-0">{{ empleo.institucion }} · {{ empleo.area_adscripcion or 'Área no registrada' }}</p>
+                        <small class="text-muted">{{ empleo.fecha_inicio.strftime('%Y-%m-%d') if empleo.fecha_inicio else '?' }} - {{ empleo.fecha_fin.strftime('%Y-%m-%d') if empleo.fecha_fin else ('Actualidad' if empleo.actual else '?') }}</small>
+                    </div>
                 {% endfor %}
-            </ul>
             {% else %}
-            <p class="text-muted">No hay empleos registrados.</p>
+                <p class="text-muted mb-0">Sin empleos registrados.</p>
             {% endif %}
         </div>
-    </div>
-    
-    <div class="row mt-4">
-        <div class="col-12">
-            <h4>Artículos Científicos</h4>
+
+        <div class="section-card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="mb-0">Producción académica</h5>
+                <span class="text-muted small">{{ articulos|length }} artículos · {{ libros|length }} libros</span>
+            </div>
             {% if articulos %}
-            <ul>
                 {% for articulo in articulos %}
-                <li>{{ articulo.titulo }} ({{ articulo.anio or 'Sin año' }})</li>
+                    <div class="timeline-item">
+                        <strong>{{ articulo.titulo }}</strong>
+                        <p class="mb-0">{{ articulo.revista or 'Revista no registrada' }} · {{ articulo.anio or 'Año pendiente' }}</p>
+                        {% if articulo.doi %}<small class="text-muted">DOI: {{ articulo.doi }}</small>{% endif %}
+                    </div>
                 {% endfor %}
-            </ul>
             {% else %}
-            <p class="text-muted">No hay artículos registrados.</p>
+                <p class="text-muted">Sin artículos registrados.</p>
+            {% endif %}
+            <hr>
+            {% if libros %}
+                {% for libro in libros %}
+                    <div class="timeline-item">
+                        <strong>{{ libro.titulo }}</strong>
+                        <p class="mb-0">{{ libro.editorial or 'Editorial no registrada' }} · {{ libro.anio or 'Año pendiente' }}</p>
+                        {% if libro.isbn %}<small class="text-muted">ISBN: {{ libro.isbn }}</small>{% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted mb-0">Sin libros registrados.</p>
             {% endif %}
         </div>
-    </div>
-    
-    <div class="mt-4">
-        <a href="{{ url_for('admin.docentes') }}" class="btn btn-secondary">Volver a Lista</a>
+
+        <div class="section-card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="mb-0">Otros logros</h5>
+                <span class="text-muted small">{{ congresos|length }} congresos · {{ proyectos|length }} proyectos · {{ tesis|length }} tesis</span>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Congresos</h6>
+                    {% if congresos %}
+                        {% for congreso in congresos %}
+                            <div class="timeline-item">
+                                <strong>{{ congreso.nombre_congreso }}</strong>
+                                <small class="text-muted">{{ congreso.fecha.strftime('%Y-%m-%d') if congreso.fecha else 'Fecha no definida' }}</small>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">Sin congresos.</p>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <h6>Proyectos</h6>
+                    {% if proyectos %}
+                        {% for proyecto in proyectos %}
+                            <div class="timeline-item">
+                                <strong>{{ proyecto.nombre_proyecto }}</strong>
+                                <small class="text-muted">{{ proyecto.estado or 'Estado no registrado' }}</small>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">Sin proyectos.</p>
+                    {% endif %}
+                </div>
+            </div>
+            <hr>
+            <h6>Tesis dirigidas</h6>
+            {% if tesis %}
+                {% for trabajo in tesis %}
+                    <div class="timeline-item">
+                        <strong>{{ trabajo.titulo }}</strong>
+                        <p class="mb-0">{{ trabajo.estudiante_nombre or 'Estudiante no registrado' }}</p>
+                        <small class="text-muted">{{ trabajo.fecha_inicio.strftime('%Y-%m-%d') if trabajo.fecha_inicio else '?' }} - {{ trabajo.fecha_fin.strftime('%Y-%m-%d') if trabajo.fecha_fin else 'Actualidad' }}</small>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted mb-0">Sin tesis registradas.</p>
+            {% endif %}
+        </div>
     </div>
 </div>
 {% endblock %}
-
