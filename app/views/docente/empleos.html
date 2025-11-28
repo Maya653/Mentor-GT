@@ -32,7 +32,7 @@
                     <td>{% if empleo.actual %}Sí{% else %}No{% endif %}</td>
                     <td>
                         <a href="{{ url_for('docente.editar_empleo', id=empleo.id) }}" class="btn btn-sm btn-warning">Editar</a>
-                        <form method="POST" action="{{ url_for('docente.eliminar_empleo', id=empleo.id) }}" style="display:inline;">
+                        <form method="POST" action="{{ url_for('docente.eliminar_empleo', id=empleo.id) }}" class="d-inline">
                             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro?')">Eliminar</button>
                         </form>
                     </td>

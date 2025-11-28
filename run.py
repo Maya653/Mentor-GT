@@ -27,7 +27,7 @@ if __name__ == '__main__':
             admin.set_password('admin123')
             db.session.add(admin)
             db.session.commit()
-            print("✅ Usuario administrador creado: admin@utte.edu.mx / admin123")
+            print("✅ Admin: admin@utte.edu.mx / admin123")
         
         # Crear usuario docente por defecto
         if not User.query.filter_by(email='docente@utte.edu.mx').first():
@@ -38,8 +38,8 @@ if __name__ == '__main__':
             docente_user.set_password('docente123')
             db.session.add(docente_user)
             db.session.commit()
-            print("✅ Usuario docente creado: docente@utte.edu.mx / docente123")
+            print("✅ Docente: docente@utte.edu.mx / docente123")
         
-        print("✅ Base de datos inicializada correctamente")
+        print("✅ Base de datos lista")
     
     app.run(debug=True, host='0.0.0.0', port=5000)

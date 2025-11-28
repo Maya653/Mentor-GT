@@ -19,6 +19,8 @@ class Docente(db.Model):
     correo_principal = db.Column(db.String(255))
     orcid = db.Column(db.String(100))
     researcher_id = db.Column(db.String(100))
+    scopus_author_id = db.Column(db.String(100))
+    pubmed_query = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     

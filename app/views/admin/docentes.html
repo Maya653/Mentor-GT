@@ -101,15 +101,12 @@
                             {% endif %}
                         </td>
                         <td>
-                            <div class="d-flex gap-3">
-                                <a href="{{ url_for('admin.ver_docente', id=docente.id) }}" class="text-decoration-none">
-                                    <i class="bi bi-eye text-primary"></i> Ver
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="{{ url_for('admin.ver_docente', id=docente.id) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i> Ver perfil
                                 </a>
-                                <a href="#" class="text-decoration-none">
-                                    <i class="bi bi-pencil text-warning"></i> Editar
-                                </a>
-                                <a href="#" class="text-decoration-none">
-                                    <i class="bi bi-file-text text-success"></i> CV
+                                <a href="{{ url_for('admin.docente_cv', id=docente.id) }}" class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-file-text"></i> Generar CV
                                 </a>
                             </div>
                         </td>

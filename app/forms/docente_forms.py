@@ -19,7 +19,12 @@ class DocenteForm(FlaskForm):
     ], validators=[Optional()])
     domicilio = TextAreaField('Domicilio', validators=[Optional()])
     correo_principal = StringField('Correo Principal', validators=[Optional(), Email(), Length(max=255)])
-    orcid = StringField('ORCID', validators=[Optional(), Length(max=100)])
+    orcid = StringField('ORCID ID', validators=[Optional(), Length(max=100)],
+                       render_kw={"placeholder": "0000-0001-2345-6789"})
     researcher_id = StringField('Researcher ID', validators=[Optional(), Length(max=100)])
+    scopus_author_id = StringField('Scopus Author ID', validators=[Optional(), Length(max=100)],
+                                   render_kw={"placeholder": "Ej: 8243686100"})
+    pubmed_query = StringField('PubMed (Búsqueda de autor)', validators=[Optional(), Length(max=255)],
+                               render_kw={"placeholder": "Ej: Pérez García JM[Author]"})
     submit = SubmitField('Guardar')
 

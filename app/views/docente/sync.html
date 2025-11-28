@@ -1,46 +1,223 @@
 {% extends "layouts/docente_layout.html" %}
 
-{% block docente_title %}Sincronizar ORCID{% endblock %}
+{% block page_title %}Importar Publicaciones{% endblock %}
+{% block docente_title %}Importar Publicaciones{% endblock %}
+
+{% block extra_css %}
+<style>
+    .sync-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 16px;
+        padding: 40px;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .sync-header h2 { margin-bottom: 10px; }
+    .sync-header p { opacity: 0.9; margin-bottom: 25px; }
+    
+    .api-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        transition: transform 0.3s, box-shadow 0.3s;
+        overflow: hidden;
+        height: 100%;
+    }
+    .api-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    .api-header {
+        padding: 25px;
+        color: white;
+        text-align: center;
+    }
+    .api-header.orcid { background: linear-gradient(135deg, #a6ce39 0%, #7ab800 100%); }
+    .api-header.scopus { background: linear-gradient(135deg, #e9711c 0%, #d35400 100%); }
+    .api-header.pubmed { background: linear-gradient(135deg, #326599 0%, #1a5276 100%); }
+    
+    .api-header i { font-size: 3rem; margin-bottom: 15px; display: block; }
+    .api-header h4 { margin: 0; font-weight: 700; }
+    .api-header small { opacity: 0.85; }
+    
+    .api-body {
+        padding: 25px;
+    }
+    .api-body .description {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 15px;
+        min-height: 40px;
+    }
+    .api-body .user-id {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 12px 15px;
+        margin-bottom: 15px;
+        font-family: monospace;
+        font-size: 13px;
+        word-break: break-all;
+    }
+    .api-body .user-id.configured {
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+    }
+    .api-body .user-id.not-configured {
+        background: #fff3cd;
+        border: 1px solid #ffeeba;
+        color: #856404;
+    }
+    .api-body .btn {
+        padding: 12px 30px;
+        border-radius: 25px;
+        font-weight: 600;
+        width: 100%;
+    }
+    .btn-orcid { background: #a6ce39; border-color: #a6ce39; color: white; }
+    .btn-orcid:hover { background: #8bb82d; border-color: #8bb82d; color: white; }
+    .btn-scopus { background: #e9711c; border-color: #e9711c; color: white; }
+    .btn-scopus:hover { background: #d35400; border-color: #d35400; color: white; }
+    .btn-pubmed { background: #326599; border-color: #326599; color: white; }
+    .btn-pubmed:hover { background: #1a5276; border-color: #1a5276; color: white; }
+</style>
+{% endblock %}
 
 {% block docente_content %}
 <div class="container-fluid">
-    <h2>Sincronizar con ORCID</h2>
-    
-    <div class="card mt-4">
-        <div class="card-header bg-success text-white">
-            <h5 class="mb-0"><i class="bi bi-link-45deg"></i> ORCID</h5>
-        </div>
-        <div class="card-body">
-            {% if docente and docente.orcid %}
-                <p>Tu ORCID actual: <strong>{{ docente.orcid }}</strong></p>
-                <p class="text-muted">Al sincronizar, se importarán las publicaciones de tu perfil ORCID que no estén ya registradas.</p>
-                
-                <form method="POST" action="{{ url_for('sync.sync_orcid') }}">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button type="submit" class="btn btn-success">
-                        <i class="bi bi-cloud-download"></i> Sincronizar ahora
-                    </button>
-                </form>
-            {% else %}
-                <div class="alert alert-warning">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    No tienes un ORCID configurado. 
-                    <a href="{{ url_for('docente.perfil') }}">Agrégalo en tu perfil</a> para poder sincronizar.
+    <!-- Header con botón principal -->
+    <div class="sync-header">
+        <i class="bi bi-cloud-download fs-1"></i>
+        <h2>Importar Publicaciones</h2>
+        <p>Sincroniza automáticamente tus publicaciones desde bases de datos académicas</p>
+        {% if docente and (docente.orcid or docente.scopus_author_id or docente.pubmed_query) %}
+        <form method="POST" action="{{ url_for('sync.sync_todas') }}" class="d-inline">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-light btn-lg px-5">
+                <i class="bi bi-arrow-repeat"></i> Importar de Todas las Fuentes
+            </button>
+        </form>
+        {% else %}
+        <a href="{{ url_for('docente.perfil') }}" class="btn btn-light btn-lg px-5">
+            <i class="bi bi-gear"></i> Configurar mis IDs
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Cards de APIs -->
+    <div class="row g-4">
+        <!-- ORCID -->
+        <div class="col-md-4">
+            <div class="api-card">
+                <div class="api-header orcid">
+                    <i class="bi bi-person-badge"></i>
+                    <h4>ORCID</h4>
+                    <small>Open Researcher ID</small>
                 </div>
-            {% endif %}
+                <div class="api-body">
+                    <p class="description">Importa publicaciones registradas en tu perfil ORCID.</p>
+                    
+                    {% if docente and docente.orcid %}
+                    <div class="user-id configured">
+                        <i class="bi bi-check-circle"></i> {{ docente.orcid }}
+                    </div>
+                    <form method="POST" action="{{ url_for('sync.sync_orcid') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-orcid">
+                            <i class="bi bi-download"></i> Importar
+                        </button>
+                    </form>
+                    {% else %}
+                    <div class="user-id not-configured">
+                        <i class="bi bi-exclamation-triangle"></i> No configurado
+                    </div>
+                    <a href="{{ url_for('docente.perfil') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-gear"></i> Agregar ORCID ID
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- SCOPUS -->
+        <div class="col-md-4">
+            <div class="api-card">
+                <div class="api-header scopus">
+                    <i class="bi bi-journal-bookmark"></i>
+                    <h4>Scopus</h4>
+                    <small>Elsevier Database</small>
+                </div>
+                <div class="api-body">
+                    <p class="description">Publicaciones indexadas en Scopus con citaciones.</p>
+                    
+                    {% if docente and docente.scopus_author_id %}
+                    <div class="user-id configured">
+                        <i class="bi bi-check-circle"></i> {{ docente.scopus_author_id }}
+                    </div>
+                    <form method="POST" action="{{ url_for('sync.sync_scopus') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-scopus">
+                            <i class="bi bi-download"></i> Importar
+                        </button>
+                    </form>
+                    {% else %}
+                    <div class="user-id not-configured">
+                        <i class="bi bi-exclamation-triangle"></i> No configurado
+                    </div>
+                    <a href="{{ url_for('docente.perfil') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-gear"></i> Agregar Scopus ID
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- PUBMED -->
+        <div class="col-md-4">
+            <div class="api-card">
+                <div class="api-header pubmed">
+                    <i class="bi bi-heart-pulse"></i>
+                    <h4>PubMed</h4>
+                    <small>NCBI Database</small>
+                </div>
+                <div class="api-body">
+                    <p class="description">Artículos biomédicos y ciencias de la salud.</p>
+                    
+                    {% if docente and docente.pubmed_query %}
+                    <div class="user-id configured">
+                        <i class="bi bi-check-circle"></i> {{ docente.pubmed_query }}
+                    </div>
+                    <form method="POST" action="{{ url_for('sync.sync_pubmed') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-pubmed">
+                            <i class="bi bi-download"></i> Importar
+                        </button>
+                    </form>
+                    {% else %}
+                    <div class="user-id not-configured">
+                        <i class="bi bi-exclamation-triangle"></i> No configurado
+                    </div>
+                    <a href="{{ url_for('docente.perfil') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-gear"></i> Agregar búsqueda
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
-    
-    <div class="card mt-4">
-        <div class="card-header bg-info text-white">
-            <h5 class="mb-0"><i class="bi bi-info-circle"></i> ¿Qué es ORCID?</h5>
-        </div>
-        <div class="card-body">
-            <p>ORCID (Open Researcher and Contributor ID) es un identificador único para investigadores. 
-            Si tienes un perfil ORCID con publicaciones registradas, puedes importarlas automáticamente.</p>
-            <p>Visita <a href="https://orcid.org" target="_blank">orcid.org</a> para crear tu perfil si aún no lo tienes.</p>
+
+    <!-- Info adicional -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="alert alert-info d-flex align-items-center" role="alert">
+                <i class="bi bi-info-circle-fill me-3 fs-4"></i>
+                <div>
+                    Las publicaciones importadas se agregarán a tu sección de <strong>Artículos</strong>. 
+                    No se duplicarán si ya existen (se verifica por DOI o título).
+                </div>
+            </div>
         </div>
     </div>
 </div>
 {% endblock %}
-

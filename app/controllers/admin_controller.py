@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash
+from flask import Blueprint, render_template, redirect, url_for, flash, request, send_file
 from flask_login import login_required, current_user
 from app import db
 from app.models.user import User
@@ -7,6 +7,8 @@ from app.models.articulo import Articulo
 from app.models.empleo import Empleo
 from app.models.formacion_academica import FormacionAcademica
 from app.utils.decorators import admin_required
+from app.services.cv_generator_service import CVGeneratorService
+import io
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -173,3 +175,92 @@ def ver_docente(id):
                          tesis=tesis,
                          desarrollos=desarrollos,
                          actividades=actividades)
+
+@admin_bp.route('/docentes/<int:id>/cv', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def docente_cv(id):
+    """Generar y visualizar el CV de un docente desde el panel admin"""
+    docente = Docente.query.get_or_404(id)
+    
+    formaciones = FormacionAcademica.query.filter_by(docente_id=docente.id).all()
+    empleos = Empleo.query.filter_by(docente_id=docente.id).all()
+    articulos = Articulo.query.filter_by(docente_id=docente.id).all()
+    libros = docente.libros.all()
+    congresos = docente.congresos.all()
+    cursos = docente.cursos.all()
+    proyectos = docente.proyectos.all()
+    tesis = docente.tesis.all()
+    desarrollos = docente.desarrollos.all()
+    
+    selected_sections = request.form.getlist('sections') or CVGeneratorService.DEFAULT_SECTIONS
+    formato = request.form.get('formato', 'pdf')
+    tipo_cv = request.form.get('tipo_cv', 'academico')
+    
+    if request.method == 'POST':
+        cv_service = CVGeneratorService()
+        try:
+            if formato == 'pdf':
+                pdf_data = cv_service.generar_pdf(
+                    docente,
+                    formaciones=formaciones,
+                    empleos=empleos,
+                    articulos=articulos,
+                    libros=libros,
+                    congresos=congresos,
+                    cursos=cursos,
+                    proyectos=proyectos,
+                    tesis=tesis,
+                    desarrollos=desarrollos,
+                    tipo_cv=tipo_cv,
+                    sections=selected_sections
+                )
+                nombre_archivo = docente.nombre_completo.replace(' ', '_') if docente.nombre_completo else 'CV'
+                return send_file(
+                    io.BytesIO(pdf_data),
+                    mimetype='application/pdf',
+                    as_attachment=True,
+                    download_name=f'CV_{nombre_archivo}.pdf'
+                )
+            elif formato == 'word':
+                word_data = cv_service.generar_word(
+                    docente,
+                    formaciones=formaciones,
+                    empleos=empleos,
+                    articulos=articulos,
+                    libros=libros,
+                    congresos=congresos,
+                    cursos=cursos,
+                    proyectos=proyectos,
+                    tesis=tesis,
+                    desarrollos=desarrollos,
+                    tipo_cv=tipo_cv,
+                    sections=selected_sections
+                )
+                nombre_archivo = docente.nombre_completo.replace(' ', '_') if docente.nombre_completo else 'CV'
+                return send_file(
+                    io.BytesIO(word_data),
+                    mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    as_attachment=True,
+                    download_name=f'CV_{nombre_archivo}.docx'
+                )
+        except Exception as e:
+            flash(f'Error al generar el CV: {str(e)}', 'danger')
+            return redirect(url_for('admin.docente_cv', id=id))
+    
+    return render_template(
+        'admin/docente_cv.html',
+        docente=docente,
+        formaciones=formaciones,
+        empleos=empleos,
+        articulos=articulos,
+        libros=libros,
+        congresos=congresos,
+        cursos=cursos,
+        proyectos=proyectos,
+        tesis=tesis,
+        desarrollos=desarrollos,
+        selected_sections=selected_sections,
+        formato=formato,
+        tipo_cv=tipo_cv
+    )

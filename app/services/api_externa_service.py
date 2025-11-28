@@ -1,196 +1,222 @@
 import requests
-from flask import current_app
-from typing import Dict, List, Optional
+import os
+from xml.etree import ElementTree as ET
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# API Key de Scopus (esta sí va en .env porque es secreta)
+SCOPUS_API_KEY = os.getenv("SCOPUS_API_KEY")
+
 
 class APIExternaService:
     """Servicio para interactuar con APIs externas de bases de datos académicas"""
     
-    def __init__(self):
-        self.google_scholar_api = current_app.config.get('GOOGLE_SCHOLAR_API', '')
-        self.scopus_api_key = current_app.config.get('SCOPUS_API_KEY', '')
-        self.orcid_client_id = current_app.config.get('ORCID_CLIENT_ID', '')
-        self.pubmed_api_key = current_app.config.get('PUBMED_API_KEY', '')
-    
-    def obtener_publicaciones_google_scholar(self, scholar_id: str) -> List[Dict]:
-        """Obtiene publicaciones de Google Scholar"""
-        if not self.google_scholar_api or not scholar_id:
-            return []
+    def __init__(self, docente=None):
+        """
+        Inicializa el servicio con los IDs del docente
         
-        try:
-            # Nota: Google Scholar no tiene API oficial, esto es un placeholder
-            # En producción se necesitaría usar scraping o servicios de terceros
-            url = f"https://scholar.google.com/citations?user={scholar_id}"
-            # Implementación real requeriría scraping o API de terceros
-            return []
-        except Exception as e:
-            print(f"Error obteniendo publicaciones de Google Scholar: {e}")
-            return []
+        Args:
+            docente: Objeto Docente con los campos orcid, scopus_author_id, pubmed_query
+        """
+        self.orcid_id = docente.orcid if docente and docente.orcid else None
+        self.scopus_author_id = docente.scopus_author_id if docente and docente.scopus_author_id else None
+        self.pubmed_query = docente.pubmed_query if docente and docente.pubmed_query else None
+        self.scopus_api_key = SCOPUS_API_KEY
     
-    def obtener_publicaciones_scopus(self, scopus_id: str) -> List[Dict]:
-        """Obtiene publicaciones de Scopus"""
-        if not self.scopus_api_key or not scopus_id:
-            return []
+    # ==========================================
+    # 1. ORCID API
+    # ==========================================
+    def obtener_publicaciones_orcid(self):
+        """Obtiene publicaciones de ORCID"""
+        if not self.orcid_id:
+            raise ValueError("No tienes configurado tu ORCID ID. Agrégalo en tu perfil.")
         
-        try:
-            url = f"https://api.elsevier.com/content/search/author"
-            headers = {
-                'Accept': 'application/json',
-                'X-ELS-APIKey': self.scopus_api_key
-            }
-            params = {
-                'query': f'AU-ID({scopus_id})',
-                'view': 'STANDARD'
-            }
-            
-            response = requests.get(url, headers=headers, params=params, timeout=10)
-            if response.status_code == 200:
-                data = response.json()
-                # Procesar respuesta de Scopus
-                return self._procesar_respuesta_scopus(data)
-            return []
-        except Exception as e:
-            print(f"Error obteniendo publicaciones de Scopus: {e}")
-            return []
-    
-    def obtener_publicaciones_orcid(self, orcid_id: str) -> List[Dict]:
-        """Obtiene publicaciones de ORCID (API pública, no requiere autenticación)"""
-        if not orcid_id:
-            return []
+        url = f"https://pub.orcid.org/v3.0/{self.orcid_id}/works"
+        headers = {"Accept": "application/json"}
         
-        try:
-            url = f"https://pub.orcid.org/v3.0/{orcid_id}/works"
-            headers = {
-                'Accept': 'application/json'
-            }
-            
-            response = requests.get(url, headers=headers, timeout=30)
-            if response.status_code == 200:
-                data = response.json()
-                return self._procesar_respuesta_orcid(data)
-            elif response.status_code == 404:
-                raise ValueError(f"ORCID no encontrado: {orcid_id}")
-            return []
-        except requests.exceptions.RequestException as e:
-            print(f"Error obteniendo publicaciones de ORCID: {e}")
-            return []
-    
-    def obtener_publicaciones_pubmed(self, pubmed_query: str) -> List[Dict]:
-        """Obtiene publicaciones de PubMed"""
-        if not pubmed_query:
-            return []
+        r = requests.get(url, headers=headers, timeout=30)
+        if r.status_code == 404:
+            raise ValueError(f"ORCID ID no encontrado: {self.orcid_id}")
+        if r.status_code != 200:
+            raise ValueError(f"Error al conectar con ORCID (código {r.status_code})")
         
-        try:
-            url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
-            params = {
-                'db': 'pubmed',
-                'term': pubmed_query,
-                'retmode': 'json',
-                'retmax': 100
-            }
-            
-            response = requests.get(url, params=params, timeout=10)
-            if response.status_code == 200:
-                data = response.json()
-                pmids = data.get('esearchresult', {}).get('idlist', [])
-                return self._obtener_detalles_pubmed(pmids)
-            return []
-        except Exception as e:
-            print(f"Error obteniendo publicaciones de PubMed: {e}")
-            return []
-    
-    def _procesar_respuesta_scopus(self, data: Dict) -> List[Dict]:
-        """Procesa la respuesta de Scopus"""
-        publicaciones = []
-        # Implementar procesamiento según estructura de respuesta de Scopus
-        return publicaciones
-    
-    def _procesar_respuesta_orcid(self, data: Dict) -> List[Dict]:
-        """Procesa la respuesta de ORCID"""
-        publicaciones = []
-        works = data.get('group', [])
+        data = r.json()
+        works = []
         
-        for work in works:
-            work_summaries = work.get('work-summary', [])
-            if not work_summaries:
-                continue
-                
-            work_summary = work_summaries[0]
-            titulo = work_summary.get('title', {}).get('title', {}).get('value', '')
+        for group in data.get("group", []):
+            summary = group.get("work-summary", [{}])[0]
             
-            if not titulo:
-                continue
+            title = summary.get("title", {}).get("title", {}).get("value", "Sin título")
+            pub_type = summary.get("type", "Sin tipo")
+            pub_year = summary.get("publication-date", {}).get("year", {}).get("value", None)
             
-            # Extraer DOI
-            doi = ''
-            external_ids = work_summary.get('external-ids', {}).get('external-id', [])
-            for ext_id in external_ids:
-                if ext_id.get('external-id-type') == 'doi':
-                    doi = ext_id.get('external-id-value', '')
-                    break
+            try:
+                pub_year = int(pub_year) if pub_year else None
+            except:
+                pub_year = None
             
-            # Extraer año
-            año = None
-            pub_date = work_summary.get('publication-date')
-            if pub_date and pub_date.get('year'):
-                try:
-                    año = int(pub_date['year']['value'])
-                except (ValueError, TypeError):
-                    año = None
+            external_ids = summary.get("external-ids", {}).get("external-id", [])
             
-            # Extraer revista
-            revista = ''
-            journal_title = work_summary.get('journal-title')
+            doi = None
+            for ext in external_ids:
+                if ext.get("external-id-type") == "doi":
+                    doi = ext.get("external-id-value")
+            
+            revista = ""
+            journal_title = summary.get("journal-title")
             if journal_title:
-                revista = journal_title.get('value', '')
+                revista = journal_title.get("value", "")
             
-            # Extraer tipo de publicación
-            tipo_orcid = work_summary.get('type', '')
-            tipo_map = {
-                'journal-article': 'articulo',
-                'book': 'libro',
-                'book-chapter': 'capitulo',
-                'conference-paper': 'conferencia',
-                'dissertation': 'tesis',
-                'report': 'reporte'
-            }
-            tipo = tipo_map.get(tipo_orcid, 'articulo')
-            
-            publicaciones.append({
-                'titulo': titulo,
-                'doi': doi,
-                'año': año,
-                'tipo': tipo,
-                'revista': revista
+            works.append({
+                "titulo": title,
+                "año": pub_year,
+                "tipo": pub_type,
+                "doi": doi,
+                "revista": revista,
+                "fuente": "ORCID"
             })
         
-        return publicaciones
+        return works
     
-    def _obtener_detalles_pubmed(self, pmids: List[str]) -> List[Dict]:
-        """Obtiene detalles de publicaciones de PubMed por sus IDs"""
+    # ==========================================
+    # 2. SCOPUS API
+    # ==========================================
+    def obtener_publicaciones_scopus(self):
+        """Obtiene publicaciones de Scopus"""
+        if not self.scopus_author_id:
+            raise ValueError("No tienes configurado tu Scopus Author ID. Agrégalo en tu perfil.")
+        
+        if not self.scopus_api_key:
+            raise ValueError("API Key de Scopus no configurada en el servidor")
+        
+        url = f"https://api.elsevier.com/content/search/scopus?query=AU-ID({self.scopus_author_id})"
+        
+        headers = {
+            "X-ELS-APIKey": self.scopus_api_key,
+            "Accept": "application/json"
+        }
+        
+        r = requests.get(url, headers=headers, timeout=30)
+        
+        if r.status_code == 401:
+            raise ValueError("Error de autenticación con Scopus")
+        if r.status_code != 200:
+            raise ValueError(f"Error al conectar con Scopus (código {r.status_code})")
+        
+        data = r.json()
+        items = data.get("search-results", {}).get("entry", [])
+        works = []
+        
+        for item in items:
+            title = item.get("dc:title", "Sin título")
+            year_str = item.get("prism:coverDate", "")[:4]
+            doi = item.get("prism:doi", None)
+            revista = item.get("prism:publicationName", "")
+            autores = item.get("dc:creator", "")
+            
+            try:
+                year = int(year_str) if year_str else None
+            except:
+                year = None
+            
+            works.append({
+                "titulo": title,
+                "año": year,
+                "doi": doi,
+                "revista": revista,
+                "autores": autores,
+                "fuente": "Scopus"
+            })
+        
+        return works
+    
+    # ==========================================
+    # 3. PUBMED API
+    # ==========================================
+    def obtener_publicaciones_pubmed(self):
+        """Obtiene publicaciones de PubMed"""
+        if not self.pubmed_query:
+            raise ValueError("No tienes configurada tu búsqueda de PubMed. Agrégala en tu perfil.")
+        
+        # 1. Buscar PMIDs del autor
+        search_url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term={self.pubmed_query}&retmode=json"
+        
+        r = requests.get(search_url, timeout=30)
+        if r.status_code != 200:
+            raise ValueError(f"Error al conectar con PubMed (código {r.status_code})")
+        
+        pmids = r.json().get("esearchresult", {}).get("idlist", [])
         if not pmids:
             return []
         
-        try:
-            url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
-            params = {
-                'db': 'pubmed',
-                'id': ','.join(pmids),
-                'retmode': 'xml'
-            }
+        # 2. Obtener detalles de los artículos
+        fetch_url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id={','.join(pmids)}&retmode=xml"
+        
+        r2 = requests.get(fetch_url, timeout=30)
+        if r2.status_code != 200:
+            raise ValueError("Error al obtener detalles de PubMed")
+        
+        root = ET.fromstring(r2.text)
+        
+        works = []
+        for article in root.findall(".//PubmedArticle"):
+            title = article.findtext(".//ArticleTitle", "Sin título")
+            year_str = article.findtext(".//PubDate/Year", "")
+            revista = article.findtext(".//Journal/Title", "")
             
-            response = requests.get(url, params=params, timeout=10)
-            if response.status_code == 200:
-                # Procesar XML de PubMed
-                return self._procesar_xml_pubmed(response.text)
-            return []
-        except Exception as e:
-            print(f"Error obteniendo detalles de PubMed: {e}")
-            return []
+            doi = None
+            for aid in article.findall(".//ArticleId"):
+                if aid.get("IdType") == "doi":
+                    doi = aid.text
+                    break
+            
+            try:
+                year = int(year_str) if year_str else None
+            except:
+                year = None
+            
+            works.append({
+                "titulo": title,
+                "año": year,
+                "doi": doi,
+                "revista": revista,
+                "fuente": "PubMed"
+            })
+        
+        return works
     
-    def _procesar_xml_pubmed(self, xml_data: str) -> List[Dict]:
-        """Procesa XML de PubMed"""
-        publicaciones = []
-        # Implementar procesamiento XML
-        # Por ahora retornar lista vacía
-        return publicaciones
-
+    # ==========================================
+    # OBTENER TODAS
+    # ==========================================
+    def obtener_todas_publicaciones(self):
+        """Obtiene publicaciones de todas las fuentes configuradas"""
+        resultados = {
+            'orcid': [],
+            'scopus': [],
+            'pubmed': [],
+            'errores': []
+        }
+        
+        # ORCID
+        if self.orcid_id:
+            try:
+                resultados['orcid'] = self.obtener_publicaciones_orcid()
+            except Exception as e:
+                resultados['errores'].append(f"ORCID: {str(e)}")
+        
+        # Scopus
+        if self.scopus_author_id and self.scopus_api_key:
+            try:
+                resultados['scopus'] = self.obtener_publicaciones_scopus()
+            except Exception as e:
+                resultados['errores'].append(f"Scopus: {str(e)}")
+        
+        # PubMed
+        if self.pubmed_query:
+            try:
+                resultados['pubmed'] = self.obtener_publicaciones_pubmed()
+            except Exception as e:
+                resultados['errores'].append(f"PubMed: {str(e)}")
+        
+        return resultados

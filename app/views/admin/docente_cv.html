@@ -1,0 +1,392 @@
+{% extends "layouts/admin_layout.html" %}
+
+{% block admin_title %}Generar CV · {{ docente.nombre_completo }}{% endblock %}
+
+{% block admin_content %}
+<style>
+    .cv-builder-wrapper { padding: 10px 0 30px; color: #1d1d1f; }
+    .cv-builder-card { background: #fff; border-radius: 18px; padding: 28px; box-shadow: 0 12px 35px rgba(15,23,42,0.08); }
+    .cv-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 20px; }
+    .cv-back-link { text-decoration: none; color: #2563eb; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+    .cv-docente-chip { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border: 1px solid #e5e7eb; border-radius: 16px; background: #f8fafc; min-width: 280px; }
+    .cv-docente-chip .avatar { width: 52px; height: 52px; border-radius: 50%; background: #0d6efd; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 22px; }
+    .cv-progress { display: flex; justify-content: space-between; position: relative; margin-bottom: 32px; padding: 0 12px; }
+    .cv-progress::before { content: ""; position: absolute; top: 50%; left: 30px; right: 30px; height: 4px; background: #e5e7eb; transform: translateY(-50%); }
+    .cv-progress-step { text-align: center; z-index: 1; }
+    .cv-progress-step .circle { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #e5e7eb; background: #fff; display: flex; align-items: center; justify-content: center; font-weight: 600; margin: 0 auto 8px; color: #6c7a91; }
+    .cv-progress-step.active .circle { border-color: #2563eb; background: #2563eb; color: #fff; box-shadow: 0 12px 20px rgba(37,99,235,0.25); }
+    .cv-step { display: none; flex-direction: column; gap: 24px; }
+    .cv-step.active { display: flex; }
+    .template-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 18px; }
+    .template-card { border: 1px solid #e5e7eb; border-radius: 18px; padding: 22px; cursor: pointer; transition: all .25s ease; background: #fff; }
+    .template-card.active { border-color: #2563eb; box-shadow: 0 12px 25px rgba(37,99,235,0.16); transform: translateY(-4px); }
+    .format-options { display: inline-flex; align-items: center; gap: 12px; background: #f3f4f6; padding: 6px; border-radius: 999px; }
+    .format-option { border-radius: 999px; padding: 8px 18px; font-weight: 600; color: #6b7280; cursor: pointer; }
+    .format-option.active { background: #fff; color: #111827; box-shadow: 0 8px 15px rgba(15,23,42,0.12); }
+    .section-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 16px; }
+    .section-pill { border: 1px solid #e5e7eb; border-radius: 14px; padding: 14px 16px; display: flex; align-items: center; gap: 10px; background: #fff; cursor: pointer; transition: all .2s; }
+    .section-pill.active { border-color: #2563eb; background: #f5f7ff; }
+    .preview-card { border-radius: 20px; border: 1px solid #e5e7eb; padding: 24px; background: #fdfdff; }
+    .preview-profile { display: flex; align-items: center; gap: 16px; }
+    .preview-avatar { width: 64px; height: 64px; border-radius: 50%; background: #2563eb; color: #fff; display: flex; justify-content: center; align-items: center; font-weight: 700; font-size: 26px; }
+    .preview-body { max-height: 520px; overflow-y: auto; padding-right: 8px; }
+    .preview-section + .preview-section { margin-top: 22px; }
+    .preview-section h5 { font-size: 16px; font-weight: 600; margin-bottom: 10px; color: #0f172a; }
+    .preview-item { padding: 10px 0 10px 14px; border-left: 3px solid #e2e8f0; margin-bottom: 8px; }
+    .preview-empty { color: #94a3b8; font-style: italic; }
+</style>
+
+<div class="cv-builder-wrapper">
+    <div class="cv-builder-card">
+        <div class="cv-heading">
+            <div>
+                <a href="{{ url_for('admin.ver_docente', id=docente.id) }}" class="cv-back-link">
+                    <i class="bi bi-arrow-left"></i> Volver al perfil
+                </a>
+                <span class="text-muted">Generador de CV</span>
+                <h2>CV de {{ docente.nombre_completo or 'Docente' }}</h2>
+                <p class="text-muted mb-0">Administración · Vista solo lectura</p>
+            </div>
+            <div class="cv-docente-chip">
+                <div class="avatar">{{ docente.nombre_completo[0] if docente.nombre_completo else 'D' }}</div>
+                <div>
+                    <strong>{{ docente.nombre_completo or 'Sin nombre' }}</strong><br>
+                    <small>{{ docente.correo_principal or (docente.user.email if docente.user else 'Correo no registrado') }}</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="cv-progress">
+            <div class="cv-progress-step active" data-step="1">
+                <div class="circle">1</div>
+                <span>Plantilla</span>
+            </div>
+            <div class="cv-progress-step" data-step="2">
+                <div class="circle">2</div>
+                <span>Secciones</span>
+            </div>
+            <div class="cv-progress-step" data-step="3">
+                <div class="circle">3</div>
+                <span>Vista previa</span>
+            </div>
+        </div>
+
+        <form method="POST" action="{{ url_for('admin.docente_cv', id=docente.id) }}" id="cvWizardForm">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="cv-step active" data-step-content="1">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h5 class="mb-1">Seleccionar Plantilla</h5>
+                        <p class="text-muted mb-0">Elige el formato que se ajusta al reporte solicitado.</p>
+                    </div>
+                    <div class="format-options">
+                        <label class="format-option {% if formato == 'pdf' %}active{% endif %}" data-download-label="Descargar PDF">
+                            <input type="radio" name="formato" value="pdf" {% if formato == 'pdf' %}checked{% endif %}>
+                            PDF
+                        </label>
+                        <label class="format-option {% if formato == 'word' %}active{% endif %}" data-download-label="Descargar Word">
+                            <input type="radio" name="formato" value="word" {% if formato == 'word' %}checked{% endif %}>
+                            Word (.docx)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="template-options">
+                    <label class="template-card {% if tipo_cv == 'academico' %}active{% endif %}">
+                        <input type="radio" name="tipo_cv" value="academico" {% if tipo_cv == 'academico' %}checked{% endif %}>
+                        <div class="label">Clásico Profesional</div>
+                        <p>Diseño tradicional y elegante</p>
+                    </label>
+                    <label class="template-card {% if tipo_cv == 'sni' %}active{% endif %}">
+                        <input type="radio" name="tipo_cv" value="sni" {% if tipo_cv == 'sni' %}checked{% endif %}>
+                        <div class="label">Moderno Minimalista</div>
+                        <p>Diseño limpio y contemporáneo</p>
+                    </label>
+                    <label class="template-card {% if tipo_cv == 'conacyt' %}active{% endif %}">
+                        <input type="radio" name="tipo_cv" value="conacyt" {% if tipo_cv == 'conacyt' %}checked{% endif %}>
+                        <div class="label">Académico Detallado</div>
+                        <p>Diseño completo para publicaciones</p>
+                    </label>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary" data-next>Siguiente: Configurar secciones</button>
+                </div>
+            </div>
+
+            <div class="cv-step" data-step-content="2">
+                <div>
+                    <h5 class="mb-1">Configuración de Secciones</h5>
+                    <p class="text-muted mb-0">Habilita únicamente lo que requiera la revisión.</p>
+                </div>
+                <div class="section-grid mt-3">
+                    {% set sections = [
+                        ('datos_generales', 'Datos Generales', 'bi-person'),
+                        ('experiencia_laboral', 'Experiencia Laboral', 'bi-briefcase'),
+                        ('formacion_academica', 'Formación Académica', 'bi-mortarboard'),
+                        ('articulos', 'Artículos Científicos', 'bi-journal-text'),
+                        ('libros', 'Libros y Capítulos', 'bi-book'),
+                        ('congresos', 'Congresos y Ponencias', 'bi-mic'),
+                        ('cursos', 'Cursos Impartidos', 'bi-easel'),
+                        ('proyectos', 'Proyectos de Investigación', 'bi-diagram-3'),
+                        ('tesis', 'Tesis Dirigidas', 'bi-mortarboard-fill'),
+                        ('desarrollos', 'Desarrollos Tecnológicos', 'bi-cpu')
+                    ] %}
+                    {% for value, label, icon in sections %}
+                        {% set is_checked = value in selected_sections %}
+                        <label class="section-pill {% if is_checked %}active{% endif %}">
+                            <input type="checkbox" name="sections" value="{{ value }}" {% if is_checked %}checked{% endif %}>
+                            <i class="bi {{ icon }}"></i>
+                            <span>{{ label }}</span>
+                        </label>
+                    {% endfor %}
+                </div>
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary" data-prev>Regresar</button>
+                    <button type="button" class="btn btn-primary" data-next>Ver vista previa</button>
+                </div>
+            </div>
+
+            <div class="cv-step" data-step-content="3">
+                <div class="preview-card">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+                        <div class="preview-profile">
+                            <div class="preview-avatar">{{ docente.nombre_completo[0] if docente.nombre_completo else 'D' }}</div>
+                            <div>
+                                <h4 class="mb-0">{{ docente.nombre_completo }}</h4>
+                                <small class="text-muted">{{ docente.cvu or 'CVU pendiente' }} · {{ docente.orcid or 'ORCID pendiente' }}</small>
+                                <div class="text-muted">{{ docente.correo_principal or (docente.user.email if docente.user else 'Correo no registrado') }}</div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success" id="downloadButton">
+                            <i class="bi bi-download"></i> Descargar PDF
+                        </button>
+                    </div>
+                    <div class="preview-body">
+                        <div class="preview-section" data-section="datos_generales">
+                            <h5>Datos Generales</h5>
+                            <div class="preview-item">
+                                <strong>Identificadores</strong>
+                                <span>CVU: {{ docente.cvu or 'Sin capturar' }} · RFC: {{ docente.rfc or 'Sin capturar' }} · CURP: {{ docente.curp or 'Sin capturar' }}</span>
+                                <span>Researcher ID: {{ docente.researcher_id or 'Sin capturar' }}</span>
+                            </div>
+                        </div>
+
+                        <div class="preview-section" data-section="formacion_academica">
+                            <h5>Formación Académica</h5>
+                            {% if formaciones %}
+                                {% for formacion in formaciones %}
+                                    <div class="preview-item">
+                                        <strong>{{ formacion.grado_obtenido or formacion.nivel }}</strong>
+                                        <span>{{ formacion.institucion or 'Institución no registrada' }} · {{ formacion.pais or 'País no registrado' }}</span>
+                                        <small>{{ formacion.fecha_inicio.strftime('%Y-%m-%d') if formacion.fecha_inicio else 'Sin fecha' }} - {{ formacion.fecha_fin.strftime('%Y-%m-%d') if formacion.fecha_fin else 'Actualidad' }}</small>
+                                        {% if formacion.area_conocimiento %}
+                                            <small>Área: {{ formacion.area_conocimiento }}</small>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="preview-empty">No hay formación registrada.</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="preview-section" data-section="experiencia_laboral">
+                            <h5>Experiencia Laboral</h5>
+                            {% if empleos %}
+                                {% for empleo in empleos %}
+                                    <div class="preview-item">
+                                        <strong>{{ empleo.puesto }}</strong>
+                                        <span>{{ empleo.institucion }}</span>
+                                        <small>{{ empleo.fecha_inicio.strftime('%Y-%m-%d') if empleo.fecha_inicio else 'Sin fecha' }} - {{ empleo.fecha_fin.strftime('%Y-%m-%d') if empleo.fecha_fin else 'Actualidad' }}</small>
+                                        {% if empleo.logros %}
+                                            <small>{{ empleo.logros }}</small>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="preview-empty">No hay empleos registrados.</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="preview-section" data-section="articulos">
+                            <h5>Artículos Científicos</h5>
+                            {% if articulos %}
+                                {% for articulo in articulos %}
+                                    <div class="preview-item">
+                                        <strong>{{ articulo.titulo }}</strong>
+                                        <span>{{ articulo.revista or 'Revista no registrada' }} · {{ articulo.anio or 'Año pendiente' }}</span>
+                                        {% if articulo.doi %}<small>DOI: {{ articulo.doi }}</small>{% endif %}
+                                        {% if articulo.autores %}<small>Autores: {{ articulo.autores }}</small>{% endif %}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="preview-empty">No hay artículos registrados.</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="preview-section" data-section="libros">
+                            <h5>Libros y Capítulos</h5>
+                            {% if libros %}
+                                {% for libro in libros %}
+                                    <div class="preview-item">
+                                        <strong>{{ libro.titulo }}</strong>
+                                        <span>{{ libro.editorial or 'Editorial no registrada' }} · {{ libro.anio or 'Año pendiente' }}</span>
+                                        {% if libro.titulo_capitulo %}<small>Capítulo: {{ libro.titulo_capitulo }}</small>{% endif %}
+                                        {% if libro.isbn %}<small>ISBN: {{ libro.isbn }}</small>{% endif %}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="preview-empty">No hay libros registrados.</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="preview-section" data-section="congresos">
+                            <h5>Congresos y Ponencias</h5>
+                            {% if congresos %}
+                                {% for congreso in congresos %}
+                                    <div class="preview-item">
+                                        <strong>{{ congreso.nombre_congreso }}</strong>
+                                        {% if congreso.titulo_ponencia %}<span>Ponencia: {{ congreso.titulo_ponencia }}</span>{% endif %}
+                                        <small>{{ congreso.fecha.strftime('%Y-%m-%d') if congreso.fecha else 'Sin fecha' }} · {{ congreso.ciudad or '' }} {{ congreso.pais or '' }}</small>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="preview-empty">No hay congresos registrados.</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="preview-section" data-section="cursos">
+                            <h5>Cursos Impartidos</h5>
+                            {% if cursos %}
+                                {% for curso in cursos %}
+                                    <div class="preview-item">
+                                        <strong>{{ curso.nombre_curso }}</strong>
+                                        <span>{{ curso.programa_educativo or 'Programa no registrado' }}</span>
+                                        <small>{{ curso.fecha_inicio.strftime('%Y-%m-%d') if curso.fecha_inicio else 'Sin fecha' }} - {{ curso.fecha_fin.strftime('%Y-%m-%d') if curso.fecha_fin else 'Actualidad' }}</small>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="preview-empty">No hay cursos registrados.</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="preview-section" data-section="proyectos">
+                            <h5>Proyectos de Investigación</h5>
+                            {% if proyectos %}
+                                {% for proyecto in proyectos %}
+                                    <div class="preview-item">
+                                        <strong>{{ proyecto.nombre_proyecto }}</strong>
+                                        {% if proyecto.linea_investigacion %}<span>Línea: {{ proyecto.linea_investigacion }}</span>{% endif %}
+                                        <small>{{ proyecto.fecha_inicio.strftime('%Y-%m-%d') if proyecto.fecha_inicio else 'Sin fecha' }} - {{ proyecto.fecha_fin.strftime('%Y-%m-%d') if proyecto.fecha_fin else 'Actualidad' }}</small>
+                                        {% if proyecto.estado %}<small>Estado: {{ proyecto.estado }}</small>{% endif %}
+                                        {% if proyecto.objetivo_general %}<small>Objetivo: {{ proyecto.objetivo_general }}</small>{% endif %}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="preview-empty">No hay proyectos registrados.</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="preview-section" data-section="tesis">
+                            <h5>Tesis Dirigidas</h5>
+                            {% if tesis %}
+                                {% for trabajo in tesis %}
+                                    <div class="preview-item">
+                                        <strong>{{ trabajo.titulo }}</strong>
+                                        <span>{{ trabajo.estudiante_nombre or 'Estudiante no registrado' }} · {{ trabajo.institucion or 'Institución no registrada' }}</span>
+                                        <small>{{ trabajo.fecha_inicio.strftime('%Y-%m-%d') if trabajo.fecha_inicio else 'Sin fecha' }} - {{ trabajo.fecha_fin.strftime('%Y-%m-%d') if trabajo.fecha_fin else 'Actualidad' }} · {{ trabajo.estado or 'Estado pendiente' }}</small>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="preview-empty">No hay tesis registradas.</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="preview-section" data-section="desarrollos">
+                            <h5>Desarrollos Tecnológicos</h5>
+                            {% if desarrollos %}
+                                {% for desarrollo in desarrollos %}
+                                    <div class="preview-item">
+                                        <strong>{{ desarrollo.nombre }}</strong>
+                                        {% if desarrollo.tipo %}<span>Tipo: {{ desarrollo.tipo }}</span>{% endif %}
+                                        {% if desarrollo.nivel_madurez %}<small>Nivel de madurez: {{ desarrollo.nivel_madurez }}</small>{% endif %}
+                                        {% if desarrollo.descripcion %}<small>{{ desarrollo.descripcion }}</small>{% endif %}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="preview-empty">No hay desarrollos registrados.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <button type="button" class="btn btn-outline-secondary" data-prev>Modificar configuración</button>
+                    <span class="text-muted">La descarga se realiza en nombre del administrador.</span>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const steps = Array.from(document.querySelectorAll('.cv-step'));
+        const indicators = Array.from(document.querySelectorAll('.cv-progress-step'));
+        const templateCards = Array.from(document.querySelectorAll('.template-card'));
+        const formatOptions = Array.from(document.querySelectorAll('.format-option'));
+        const sectionPills = Array.from(document.querySelectorAll('.section-pill'));
+        const downloadButton = document.getElementById('downloadButton');
+        let currentStep = 1;
+
+        const filterPreviewSections = () => {
+            const selectedSections = Array.from(document.querySelectorAll('input[name="sections"]:checked')).map(cb => cb.value);
+            const previewSections = document.querySelectorAll('[data-section]');
+            previewSections.forEach(section => {
+                section.style.display = selectedSections.includes(section.dataset.section) ? 'block' : 'none';
+            });
+        };
+
+        const updateStep = (nextStep) => {
+            currentStep = Math.max(1, Math.min(3, nextStep));
+            steps.forEach(step => step.classList.toggle('active', Number(step.dataset.stepContent) === currentStep));
+            indicators.forEach(indicator => indicator.classList.toggle('active', Number(indicator.dataset.step) <= currentStep));
+            if (currentStep === 3) {
+                filterPreviewSections();
+            }
+        };
+
+        const updateDownloadLabel = (option) => {
+            if (option.dataset.downloadLabel) {
+                downloadButton.innerHTML = `<i class="bi bi-download"></i> ${option.dataset.downloadLabel}`;
+            }
+        };
+
+        document.querySelectorAll('[data-next]').forEach(btn => btn.addEventListener('click', () => updateStep(currentStep + 1)));
+        document.querySelectorAll('[data-prev]').forEach(btn => btn.addEventListener('click', () => updateStep(currentStep - 1)));
+
+        templateCards.forEach(card => card.addEventListener('click', () => {
+            templateCards.forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+            card.querySelector('input').checked = true;
+        }));
+
+        formatOptions.forEach(option => option.addEventListener('click', (event) => {
+            event.preventDefault();
+            formatOptions.forEach(opt => opt.classList.remove('active'));
+            option.classList.add('active');
+            option.querySelector('input').checked = true;
+            updateDownloadLabel(option);
+        }));
+        const activeFormat = formatOptions.find(opt => opt.classList.contains('active'));
+        if (activeFormat) { updateDownloadLabel(activeFormat); }
+
+        sectionPills.forEach(pill => pill.addEventListener('click', (event) => {
+            event.preventDefault();
+            const checkbox = pill.querySelector('input');
+            pill.classList.toggle('active');
+            checkbox.checked = !checkbox.checked;
+            if (currentStep === 3) { filterPreviewSections(); }
+        }));
+    });
+</script>
+{% endblock %}
