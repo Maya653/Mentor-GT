@@ -44,6 +44,16 @@ def create_app(config_class=Config):
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(docente_bp, url_prefix='/docente')
     
+    # Contexto global para templates del docente
+    @app.context_processor
+    def inject_docente():
+        from flask_login import current_user
+        if current_user.is_authenticated and not current_user.es_admin():
+            from app.models.docente import Docente
+            docente = Docente.query.filter_by(user_id=current_user.id).first()
+            return {'current_docente': docente}
+        return {'current_docente': None}
+    
     # Ruta raíz
     @app.route('/')
     def index():

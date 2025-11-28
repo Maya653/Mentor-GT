@@ -10,15 +10,19 @@ from app.forms.docente_forms import DocenteForm
 from app.forms.formacion_forms import FormacionAcademicaForm
 from app.forms.empleo_forms import EmpleoForm
 from app.forms.articulo_forms import ArticuloForm
-from app.utils.decorators import profesor_required
+from app.utils.decorators import docente_required
 
 docente_bp = Blueprint('docente', __name__)
 
 @docente_bp.route('/dashboard')
 @login_required
-@profesor_required
+@docente_required
 def dashboard():
     """Dashboard del docente"""
+    from app.models.curso_impartido import CursoImpartido
+    from app.models.proyecto_investigacion import ProyectoInvestigacion
+    from app.models.desarrollo_tecnologico import DesarrolloTecnologico
+    
     docente = Docente.query.filter_by(user_id=current_user.id).first()
     
     if not docente:
@@ -29,16 +33,43 @@ def dashboard():
     total_formaciones = FormacionAcademica.query.filter_by(docente_id=docente.id).count()
     total_empleos = Empleo.query.filter_by(docente_id=docente.id).count()
     total_articulos = Articulo.query.filter_by(docente_id=docente.id).count()
+    total_cursos = CursoImpartido.query.filter_by(docente_id=docente.id).count()
+    total_proyectos = ProyectoInvestigacion.query.filter_by(docente_id=docente.id).count()
+    total_desarrollos = DesarrolloTecnologico.query.filter_by(docente_id=docente.id).count()
+    
+    # Actividades recientes
+    actividades_recientes = []
+    if total_articulos > 0:
+        ultimo_articulo = Articulo.query.filter_by(docente_id=docente.id).order_by(Articulo.id.desc()).first()
+        if ultimo_articulo:
+            actividades_recientes.append({
+                'titulo': 'Artículo publicado',
+                'fecha': 'Hace 2 días',
+                'color': '#0d6efd'
+            })
+    
+    if total_proyectos > 0:
+        ultimo_proyecto = ProyectoInvestigacion.query.filter_by(docente_id=docente.id).order_by(ProyectoInvestigacion.id.desc()).first()
+        if ultimo_proyecto:
+            actividades_recientes.append({
+                'titulo': 'Proyecto actualizado',
+                'fecha': 'Hace 5 días',
+                'color': '#198754'
+            })
     
     return render_template('docente/dashboard.html',
                          docente=docente,
                          total_formaciones=total_formaciones,
                          total_empleos=total_empleos,
-                         total_articulos=total_articulos)
+                         total_articulos=total_articulos,
+                         total_cursos=total_cursos,
+                         total_proyectos=total_proyectos,
+                         total_desarrollos=total_desarrollos,
+                         actividades_recientes=actividades_recientes)
 
 @docente_bp.route('/perfil', methods=['GET', 'POST'])
 @login_required
-@profesor_required
+@docente_required
 def perfil():
     """Gestionar perfil del docente"""
     docente = Docente.query.filter_by(user_id=current_user.id).first()
@@ -58,7 +89,7 @@ def perfil():
 
 @docente_bp.route('/formacion', methods=['GET', 'POST'])
 @login_required
-@profesor_required
+@docente_required
 def formacion():
     """Listar y crear formación académica"""
     docente = Docente.query.filter_by(user_id=current_user.id).first()
@@ -71,7 +102,7 @@ def formacion():
 
 @docente_bp.route('/formacion/nueva', methods=['GET', 'POST'])
 @login_required
-@profesor_required
+@docente_required
 def nueva_formacion():
     """Crear nueva formación académica"""
     docente = Docente.query.filter_by(user_id=current_user.id).first()
@@ -92,7 +123,7 @@ def nueva_formacion():
 
 @docente_bp.route('/formacion/<int:id>/editar', methods=['GET', 'POST'])
 @login_required
-@profesor_required
+@docente_required
 def editar_formacion(id):
     """Editar formación académica"""
     docente = Docente.query.filter_by(user_id=current_user.id).first()
@@ -113,7 +144,7 @@ def editar_formacion(id):
 
 @docente_bp.route('/formacion/<int:id>/eliminar', methods=['POST'])
 @login_required
-@profesor_required
+@docente_required
 def eliminar_formacion(id):
     """Eliminar formación académica"""
     docente = Docente.query.filter_by(user_id=current_user.id).first()
@@ -130,7 +161,7 @@ def eliminar_formacion(id):
 
 @docente_bp.route('/empleos')
 @login_required
-@profesor_required
+@docente_required
 def empleos():
     """Listar empleos"""
     docente = Docente.query.filter_by(user_id=current_user.id).first()
@@ -143,7 +174,7 @@ def empleos():
 
 @docente_bp.route('/empleos/nuevo', methods=['GET', 'POST'])
 @login_required
-@profesor_required
+@docente_required
 def nuevo_empleo():
     """Crear nuevo empleo"""
     docente = Docente.query.filter_by(user_id=current_user.id).first()
@@ -164,7 +195,7 @@ def nuevo_empleo():
 
 @docente_bp.route('/empleos/<int:id>/editar', methods=['GET', 'POST'])
 @login_required
-@profesor_required
+@docente_required
 def editar_empleo(id):
     """Editar empleo"""
     docente = Docente.query.filter_by(user_id=current_user.id).first()
@@ -185,7 +216,7 @@ def editar_empleo(id):
 
 @docente_bp.route('/empleos/<int:id>/eliminar', methods=['POST'])
 @login_required
-@profesor_required
+@docente_required
 def eliminar_empleo(id):
     """Eliminar empleo"""
     docente = Docente.query.filter_by(user_id=current_user.id).first()
@@ -202,7 +233,7 @@ def eliminar_empleo(id):
 
 @docente_bp.route('/articulos')
 @login_required
-@profesor_required
+@docente_required
 def articulos():
     """Listar artículos"""
     docente = Docente.query.filter_by(user_id=current_user.id).first()
@@ -215,7 +246,7 @@ def articulos():
 
 @docente_bp.route('/articulos/nuevo', methods=['GET', 'POST'])
 @login_required
-@profesor_required
+@docente_required
 def nuevo_articulo():
     """Crear nuevo artículo"""
     docente = Docente.query.filter_by(user_id=current_user.id).first()
@@ -236,7 +267,7 @@ def nuevo_articulo():
 
 @docente_bp.route('/articulos/<int:id>/editar', methods=['GET', 'POST'])
 @login_required
-@profesor_required
+@docente_required
 def editar_articulo(id):
     """Editar artículo"""
     docente = Docente.query.filter_by(user_id=current_user.id).first()
@@ -257,7 +288,7 @@ def editar_articulo(id):
 
 @docente_bp.route('/articulos/<int:id>/eliminar', methods=['POST'])
 @login_required
-@profesor_required
+@docente_required
 def eliminar_articulo(id):
     """Eliminar artículo"""
     docente = Docente.query.filter_by(user_id=current_user.id).first()

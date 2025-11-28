@@ -1,29 +1,268 @@
-{% extends "layouts/base.html" %}
-
-{% block title %}Docente - {% block docente_title %}{% endblock %}{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/profesor.css') }}">
-{% endblock %}
-
-{% block content %}
-<div class="row">
-    <div class="col-md-3">
-        <div class="list-group">
-            <a href="{{ url_for('docente.dashboard') }}" class="list-group-item list-group-item-action">Dashboard</a>
-            <a href="{{ url_for('docente.perfil') }}" class="list-group-item list-group-item-action">Mi Perfil</a>
-            <a href="{{ url_for('docente.formacion') }}" class="list-group-item list-group-item-action">Formación Académica</a>
-            <a href="{{ url_for('docente.empleos') }}" class="list-group-item list-group-item-action">Empleos</a>
-            <a href="{{ url_for('docente.articulos') }}" class="list-group-item list-group-item-action">Artículos</a>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Portal Docente - UTTEC{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profesor.css') }}">
+    {% block extra_css %}{% endblock %}
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            background-color: #fff;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+            padding: 20px;
+        }
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #0d6efd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            margin-right: 10px;
+        }
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #333;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background-color: #e7f1ff;
+            color: #0d6efd;
+        }
+        .sidebar-menu a i {
+            margin-right: 10px;
+            width: 20px;
+        }
+        .sidebar-logout {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+        }
+        .sidebar-logout a {
+            color: #dc3545;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+        }
+        .sidebar-logout a:hover {
+            color: #c82333;
+        }
+        .main-content {
+            margin-left: 250px;
+            min-height: 100vh;
+        }
+        .top-header {
+            background-color: #fff;
+            padding: 20px 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .header-actions i {
+            font-size: 20px;
+            color: #666;
+            cursor: pointer;
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: #0d6efd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .content-area {
+            padding: 0 30px 30px;
+        }
+        .summary-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 100%;
+            transition: transform 0.2s;
+        }
+        .summary-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .summary-card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        .help-icon {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        .help-icon:hover {
+            background-color: #000;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">
+                <i class="bi bi-book"></i>
+            </div>
+            <div>
+                <div style="font-weight: bold; font-size: 18px;">UTTEC</div>
+                <div style="font-size: 12px; color: #666;">Portal Docente</div>
+            </div>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li>
+                <a href="{{ url_for('docente.dashboard') }}" class="{% if request.endpoint == 'docente.dashboard' %}active{% endif %}">
+                    <i class="bi bi-house-door"></i>
+                    <span>Mi Portafolio</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="bi bi-person"></i>
+                    <span>Ver CV</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('docente.perfil') }}">
+                    <i class="bi bi-pencil"></i>
+                    <span>Editar Información</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="bi bi-download"></i>
+                    <span>Generar CV</span>
+                </a>
+            </li>
+        </ul>
+        
+        <div class="sidebar-logout">
+            <a href="{{ url_for('auth.logout') }}">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Cerrar sesión</span>
+            </a>
         </div>
     </div>
-    <div class="col-md-9">
-        {% block docente_content %}{% endblock %}
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Header -->
+        <div class="top-header">
+            <h3 class="mb-0">{% block page_title %}Mi Portafolio{% endblock %}</h3>
+            <div class="header-actions">
+                <i class="bi bi-bell"></i>
+                <i class="bi bi-gear"></i>
+                <div class="user-profile">
+                    <div class="user-avatar">
+                        {{ current_docente.nombre_completo[0] if current_docente and current_docente.nombre_completo else current_user.email[0].upper() }}
+                    </div>
+                    <div>
+                        <div style="font-weight: bold;">{{ current_docente.nombre_completo if current_docente and current_docente.nombre_completo else 'Docente' }}</div>
+                        <div style="font-size: 12px; color: #666;">{{ current_user.email }}</div>
+                    </div>
+                </div>
+                <button class="btn btn-outline-primary">Ver mi CV</button>
+                <button class="btn btn-primary">Generar CV</button>
+            </div>
+        </div>
+        
+        <!-- Content Area -->
+        <div class="content-area">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            {% block docente_content %}{% endblock %}
+        </div>
     </div>
-</div>
-{% endblock %}
-
-{% block extra_js %}
-<script src="{{ url_for('static', filename='js/profesor.js') }}"></script>
-{% endblock %}
-
+    
+    <!-- Help Icon -->
+    <div class="help-icon">
+        <i class="bi bi-question"></i>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/profesor.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
