@@ -892,6 +892,21 @@
                             {{ form.researcher_id(class="form-control", placeholder="A-1234-5678") }}
                         </div>
                     </div>
+                    
+                    <!-- APIs de Sincronización -->
+                    <h6 class="mt-4 mb-3 text-primary"><i class="bi bi-cloud-download"></i> IDs para Importar Publicaciones</h6>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Scopus Author ID</label>
+                            {{ form.scopus_author_id(class="form-control") }}
+                            <small class="text-muted">Ej: 8243686100</small>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label">PubMed (Búsqueda de autor)</label>
+                            {{ form.pubmed_query(class="form-control") }}
+                            <small class="text-muted">Ej: Pérez García JM[Author]</small>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>

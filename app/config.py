@@ -19,7 +19,16 @@ class Config:
     
     # APIs Externas
     GOOGLE_SCHOLAR_API = os.environ.get('GOOGLE_SCHOLAR_API', '')
+    
+    # ORCID
+    ORCID_ID = os.environ.get('ORCID_ID', '')
+    
+    # SCOPUS - Elsevier
     SCOPUS_API_KEY = os.environ.get('SCOPUS_API_KEY', '')
-    ORCID_CLIENT_ID = os.environ.get('ORCID_CLIENT_ID', '')
-    PUBMED_API_KEY = os.environ.get('PUBMED_API_KEY', '')
+    SCOPUS_AUTHOR_ID = os.environ.get('SCOPUS_AUTHOR_ID', '')
+    
+    # PUBMED
+    PUBMED_AUTHOR_QUERY = os.environ.get('PUBMED_AUTHOR_QUERY', '')
+    
+    # GROQ (Chatbot)
     GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')
