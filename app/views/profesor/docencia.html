@@ -3,22 +3,35 @@
 {% block profesor_title %}Docencia{% endblock %}
 
 {% block profesor_content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Experiencia Docente</h2>
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+    <h2 class="mb-2 mb-md-0">Experiencia Docente</h2>
     <a href="#" class="btn btn-primary">Nueva Docencia</a>
 </div>
 
+{% if docencias %}
 <div class="list-group">
     {% for docencia in docencias %}
-    <div class="list-group-item">
-        <h5>{{ docencia.nombre_curso }}</h5>
-        <p class="mb-1">
-            {% if docencia.institucion %}{{ docencia.institucion }}{% endif %}
-            {% if docencia.año %}, {{ docencia.año }}{% endif %}
+    <div class="list-group-item list-group-item-action flex-column flex-md-row">
+        <div class="d-flex justify-content-between">
+            <h5 class="fw-bold">{{ docencia.nombre_curso }}</h5>
+        </div>
+
+        <p class="mb-1 text-muted">
+            {% if docencia.institucion %}
+                {{ docencia.institucion }}
+            {% endif %}
+            {% if docencia.año %}
+                , {{ docencia.año }}
+            {% endif %}
         </p>
-        <small>{{ docencia.nivel }}</small>
+
+        {% if docencia.nivel %}
+        <small class="text-secondary">{{ docencia.nivel }}</small>
+        {% endif %}
     </div>
     {% endfor %}
 </div>
+{% else %}
+<div class="alert alert-info text-center">No hay experiencia docente registrada.</div>
+{% endif %}
 {% endblock %}
-

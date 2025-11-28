@@ -3,27 +3,35 @@
 {% block profesor_title %}Generar CV{% endblock %}
 
 {% block profesor_content %}
-<h2>Generar Curriculum Vitae</h2>
+<h2 class="mb-3">Generar Curriculum Vitae</h2>
 <hr>
 
-<form method="POST" action="{{ url_for('cv.generar') }}">
-    <div class="mb-3">
-        <label for="formato" class="form-label">Formato</label>
-        <select class="form-select" id="formato" name="formato" required>
-            <option value="pdf">PDF</option>
-            <option value="word">Word (DOCX)</option>
-        </select>
-    </div>
-    <div class="mb-3">
-        <label for="tipo_cv" class="form-label">Tipo de CV</label>
-        <select class="form-select" id="tipo_cv" name="tipo_cv" required>
-            <option value="academico">Académico</option>
-            <option value="sni">SNI (Sistema Nacional de Investigadores)</option>
-            <option value="conacyt">CONACyT</option>
-        </select>
-    </div>
-    <button type="submit" class="btn btn-primary">Generar CV</button>
-    <a href="{{ url_for('cv.vista_previa') }}" class="btn btn-secondary">Vista Previa</a>
-</form>
-{% endblock %}
+<div class="card shadow-sm p-4">
+    <form method="POST" action="{{ url_for('cv.generar') }}">
+        
+        <!-- Formato -->
+        <div class="mb-3">
+            <label for="formato" class="form-label fw-bold">Formato</label>
+            <select class="form-select" id="formato" name="formato" required>
+                <option value="pdf">PDF</option>
+                <option value="word">Word (DOCX)</option>
+            </select>
+        </div>
 
+        <!-- Tipo de CV -->
+        <div class="mb-3">
+            <label for="tipo_cv" class="form-label fw-bold">Tipo de CV</label>
+            <select class="form-select" id="tipo_cv" name="tipo_cv" required>
+                <option value="academico">Académico</option>
+                <option value="sni">SNI (Sistema Nacional de Investigadores)</option>
+                <option value="conacyt">CONACyT</option>
+            </select>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mt-4">
+            <button type="submit" class="btn btn-primary">Generar CV</button>
+            <a href="{{ url_for('cv.vista_previa') }}" class="btn btn-secondary">Vista Previa</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

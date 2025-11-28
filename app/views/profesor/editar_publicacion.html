@@ -3,79 +3,95 @@
 {% block profesor_title %}Editar Publicación{% endblock %}
 
 {% block profesor_content %}
-<h2>Editar Publicación</h2>
+<h2 class="mb-3">Editar Publicación</h2>
 <hr>
 
-<form method="POST" action="{{ url_for('publicacion.editar', id=publicacion.id) }}">
+<form method="POST" action="{{ url_for('publicacion.editar', id=publicacion.id) }}" class="needs-validation" novalidate>
     {{ form.hidden_tag() }}
+
     <div class="mb-3">
         {{ form.titulo.label(class="form-label") }}
-        {{ form.titulo(class="form-control") }}
+        {{ form.titulo(class="form-control", placeholder="Título de la publicación") }}
     </div>
+
     <div class="mb-3">
         {{ form.autores.label(class="form-label") }}
-        {{ form.autores(class="form-control", rows="3") }}
+        {{ form.autores(class="form-control", rows="3", placeholder="Autor 1, Autor 2, ...") }}
     </div>
+
+    <!-- Revista / Volumen / Número -->
     <div class="row">
         <div class="col-md-6">
             <div class="mb-3">
                 {{ form.revista.label(class="form-label") }}
-                {{ form.revista(class="form-control") }}
+                {{ form.revista(class="form-control", placeholder="Nombre de la revista") }}
             </div>
         </div>
+
         <div class="col-md-3">
             <div class="mb-3">
                 {{ form.volumen.label(class="form-label") }}
-                {{ form.volumen(class="form-control") }}
+                {{ form.volumen(class="form-control", placeholder="Ej. 12") }}
             </div>
         </div>
+
         <div class="col-md-3">
             <div class="mb-3">
                 {{ form.numero.label(class="form-label") }}
-                {{ form.numero(class="form-control") }}
+                {{ form.numero(class="form-control", placeholder="Ej. 3") }}
             </div>
         </div>
     </div>
+
+    <!-- Año / Tipo / Páginas -->
     <div class="row">
         <div class="col-md-3">
             <div class="mb-3">
                 {{ form.año.label(class="form-label") }}
-                {{ form.año(class="form-control") }}
+                {{ form.año(class="form-control", placeholder="Ej. 2023") }}
             </div>
         </div>
+
         <div class="col-md-3">
             <div class="mb-3">
                 {{ form.tipo.label(class="form-label") }}
                 {{ form.tipo(class="form-select") }}
             </div>
         </div>
+
         <div class="col-md-6">
             <div class="mb-3">
                 {{ form.paginas.label(class="form-label") }}
-                {{ form.paginas(class="form-control") }}
+                {{ form.paginas(class="form-control", placeholder="Ej. 120–130") }}
             </div>
         </div>
     </div>
+
+    <!-- DOI / ISBN -->
     <div class="row">
         <div class="col-md-6">
             <div class="mb-3">
                 {{ form.doi.label(class="form-label") }}
-                {{ form.doi(class="form-control") }}
+                {{ form.doi(class="form-control", placeholder="Ej. 10.1234/abcd.5678") }}
             </div>
         </div>
+
         <div class="col-md-6">
             <div class="mb-3">
                 {{ form.isbn.label(class="form-label") }}
-                {{ form.isbn(class="form-control") }}
+                {{ form.isbn(class="form-control", placeholder="ISBN opcional") }}
             </div>
         </div>
     </div>
+
+    <!-- Indizada -->
     <div class="mb-3 form-check">
         {{ form.indizada(class="form-check-input") }}
         {{ form.indizada.label(class="form-check-label") }}
     </div>
+
+    <!-- Botones -->
     <button type="submit" class="btn btn-primary">Guardar Cambios</button>
     <a href="{{ url_for('publicacion.listar') }}" class="btn btn-secondary">Cancelar</a>
 </form>
 {% endblock %}
-

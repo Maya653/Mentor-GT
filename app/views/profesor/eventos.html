@@ -3,22 +3,28 @@
 {% block profesor_title %}Eventos{% endblock %}
 
 {% block profesor_content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Eventos Académicos</h2>
-    <a href="#" class="btn btn-primary">Nuevo Evento</a>
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+    <h2 class="mb-2">Eventos Académicos</h2>
+    <a href="#" class="btn btn-primary mb-2">Nuevo Evento</a>
 </div>
 
 <div class="list-group">
     {% for evento in eventos %}
-    <div class="list-group-item">
-        <h5>{{ evento.nombre }}</h5>
-        <p class="mb-1">
-            {% if evento.lugar %}{{ evento.lugar }}{% endif %}
-            {% if evento.fecha_inicio %}, {{ evento.fecha_inicio.strftime('%Y-%m-%d') }}{% endif %}
+    <div class="list-group-item shadow-sm border rounded mb-2 p-3">
+        <h5 class="fw-bold mb-1">{{ evento.nombre }}</h5>
+
+        <p class="text-muted mb-1">
+            {% if evento.lugar %}
+                <span class="d-block"><strong>Lugar:</strong> {{ evento.lugar }}</span>
+            {% endif %}
+
+            {% if evento.fecha_inicio %}
+                <span class="d-block"><strong>Fecha:</strong> {{ evento.fecha_inicio.strftime('%Y-%m-%d') }}</span>
+            {% endif %}
         </p>
-        <small>{{ evento.tipo }}</small>
+
+        <small class="badge bg-secondary">{{ evento.tipo }}</small>
     </div>
     {% endfor %}
 </div>
 {% endblock %}
-

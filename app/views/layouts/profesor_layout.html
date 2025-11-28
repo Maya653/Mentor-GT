@@ -8,7 +8,15 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-md-3">
+    <!-- Botón de menú para pantallas pequeñas -->
+    <div class="col-12 d-md-none mb-3">
+        <button class="btn btn-success w-100" type="button" data-bs-toggle="collapse" data-bs-target="#menuProfesor">
+            📁 Menú
+        </button>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-12 col-md-3 collapse d-md-block" id="menuProfesor">
         <div class="list-group">
             <a href="{{ url_for('docente.dashboard') }}" class="list-group-item list-group-item-action">Dashboard</a>
             <a href="{{ url_for('docente.perfil') }}" class="list-group-item list-group-item-action">Mi Perfil</a>

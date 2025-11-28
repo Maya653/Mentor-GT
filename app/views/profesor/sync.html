@@ -3,54 +3,64 @@
 {% block profesor_title %}Sincronizar{% endblock %}
 
 {% block profesor_content %}
-<h2>Sincronizar con APIs Externas</h2>
+
+<h2 class="text-center text-md-start">Sincronizar con APIs Externas</h2>
 <hr>
 
-<div class="row">
-    <div class="col-md-6">
-        <div class="card mb-3">
+<div class="row g-3">
+
+    <!-- Google Scholar -->
+    <div class="col-12 col-md-6">
+        <div class="card shadow-sm h-100 sync-card">
             <div class="card-body">
                 <h5 class="card-title">Google Scholar</h5>
                 <p class="card-text">Sincroniza tus publicaciones desde Google Scholar.</p>
                 <form method="POST" action="{{ url_for('sync.sync_google_scholar') }}">
-                    <button type="submit" class="btn btn-primary">Sincronizar</button>
+                    <button type="submit" class="btn btn-primary w-100 w-md-auto">Sincronizar</button>
                 </form>
             </div>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="card mb-3">
+
+    <!-- Scopus -->
+    <div class="col-12 col-md-6">
+        <div class="card shadow-sm h-100 sync-card">
             <div class="card-body">
                 <h5 class="card-title">Scopus</h5>
                 <p class="card-text">Sincroniza tus publicaciones desde Scopus.</p>
                 <form method="POST" action="{{ url_for('sync.sync_scopus') }}">
-                    <button type="submit" class="btn btn-primary">Sincronizar</button>
+                    <button type="submit" class="btn btn-primary w-100 w-md-auto">Sincronizar</button>
                 </form>
             </div>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="card mb-3">
+
+    <!-- ORCID -->
+    <div class="col-12 col-md-6">
+        <div class="card shadow-sm h-100 sync-card">
             <div class="card-body">
                 <h5 class="card-title">ORCID</h5>
                 <p class="card-text">Sincroniza tus publicaciones desde ORCID.</p>
                 <form method="POST" action="{{ url_for('sync.sync_orcid') }}">
-                    <button type="submit" class="btn btn-primary">Sincronizar</button>
+                    <button type="submit" class="btn btn-primary w-100 w-md-auto">Sincronizar</button>
                 </form>
             </div>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="card mb-3">
+
+    <!-- PubMed -->
+    <div class="col-12 col-md-6">
+        <div class="card shadow-sm h-100 sync-card">
             <div class="card-body">
                 <h5 class="card-title">PubMed</h5>
                 <p class="card-text">Sincroniza tus publicaciones desde PubMed.</p>
                 <form method="POST" action="{{ url_for('sync.sync_pubmed') }}">
-                    <button type="submit" class="btn btn-primary">Sincronizar</button>
+                    <button type="submit" class="btn btn-primary w-100 w-md-auto">Sincronizar</button>
                 </form>
             </div>
         </div>
     </div>
-</div>
-{% endblock %}
 
+</div>
+
+{% endblock %}

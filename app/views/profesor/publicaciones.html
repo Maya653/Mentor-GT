@@ -3,37 +3,65 @@
 {% block profesor_title %}Publicaciones{% endblock %}
 
 {% block profesor_content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Mis Publicaciones</h2>
-    <a href="{{ url_for('publicacion.nueva') }}" class="btn btn-primary">Nueva Publicación</a>
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-2">
+    <h2 class="text-center text-md-start">Mis Publicaciones</h2>
+    <a href="{{ url_for('publicacion.nueva') }}" class="btn btn-primary w-100 w-md-auto">
+        Nueva Publicación
+    </a>
 </div>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Título</th>
-            <th>Revista</th>
-            <th>Año</th>
-            <th>Tipo</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for pub in publicaciones %}
-        <tr>
-            <td>{{ pub.titulo }}</td>
-            <td>{{ pub.revista or '-' }}</td>
-            <td>{{ pub.año or '-' }}</td>
-            <td>{{ pub.tipo }}</td>
-            <td>
-                <a href="{{ url_for('publicacion.editar', id=pub.id) }}" class="btn btn-sm btn-warning">Editar</a>
-                <form method="POST" action="{{ url_for('publicacion.eliminar', id=pub.id) }}" class="d-inline" onsubmit="return confirm('¿Estás seguro?');">
-                    <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% endblock %}
+<div class="table-responsive">
+    <table class="table table-striped align-middle">
+        <thead class="table-primary">
+            <tr>
+                <th>Título</th>
+                <th class="d-none d-md-table-cell">Revista</th>
+                <th class="text-center">Año</th>
+                <th class="d-none d-md-table-cell">Tipo</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+        </thead>
 
+        <tbody>
+            {% for pub in publicaciones %}
+            <tr>
+                <td>
+                    <strong>{{ pub.titulo }}</strong><br>
+                    <!-- Datos secundarios visibles solo en móvil -->
+                    <small class="text-muted d-md-none">
+                        Revista: {{ pub.revista or '-' }}<br>
+                        Tipo: {{ pub.tipo }}<br>
+                    </small>
+                </td>
+
+                <td class="d-none d-md-table-cell">{{ pub.revista or '-' }}</td>
+
+                <td class="text-center">{{ pub.año or '-' }}</td>
+
+                <td class="d-none d-md-table-cell">{{ pub.tipo }}</td>
+
+                <td class="text-center">
+                    <div class="d-flex flex-column flex-md-row gap-1 justify-content-center">
+                        <a href="{{ url_for('publicacion.editar', id=pub.id) }}"
+                           class="btn btn-sm btn-warning w-100 w-md-auto">
+                           Editar
+                        </a>
+
+                        <form method="POST"
+                              action="{{ url_for('publicacion.eliminar', id=pub.id) }}"
+                              onsubmit="return confirm('¿Estás seguro?');"
+                              class="w-100 w-md-auto">
+                            <button type="submit" class="btn btn-sm btn-danger w-100">
+                                Eliminar
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

@@ -27,4 +27,310 @@
     color: #6c757d;
     margin-bottom: 0.25rem;
 }
+@media (max-width: 768px) {
 
+    .list-group-item {
+        font-size: 14px;
+        padding: 10px 12px;
+    }
+
+    .card.text-white {
+        margin-bottom: 15px;
+    }
+
+    .list-group-item h5 {
+        font-size: 16px;
+    }
+
+    .list-group-item p {
+        font-size: 13px;
+    }
+}
+@media (max-width: 768px) {
+
+    h2, h3 {
+        font-size: 1.4rem;
+    }
+
+    .card.text-white {
+        padding: 10px;
+        border-radius: 12px;
+    }
+
+    .card-title {
+        font-size: 1rem;
+    }
+
+    .card h2 {
+        font-size: 1.8rem;
+    }
+
+    .list-group-item h5 {
+        font-size: 1rem;
+    }
+
+    .list-group-item p {
+        font-size: 0.85rem;
+    }
+}
+@media (max-width: 768px) {
+    h2 { font-size: 1.4rem; }
+    .form-label { font-size: 0.95rem; }
+    .form-control { font-size: 0.95rem; }
+}
+
+/* Contenedor general para items */
+.list-group-item {
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #e7e7e7;
+    transition: box-shadow 0.2s ease;
+}
+
+.list-group-item:hover {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+/* Títulos */
+h2 {
+    font-size: 1.7rem;
+    font-weight: 600;
+}
+
+/* Responsivo texto */
+@media (max-width: 576px) {
+    h5 {
+        font-size: 1.05rem;
+    }
+}
+
+/* Etiquetas */
+.form-label {
+    font-weight: 600;
+}
+
+/* Input estilizado */
+.form-control, .form-select {
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+
+/* Botones */
+.btn {
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 500;
+}
+
+/* Espaciado en mobile */
+@media (max-width: 576px) {
+    h2 {
+        font-size: 1.4rem;
+    }
+
+    .form-control, .form-select {
+        font-size: 0.95rem;
+    }
+}
+/* Tarjetas de evento */
+.list-group-item {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 12px !important;
+}
+
+.list-group-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+/* Texto */
+h5 {
+    font-weight: 700;
+}
+
+.badge {
+    padding: 6px 10px;
+    border-radius: 8px;
+}
+
+@media (max-width: 576px) {
+    h2 {
+        font-size: 1.4rem;
+    }
+
+    .list-group-item {
+        padding: 14px;
+    }
+}
+/* Contenedor principal */
+.card {
+    border-radius: 14px;
+}
+
+/* Etiquetas */
+.form-label {
+    font-size: 0.95rem;
+}
+
+/* Inputs */
+.form-select,
+.form-control {
+    border-radius: 10px;
+    padding: 10px;
+}
+
+/* Botones */
+.btn {
+    padding: 8px 16px;
+    border-radius: 10px;
+}
+
+/* Responsividad */
+@media (max-width: 576px) {
+    h2 {
+        font-size: 1.4rem;
+    }
+
+    .card {
+        padding: 20px !important;
+    }
+}
+/* Espaciado general del formulario */
+.responsive-form {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Ajuste de inputs grandes */
+.responsive-form input,
+.responsive-form select,
+.responsive-form textarea {
+    font-size: 1rem;
+}
+
+/* Botones full width en móvil */
+@media (max-width: 768px) {
+    .responsive-form button,
+    .responsive-form a.btn {
+        width: 100% !important;
+    }
+
+    h2 {
+        text-align: center;
+    }
+}
+
+/* Mejoras visuales */
+.responsive-form .form-label {
+    font-weight: 600;
+}
+
+.responsive-form input:focus,
+.responsive-form select:focus,
+.responsive-form textarea:focus {
+    border-color: #0d6efd !important;
+    box-shadow: 0 0 0 .15rem rgba(13, 110, 253, .25);
+}
+/* Ajusta la tabla para pantallas pequeñas */
+.table-responsive {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Mejor legibilidad en móvil */
+@media (max-width: 768px) {
+
+    /* H2 centrado */
+    h2 {
+        text-align: center;
+    }
+
+    /* Botón principal full width en móvil */
+    .btn-primary {
+        width: 100%;
+    }
+
+    /* Botones de acciones en columna */
+    td .btn,
+    td form button {
+        width: 100% !important;
+    }
+}
+
+/* Estética general */
+table thead tr {
+    text-transform: uppercase;
+    font-size: 0.88rem;
+    letter-spacing: 0.5px;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(0,0,0,0.02);
+}
+
+.table td {
+    vertical-align: middle;
+}
+/* Cards con hover elegante */
+.sync-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sync-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+
+/* Botones full width en móvil */
+@media (max-width: 768px) {
+    .btn-primary {
+        width: 100%;
+    }
+}
+/* Separación y estilo general del CV */
+.cv-container {
+    border-radius: 12px;
+    padding: 15px;
+}
+
+/* Títulos de sección */
+.section-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #0d6efd;
+}
+
+/* Listas con buen espaciado */
+.cv-list {
+    padding-left: 18px;
+}
+
+.cv-item {
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+/* Texto auxiliar */
+.no-data {
+    color: #777;
+    font-style: italic;
+}
+
+/* DOI con estilo */
+.doi {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .cv-container {
+        padding: 10px;
+    }
+    .cv-item {
+        font-size: 0.95rem;
+    }
+    h3 {
+        font-size: 1.3rem;
+    }
+}

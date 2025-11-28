@@ -3,79 +3,76 @@
 {% block profesor_title %}Nueva Publicación{% endblock %}
 
 {% block profesor_content %}
-<h2>Nueva Publicación</h2>
+<h2 class="mt-3 text-center text-md-start">Nueva Publicación</h2>
 <hr>
 
-<form method="POST" action="{{ url_for('publicacion.nueva') }}">
+<form method="POST" action="{{ url_for('publicacion.nueva') }}" class="responsive-form">
     {{ form.hidden_tag() }}
+
     <div class="mb-3">
         {{ form.titulo.label(class="form-label") }}
         {{ form.titulo(class="form-control") }}
     </div>
+
     <div class="mb-3">
         {{ form.autores.label(class="form-label") }}
         {{ form.autores(class="form-control", rows="3") }}
     </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="mb-3">
-                {{ form.revista.label(class="form-label") }}
-                {{ form.revista(class="form-control") }}
-            </div>
+
+    <div class="row g-3">
+        <div class="col-md-6 col-12">
+            {{ form.revista.label(class="form-label") }}
+            {{ form.revista(class="form-control") }}
         </div>
-        <div class="col-md-3">
-            <div class="mb-3">
-                {{ form.volumen.label(class="form-label") }}
-                {{ form.volumen(class="form-control") }}
-            </div>
+
+        <div class="col-md-3 col-6">
+            {{ form.volumen.label(class="form-label") }}
+            {{ form.volumen(class="form-control") }}
         </div>
-        <div class="col-md-3">
-            <div class="mb-3">
-                {{ form.numero.label(class="form-label") }}
-                {{ form.numero(class="form-control") }}
-            </div>
+
+        <div class="col-md-3 col-6">
+            {{ form.numero.label(class="form-label") }}
+            {{ form.numero(class="form-control") }}
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-3">
-            <div class="mb-3">
-                {{ form.año.label(class="form-label") }}
-                {{ form.año(class="form-control") }}
-            </div>
+
+    <div class="row g-3 mt-1">
+        <div class="col-md-3 col-6">
+            {{ form.año.label(class="form-label") }}
+            {{ form.año(class="form-control") }}
         </div>
-        <div class="col-md-3">
-            <div class="mb-3">
-                {{ form.tipo.label(class="form-label") }}
-                {{ form.tipo(class="form-select") }}
-            </div>
+
+        <div class="col-md-3 col-6">
+            {{ form.tipo.label(class="form-label") }}
+            {{ form.tipo(class="form-select") }}
         </div>
-        <div class="col-md-6">
-            <div class="mb-3">
-                {{ form.paginas.label(class="form-label") }}
-                {{ form.paginas(class="form-control") }}
-            </div>
+
+        <div class="col-md-6 col-12">
+            {{ form.paginas.label(class="form-label") }}
+            {{ form.paginas(class="form-control") }}
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="mb-3">
-                {{ form.doi.label(class="form-label") }}
-                {{ form.doi(class="form-control") }}
-            </div>
+
+    <div class="row g-3 mt-1">
+        <div class="col-md-6 col-12">
+            {{ form.doi.label(class="form-label") }}
+            {{ form.doi(class="form-control") }}
         </div>
-        <div class="col-md-6">
-            <div class="mb-3">
-                {{ form.isbn.label(class="form-label") }}
-                {{ form.isbn(class="form-control") }}
-            </div>
+
+        <div class="col-md-6 col-12">
+            {{ form.isbn.label(class="form-label") }}
+            {{ form.isbn(class="form-control") }}
         </div>
     </div>
-    <div class="mb-3 form-check">
+
+    <div class="mb-3 form-check mt-3">
         {{ form.indizada(class="form-check-input") }}
         {{ form.indizada.label(class="form-check-label") }}
     </div>
-    <button type="submit" class="btn btn-primary">Guardar</button>
-    <a href="{{ url_for('publicacion.listar') }}" class="btn btn-secondary">Cancelar</a>
+
+    <div class="d-flex flex-column flex-md-row gap-2 mt-2">
+        <button type="submit" class="btn btn-primary w-100 w-md-auto">Guardar</button>
+        <a href="{{ url_for('publicacion.listar') }}" class="btn btn-secondary w-100 w-md-auto">Cancelar</a>
+    </div>
 </form>
 {% endblock %}
-

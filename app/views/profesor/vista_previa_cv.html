@@ -3,58 +3,103 @@
 {% block profesor_title %}Vista Previa CV{% endblock %}
 
 {% block profesor_content %}
-<h2>Vista Previa del CV</h2>
+
+<h2 class="text-center text-md-start">Vista Previa del CV</h2>
 <hr>
 
-<div class="card">
+<div class="card shadow-sm cv-container">
     <div class="card-body">
-        <h3>{{ usuario.nombre }} {{ usuario.apellidos or '' }}</h3>
-        <p>{{ usuario.email }}</p>
-        {% if usuario.orcid_id %}
-        <p>ORCID: {{ usuario.orcid_id }}</p>
-        {% endif %}
-        
+
+        <!-- INFORMACIÓN GENERAL -->
+        <div class="mb-4 text-center text-md-start">
+            <h3 class="fw-bold">{{ usuario.nombre }} {{ usuario.apellidos or '' }}</h3>
+            <p class="mb-1">{{ usuario.email }}</p>
+            {% if usuario.orcid_id %}
+            <p class="text-muted">ORCID: {{ usuario.orcid_id }}</p>
+            {% endif %}
+        </div>
+
         <hr>
-        
-        <h4>Publicaciones</h4>
-        <ol>
+
+        <!-- PUBLICACIONES -->
+        <h4 class="section-title">📚 Publicaciones</h4>
+        {% if publicaciones %}
+        <ol class="cv-list">
             {% for pub in publicaciones %}
-            <li>
+            <li class="cv-item">
                 <strong>{{ pub.titulo }}</strong><br>
-                {% if pub.autores %}{{ pub.autores }}<br>{% endif %}
-                {% if pub.revista %}{{ pub.revista }}{% endif %}
-                {% if pub.año %}, {{ pub.año }}{% endif %}
-                {% if pub.doi %}<br>DOI: {{ pub.doi }}{% endif %}
+
+                {% if pub.autores %}
+                    <span class="text-muted">{{ pub.autores }}</span><br>
+                {% endif %}
+
+                {% if pub.revista %}
+                    <span>{{ pub.revista }}</span>
+                {% endif %}
+
+                {% if pub.año %}
+                    <span>, {{ pub.año }}</span>
+                {% endif %}
+
+                {% if pub.doi %}
+                    <br><span class="doi">DOI: {{ pub.doi }}</span>
+                {% endif %}
             </li>
             {% endfor %}
         </ol>
-        
+        {% else %}
+        <p class="no-data">No hay publicaciones registradas.</p>
+        {% endif %}
+
         <hr>
-        
-        <h4>Eventos Académicos</h4>
-        <ul>
+
+        <!-- EVENTOS -->
+        <h4 class="section-title">🎤 Eventos Académicos</h4>
+        {% if eventos %}
+        <ul class="cv-list">
             {% for evento in eventos %}
-            <li>
+            <li class="cv-item">
                 <strong>{{ evento.nombre }}</strong><br>
-                {% if evento.lugar %}{{ evento.lugar }}{% endif %}
-                {% if evento.fecha_inicio %}, {{ evento.fecha_inicio.strftime('%Y') }}{% endif %}
+
+                {% if evento.lugar %}
+                    <span>{{ evento.lugar }}</span>
+                {% endif %}
+
+                {% if evento.fecha_inicio %}
+                    <span>, {{ evento.fecha_inicio.strftime('%Y') }}</span>
+                {% endif %}
             </li>
             {% endfor %}
         </ul>
-        
+        {% else %}
+        <p class="no-data">No hay eventos académicos registrados.</p>
+        {% endif %}
+
         <hr>
-        
-        <h4>Experiencia Docente</h4>
-        <ul>
+
+        <!-- DOCENCIAS -->
+        <h4 class="section-title">👨‍🏫 Experiencia Docente</h4>
+        {% if docencias %}
+        <ul class="cv-list">
             {% for docencia in docencias %}
-            <li>
+            <li class="cv-item">
                 <strong>{{ docencia.nombre_curso }}</strong><br>
-                {% if docencia.institucion %}{{ docencia.institucion }}{% endif %}
-                {% if docencia.año %}, {{ docencia.año }}{% endif %}
+
+                {% if docencia.institucion %}
+                    <span>{{ docencia.institucion }}</span>
+                {% endif %}
+
+                {% if docencia.año %}
+                    <span>, {{ docencia.año }}</span>
+                {% endif %}
             </li>
             {% endfor %}
         </ul>
+        {% else %}
+        <p class="no-data">No hay experiencia docente registrada.</p>
+        {% endif %}
+
     </div>
 </div>
-{% endblock %}
 
+{% endblock %}
