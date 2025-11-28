@@ -1,11 +1,37 @@
-/* Estilos principales */
+/* ============================================
+   MENTOR GT - Paleta de Colores
+   ============================================
+   Primario (Azul Oscuro): #211D53
+   Secundario (Azul Medio): #4852A2
+   Acento (Púrpura): #864F9F
+   Éxito (Verde Menta): #BFE2CC
+   ============================================ */
+
 :root {
+    /* Colores de marca */
+    --primary-color: #211D53;
+    --primary-light: #4852A2;
+    --accent-color: #864F9F;
+    --success-color: #BFE2CC;
+    --success-dark: #2e7d32;
+    
+    /* Colores de UI */
+    --background-color: #f5f7fa;
+    --card-bg: #ffffff;
+    --text-primary: #1a1a2e;
+    --text-secondary: #6c757d;
+    --text-muted: #999;
+    --border-color: #e0e0e0;
+    
+    /* Sombras */
+    --shadow-sm: 0 2px 4px rgba(33, 29, 83, 0.08);
+    --shadow-md: 0 4px 12px rgba(33, 29, 83, 0.12);
+    --shadow-lg: 0 8px 24px rgba(33, 29, 83, 0.16);
+    
+    /* Dimensiones */
     --sidebar-width: 250px;
     --header-height: 70px;
-    --primary-color: #0d6efd;
-    --secondary-color: #6c757d;
-    --background-color: #f5f5f5;
-    --card-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    --border-radius: 12px;
 }
 
 * {
@@ -18,42 +44,99 @@ body {
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
+    background-color: var(--background-color);
+    color: var(--text-primary);
 }
 
 main {
     flex: 1;
 }
 
-/* Cards responsivas */
+/* ============================================
+   Botones
+   ============================================ */
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    border: none;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);
+    border: none;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+}
+
+.btn-accent {
+    background: linear-gradient(135deg, var(--accent-color) 0%, #9c6fb0 100%);
+    border: none;
+    color: white;
+}
+
+.btn-accent:hover {
+    background: linear-gradient(135deg, #6d3f82 0%, var(--accent-color) 100%);
+}
+
+.btn {
+    transition: all 0.3s ease;
+    border-radius: 8px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ============================================
+   Cards
+   ============================================ */
 .card {
     border: none;
-    box-shadow: var(--card-shadow);
+    box-shadow: var(--shadow-sm);
     margin-bottom: 1.5rem;
+    border-radius: var(--border-radius);
+    background: var(--card-bg);
 }
 
 .card-header {
     font-weight: 600;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    color: white;
+    border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
 }
 
 .alert {
     margin-top: 1rem;
+    border-radius: 8px;
 }
 
 footer {
     margin-top: auto;
 }
 
-/* Mejoras de accesibilidad */
-.btn {
-    transition: all 0.3s ease;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-/* Tablas responsivas */
+/* ============================================
+   Tablas responsivas
+   ============================================ */
 .table-responsive {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -63,7 +146,22 @@ footer {
     min-width: 600px;
 }
 
-/* Utilidades responsivas */
+.table thead {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    color: white;
+}
+
+.table thead th {
+    border: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ============================================
+   Utilidades responsivas
+   ============================================ */
 .text-truncate-mobile {
     max-width: 150px;
     white-space: nowrap;
@@ -71,16 +169,80 @@ footer {
     text-overflow: ellipsis;
 }
 
-/* Grid responsivo para cards */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
 }
 
-/* Responsive para diferentes tamaños de pantalla */
+/* ============================================
+   Links y colores de texto
+   ============================================ */
+a {
+    color: var(--accent-color);
+    transition: color 0.2s;
+}
 
-/* Tablets y móviles grandes */
+a:hover {
+    color: var(--primary-color);
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.text-accent {
+    color: var(--accent-color) !important;
+}
+
+.bg-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%) !important;
+}
+
+.bg-accent {
+    background-color: var(--accent-color) !important;
+}
+
+.bg-success-light {
+    background-color: var(--success-color) !important;
+}
+
+/* ============================================
+   Badges
+   ============================================ */
+.badge.bg-primary {
+    background: var(--primary-color) !important;
+}
+
+.badge.bg-info {
+    background: var(--primary-light) !important;
+}
+
+.badge.bg-success {
+    background: #2e7d32 !important;
+}
+
+.badge.bg-accent {
+    background: var(--accent-color) !important;
+}
+
+/* ============================================
+   Formularios
+   ============================================ */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(33, 29, 83, 0.15);
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* ============================================
+   Responsive - Tablets
+   ============================================ */
 @media (max-width: 992px) {
     .container-fluid {
         padding: 1rem;
@@ -91,7 +253,9 @@ footer {
     }
 }
 
-/* Móviles */
+/* ============================================
+   Responsive - Móviles
+   ============================================ */
 @media (max-width: 768px) {
     .container-fluid {
         padding: 0.75rem;
@@ -117,7 +281,6 @@ footer {
         font-size: 1.25rem;
     }
     
-    /* Botones en móvil */
     .btn-group-mobile {
         display: flex;
         flex-direction: column;
@@ -128,12 +291,10 @@ footer {
         width: 100%;
     }
     
-    /* Ocultar columnas menos importantes en tablas */
     .table .d-none-mobile {
         display: none !important;
     }
     
-    /* Formularios en móvil */
     .form-inline-mobile {
         flex-direction: column;
         align-items: stretch !important;
@@ -150,7 +311,9 @@ footer {
     }
 }
 
-/* Móviles pequeños */
+/* ============================================
+   Responsive - Móviles pequeños
+   ============================================ */
 @media (max-width: 480px) {
     .container-fluid {
         padding: 0.5rem;
@@ -179,14 +342,15 @@ footer {
         grid-template-columns: 1fr;
     }
     
-    /* Tablas compactas en móviles pequeños */
     .table td, .table th {
         padding: 0.5rem;
         font-size: 0.85rem;
     }
 }
 
-/* Formularios responsivos */
+/* ============================================
+   Formularios responsivos
+   ============================================ */
 .form-row-responsive {
     display: flex;
     flex-wrap: wrap;
@@ -203,7 +367,9 @@ footer {
     }
 }
 
-/* Acciones de tabla responsivas */
+/* ============================================
+   Acciones de tabla
+   ============================================ */
 .actions-cell {
     white-space: nowrap;
 }
@@ -221,19 +387,22 @@ footer {
     }
 }
 
-/* Imágenes responsivas */
+/* ============================================
+   Imágenes y contenido
+   ============================================ */
 img {
     max-width: 100%;
     height: auto;
 }
 
-/* Overflow para contenido largo */
 .content-overflow {
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
 
-/* Modal responsivo */
+/* ============================================
+   Modal responsivo
+   ============================================ */
 @media (max-width: 576px) {
     .modal-dialog {
         margin: 0.5rem;
@@ -245,11 +414,19 @@ img {
     }
 }
 
-/* Lista de items responsiva */
+/* ============================================
+   Lista de items
+   ============================================ */
 .list-group-item {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+    border-left: 4px solid var(--primary-light);
+}
+
+.list-group-item.active {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 @media (max-width: 576px) {
@@ -263,7 +440,18 @@ img {
     }
 }
 
-/* Paginación responsiva */
+/* ============================================
+   Paginación
+   ============================================ */
+.page-link {
+    color: var(--primary-color);
+}
+
+.page-item.active .page-link {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
 @media (max-width: 576px) {
     .pagination {
         flex-wrap: wrap;
@@ -276,23 +464,9 @@ img {
     }
 }
 
-/* Dropdown responsivo */
-@media (max-width: 576px) {
-    .dropdown-menu {
-        width: 100%;
-        position: fixed !important;
-        left: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        top: auto !important;
-        transform: none !important;
-        border-radius: 1rem 1rem 0 0;
-        max-height: 50vh;
-        overflow-y: auto;
-    }
-}
-
-/* Navbar responsive mejorado */
+/* ============================================
+   Navbar responsive
+   ============================================ */
 @media (max-width: 991px) {
     .navbar-collapse {
         background-color: inherit;
@@ -311,4 +485,38 @@ img {
     .navbar-nav .nav-link:hover {
         background-color: rgba(255,255,255,0.1);
     }
+}
+
+/* ============================================
+   Animaciones y transiciones
+   ============================================ */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* ============================================
+   Scrollbar personalizado
+   ============================================ */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-light);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
 }

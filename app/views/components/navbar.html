@@ -1,9 +1,9 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand d-flex align-items-center" href="{% if current_user.is_authenticated %}{% if current_user.es_admin() %}{{ url_for('admin.dashboard') }}{% else %}{{ url_for('docente.dashboard') }}{% endif %}{% else %}{{ url_for('auth.login') }}{% endif %}">
-            <i class="bi bi-mortarboard me-2"></i>
-            <span class="d-none d-sm-inline">Sistema CV Académico</span>
-            <span class="d-sm-none">CV Académico</span>
+            <img src="{{ url_for('static', filename='logos/GT-05.png') }}" alt="Mentor GT" class="navbar-logo me-2" style="height: 32px; width: auto;">
+            <span class="d-none d-sm-inline">Mentor GT</span>
+            <span class="d-sm-none">Mentor GT</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -12,7 +12,7 @@
             <ul class="navbar-nav ms-auto align-items-lg-center">
                 {% if current_user.is_authenticated %}
                     <li class="nav-item">
-                        <span class="navbar-text me-lg-3 text-white-50 d-block d-lg-inline py-2 py-lg-0">
+                        <span class="navbar-text me-lg-3 d-block d-lg-inline py-2 py-lg-0" style="color: rgba(255, 255, 255, 0.7);">
                             <i class="bi bi-person-circle me-1"></i>
                             <span class="user-email">{{ current_user.email }}</span>
                         </span>
@@ -25,7 +25,7 @@
                         </li>
                     {% endif %}
                     <li class="nav-item">
-                        <a class="nav-link text-danger-emphasis" href="{{ url_for('auth.logout') }}">
+                        <a class="nav-link logout-link" href="{{ url_for('auth.logout') }}">
                             <i class="bi bi-box-arrow-right me-1"></i>Cerrar Sesión
                         </a>
                     </li>
@@ -36,7 +36,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('auth.register') }}">
+                        <a class="nav-link register-link" href="{{ url_for('auth.register') }}">
                             <i class="bi bi-person-plus me-1"></i>Registrarse
                         </a>
                     </li>
@@ -47,28 +47,57 @@
 </nav>
 
 <style>
+/* Paleta Mentor GT */
 .navbar {
     padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, #211D53 0%, #4852A2 100%) !important;
+    box-shadow: 0 4px 15px rgba(33, 29, 83, 0.2);
+}
+
+.navbar-logo {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 .navbar-brand {
     font-weight: 600;
+    color: white !important;
 }
 
 .navbar-nav .nav-link {
     padding: 0.5rem 1rem;
-    border-radius: 6px;
-    transition: background-color 0.2s;
+    border-radius: 8px;
+    transition: all 0.2s;
+    color: rgba(255, 255, 255, 0.9) !important;
 }
 
 .navbar-nav .nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(191, 226, 204, 0.2);
+    color: #BFE2CC !important;
+}
+
+.navbar-nav .logout-link {
+    color: #BFE2CC !important;
+}
+
+.navbar-nav .logout-link:hover {
+    background-color: rgba(134, 79, 159, 0.3);
+    color: white !important;
+}
+
+.navbar-nav .register-link {
+    background-color: rgba(191, 226, 204, 0.2);
+    border: 1px solid rgba(191, 226, 204, 0.3);
+}
+
+.navbar-nav .register-link:hover {
+    background-color: #BFE2CC;
+    color: #211D53 !important;
 }
 
 @media (max-width: 991px) {
     .navbar-collapse {
         padding-top: 1rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-top: 1px solid rgba(191, 226, 204, 0.2);
         margin-top: 0.75rem;
     }
     
@@ -93,6 +122,10 @@
     
     .navbar-brand {
         font-size: 1rem;
+    }
+    
+    .navbar-logo {
+        height: 28px !important;
     }
     
     .user-email {

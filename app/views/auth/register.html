@@ -1,147 +1,252 @@
 {% extends "layouts/base.html" %}
 
-{% block title %}Registrarse{% endblock %}
+{% block title %}Registrarse - Mentor GT{% endblock %}
 
 {% block content %}
 <div class="register-wrapper">
-    <div class="row justify-content-center align-items-center">
-        <div class="col-11 col-sm-10 col-md-8 col-lg-6 col-xl-5">
-            <div class="card shadow register-card">
-                <div class="card-header bg-success text-white text-center py-3">
-                    <h4 class="mb-0">
-                        <i class="bi bi-person-plus me-2"></i>Crear Cuenta
-                    </h4>
-                </div>
-                <div class="card-body p-4">
-                    <form method="POST" action="{{ url_for('auth.register') }}">
-                        {{ form.hidden_tag() }}
-                        
-                        <div class="mb-3">
-                            {{ form.email.label(class="form-label") }}
-                            {{ form.email(class="form-control", placeholder="correo@ejemplo.com") }}
-                            {% if form.email.errors %}
+    <div class="register-container">
+        <!-- Logo -->
+        <div class="text-center mb-3">
+            <img src="{{ url_for('static', filename='logos/GT-05.png') }}" alt="Mentor GT" class="register-logo mb-2">
+            <h3 class="mb-1" style="font-weight: 700; color: #211D53;">Únete a Mentor GT</h3>
+            <p class="text-muted small mb-0">Crea tu cuenta para gestionar tu CV académico</p>
+        </div>
+        
+        <div class="card shadow register-card">
+            <div class="card-header text-white text-center py-3">
+                <h5 class="mb-0">
+                    <img src="{{ url_for('static', filename='iconografia/ADJUNTAR.png') }}" alt="" style="width: 22px; height: 22px; margin-right: 8px; filter: brightness(0) invert(1);">
+                    Crear Cuenta
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('auth.register') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.email.label(class="form-label") }}
+                        {{ form.email(class="form-control", placeholder="correo@ejemplo.com") }}
+                        {% if form.email.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.email.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row g-2 mb-3">
+                        <div class="col-12 col-sm-6">
+                            {{ form.nombre.label(class="form-label") }}
+                            {{ form.nombre(class="form-control", placeholder="Tu nombre") }}
+                            {% if form.nombre.errors %}
                                 <div class="text-danger mt-1">
-                                    {% for error in form.email.errors %}
+                                    {% for error in form.nombre.errors %}
                                         <small>{{ error }}</small>
                                     {% endfor %}
                                 </div>
                             {% endif %}
                         </div>
-                        
-                        <div class="row g-3 mb-3">
-                            <div class="col-12 col-sm-6">
-                                {{ form.nombre.label(class="form-label") }}
-                                {{ form.nombre(class="form-control", placeholder="Tu nombre") }}
-                                {% if form.nombre.errors %}
-                                    <div class="text-danger mt-1">
-                                        {% for error in form.nombre.errors %}
-                                            <small>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div class="col-12 col-sm-6">
-                                {{ form.apellidos.label(class="form-label") }}
-                                {{ form.apellidos(class="form-control", placeholder="Tus apellidos") }}
-                            </div>
+                        <div class="col-12 col-sm-6">
+                            {{ form.apellidos.label(class="form-label") }}
+                            {{ form.apellidos(class="form-control", placeholder="Tus apellidos") }}
                         </div>
-                        
-                        <div class="row g-3 mb-4">
-                            <div class="col-12 col-sm-6">
-                                {{ form.password.label(class="form-label") }}
-                                {{ form.password(class="form-control", placeholder="••••••••") }}
-                                {% if form.password.errors %}
-                                    <div class="text-danger mt-1">
-                                        {% for error in form.password.errors %}
-                                            <small>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div class="col-12 col-sm-6">
-                                {{ form.password_confirm.label(class="form-label") }}
-                                {{ form.password_confirm(class="form-control", placeholder="••••••••") }}
-                                {% if form.password_confirm.errors %}
-                                    <div class="text-danger mt-1">
-                                        {% for error in form.password_confirm.errors %}
-                                            <small>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
+                    </div>
+                    
+                    <div class="row g-2 mb-3">
+                        <div class="col-12 col-sm-6">
+                            {{ form.password.label(class="form-label") }}
+                            {{ form.password(class="form-control", placeholder="••••••••") }}
+                            {% if form.password.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.password.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         </div>
-                        
-                        <div class="d-grid">
-                            {{ form.submit(class="btn btn-success btn-lg") }}
+                        <div class="col-12 col-sm-6">
+                            {{ form.password_confirm.label(class="form-label") }}
+                            {{ form.password_confirm(class="form-control", placeholder="••••••••") }}
+                            {% if form.password_confirm.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.password_confirm.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         </div>
-                    </form>
-                    <hr class="my-4">
-                    <p class="text-center mb-0">
-                        ¿Ya tienes cuenta? <a href="{{ url_for('auth.login') }}" class="fw-bold text-success">Inicia sesión aquí</a>
-                    </p>
-                </div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        {{ form.submit(class="btn btn-success btn-lg") }}
+                    </div>
+                </form>
+                <hr class="my-3">
+                <p class="text-center mb-0">
+                    ¿Ya tienes cuenta? <a href="{{ url_for('auth.login') }}" class="fw-bold">Inicia sesión aquí</a>
+                </p>
             </div>
-            
-            <!-- Info adicional -->
-            <div class="text-center mt-4 text-muted">
-                <small>
-                    <i class="bi bi-shield-check me-1"></i>
-                    Sistema de CVs Académicos - UTTEC
-                </small>
-            </div>
+        </div>
+        
+        <!-- Info adicional -->
+        <div class="text-center mt-3 text-muted">
+            <small>
+                <img src="{{ url_for('static', filename='logos/Beaver logo-03.png') }}" alt="" style="height: 18px; width: auto; opacity: 0.6; margin-right: 5px;">
+                Desarrollado para UTTEC
+            </small>
         </div>
     </div>
 </div>
 
 <style>
+/* Paleta Mentor GT */
+:root {
+    --primary: #211D53;
+    --secondary: #4852A2;
+    --accent: #864F9F;
+    --success: #BFE2CC;
+}
+
 .register-wrapper {
-    min-height: calc(100vh - 120px);
+    min-height: calc(100vh - 150px);
     display: flex;
     align-items: center;
-    padding: 20px 0;
+    justify-content: center;
+    padding: 20px 15px;
+    background: linear-gradient(135deg, #f5f7fa 0%, rgba(191, 226, 204, 0.3) 50%, rgba(72, 82, 162, 0.1) 100%);
+}
+
+.register-container {
+    width: 100%;
+    max-width: 500px;
+}
+
+.register-logo {
+    height: 55px;
+    width: auto;
+    filter: drop-shadow(0 4px 8px rgba(33, 29, 83, 0.2));
 }
 
 .register-card {
     border: none;
-    border-radius: 12px;
+    border-radius: 16px;
     overflow: hidden;
+    box-shadow: 0 8px 30px rgba(33, 29, 83, 0.15);
 }
 
 .register-card .card-header {
     border-bottom: none;
+    background: linear-gradient(135deg, var(--success) 0%, #a8d4b8 100%);
+    color: var(--primary) !important;
+}
+
+.register-card .card-header h5 {
+    color: var(--primary) !important;
+}
+
+.register-card .card-header img {
+    filter: none !important;
 }
 
 .register-card .form-control {
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 10px 15px;
+    border: 2px solid #e0e0e0;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .register-card .form-control:focus {
-    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.15);
+    border-color: var(--success);
+    box-shadow: 0 0 0 3px rgba(191, 226, 204, 0.5);
 }
 
 .register-card .btn-success {
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 12px;
     font-weight: 600;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.register-card .btn-success:hover {
+    background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(33, 29, 83, 0.25);
+}
+
+.register-card .form-label {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+    color: var(--primary);
+    font-weight: 500;
+}
+
+.register-card a {
+    color: var(--accent);
+    transition: color 0.2s;
+}
+
+.register-card a:hover {
+    color: var(--primary);
 }
 
 @media (max-width: 576px) {
     .register-wrapper {
-        padding: 15px 0;
+        padding: 15px;
+        min-height: auto;
+    }
+    
+    .register-logo {
+        height: 45px;
     }
     
     .register-card .card-body {
-        padding: 20px !important;
+        padding: 15px !important;
     }
     
-    .register-card h4 {
-        font-size: 1.25rem;
+    .register-card h5 {
+        font-size: 1rem;
     }
     
     .register-card .btn-lg {
         font-size: 1rem;
         padding: 10px;
+    }
+    
+    .text-center h3 {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-height: 750px) {
+    .register-wrapper {
+        padding: 10px 15px;
+    }
+    
+    .register-logo {
+        height: 40px;
+    }
+    
+    .text-center.mb-3 {
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .register-card .card-body {
+        padding: 12px !important;
+    }
+    
+    .register-card .mb-3 {
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .register-card hr {
+        margin: 0.75rem 0 !important;
+    }
+    
+    .register-card .form-control {
+        padding: 8px 12px;
     }
 }
 </style>

@@ -2,17 +2,17 @@
 
 {% block admin_content %}
 <!-- Welcome Section -->
-<div class="mb-4">
-    <h1 class="mb-2" style="font-size: clamp(1.5rem, 5vw, 2rem); font-weight: bold;">Bienvenido al Sistema de Gestión de Docentes</h1>
-    <p class="text-muted" style="font-size: clamp(0.875rem, 2vw, 1rem);">Administra la información académica y profesional de los docentes de UTTEC</p>
+<div class="mb-4" style="background: linear-gradient(135deg, #ffffff 0%, rgba(191, 226, 204, 0.2) 100%); border-radius: 16px; padding: 25px; box-shadow: 0 4px 15px rgba(33, 29, 83, 0.08); border-left: 4px solid #864F9F;">
+    <h1 class="mb-2" style="font-size: clamp(1.5rem, 5vw, 2rem); font-weight: bold; color: #211D53;">Bienvenido al Sistema de Gestión de Docentes</h1>
+    <p style="font-size: clamp(0.875rem, 2vw, 1rem); color: #6c757d; margin-bottom: 0;">Administra la información académica y profesional de los docentes de UTTEC</p>
 </div>
 
 <!-- Summary Cards -->
 <div class="row g-3 mb-4">
     <div class="col-6 col-lg-3">
         <div class="summary-card h-100">
-            <div class="summary-card-icon" style="background-color: #0d6efd;">
-                <i class="bi bi-people text-white" style="font-size: 20px;"></i>
+            <div class="summary-card-icon" style="background: linear-gradient(135deg, #211D53 0%, #4852A2 100%);">
+                <img src="{{ url_for('static', filename='iconografia/USUARIOS.png') }}" alt="" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
             </div>
             <h6 class="mb-1">Total Docentes</h6>
             <h3 class="mb-0">{{ total_docentes }}</h3>
@@ -20,8 +20,8 @@
     </div>
     <div class="col-6 col-lg-3">
         <div class="summary-card h-100">
-            <div class="summary-card-icon" style="background-color: #198754;">
-                <i class="bi bi-file-text text-white" style="font-size: 20px;"></i>
+            <div class="summary-card-icon" style="background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);">
+                <img src="{{ url_for('static', filename='iconografia/DOCUMENTO-ARCHIVO.png') }}" alt="" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
             </div>
             <h6 class="mb-1">Artículos</h6>
             <h3 class="mb-0">{{ total_articulos }}</h3>
@@ -29,8 +29,8 @@
     </div>
     <div class="col-6 col-lg-3">
         <div class="summary-card h-100">
-            <div class="summary-card-icon" style="background-color: #6f42c1;">
-                <i class="bi bi-book text-white" style="font-size: 20px;"></i>
+            <div class="summary-card-icon" style="background: linear-gradient(135deg, #864F9F 0%, #9c6fb0 100%);">
+                <img src="{{ url_for('static', filename='iconografia/CATEGORÍA.png') }}" alt="" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
             </div>
             <h6 class="mb-1">Cursos</h6>
             <h3 class="mb-0">{{ total_cursos or 0 }}</h3>
@@ -38,8 +38,8 @@
     </div>
     <div class="col-6 col-lg-3">
         <div class="summary-card h-100">
-            <div class="summary-card-icon" style="background-color: #fd7e14;">
-                <i class="bi bi-briefcase text-white" style="font-size: 20px;"></i>
+            <div class="summary-card-icon" style="background: linear-gradient(135deg, #4852A2 0%, #864F9F 100%);">
+                <img src="{{ url_for('static', filename='iconografia/CARPETA.png') }}" alt="" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
             </div>
             <h6 class="mb-1">Proyectos</h6>
             <h3 class="mb-0">{{ total_proyectos or 0 }}</h3>
@@ -48,13 +48,16 @@
 </div>
 
 <!-- Quick Search Section -->
-<div class="search-section text-center" style="padding: clamp(20px, 5vw, 40px);">
+<div class="search-section text-center" style="padding: clamp(20px, 5vw, 40px); background: linear-gradient(135deg, #ffffff 0%, rgba(191, 226, 204, 0.15) 100%); border-top: 4px solid #864F9F;">
     <div class="search-icon-large mb-3">
-        <i class="bi bi-search" style="font-size: clamp(40px, 10vw, 60px); color: #0d6efd;"></i>
+        <img src="{{ url_for('static', filename='iconografia/BÚSQUEDA AVANZADA.png') }}" alt="Buscar" style="width: clamp(50px, 12vw, 80px); height: auto;">
     </div>
-    <h4 class="mb-2">Búsqueda Rápida</h4>
+    <h4 class="mb-2" style="color: #211D53;">Búsqueda Rápida</h4>
     <p class="text-muted mb-4" style="font-size: clamp(0.875rem, 2vw, 1rem);">Encuentra rápidamente a un docente para ver o editar su información</p>
-    <a href="{{ url_for('admin.docentes') }}" class="btn btn-primary">Buscar Docente</a>
+    <a href="{{ url_for('admin.docentes') }}" class="btn btn-primary" style="background: linear-gradient(135deg, #211D53 0%, #4852A2 100%); border: none;">
+        <img src="{{ url_for('static', filename='iconografia/BÚSQUEDA AVANZADA.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px; filter: brightness(0) invert(1);">
+        Buscar Docente
+    </a>
 </div>
 
 <!-- Bottom Section -->
@@ -62,22 +65,22 @@
     <!-- Recent Teachers -->
     <div class="col-12 col-lg-6">
         <div class="recent-section h-100">
-            <h5 class="mb-3">Docentes Recientes</h5>
+            <h5 class="mb-3" style="color: #211D53; border-bottom: 2px solid #BFE2CC; padding-bottom: 10px;">Docentes Recientes</h5>
             {% if docentes_recientes %}
                 {% for docente in docentes_recientes %}
                 <div class="recent-item flex-wrap">
-                    <div class="user-avatar" style="width: 40px; height: 40px; margin-right: 12px; font-size: 14px; flex-shrink: 0;">
+                    <div class="user-avatar" style="width: 40px; height: 40px; margin-right: 12px; font-size: 14px; flex-shrink: 0; background: linear-gradient(135deg, #211D53 0%, #4852A2 100%);">
                         {{ docente.nombre_completo[0] if docente.nombre_completo else 'D' }}
                     </div>
                     <div class="flex-grow-1" style="min-width: 0;">
-                        <div style="font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ docente.nombre_completo }}</div>
+                        <div style="font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #211D53;">{{ docente.nombre_completo }}</div>
                         {% if docente.formaciones.first() %}
-                        <div style="font-size: 13px; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ docente.formaciones.first().area_conocimiento or 'Sin área' }}</div>
+                        <div style="font-size: 13px; color: #864F9F; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ docente.formaciones.first().area_conocimiento or 'Sin área' }}</div>
                         {% else %}
-                        <div style="font-size: 13px; color: #666;">Sin información académica</div>
+                        <div style="font-size: 13px; color: #6c757d;">Sin información académica</div>
                         {% endif %}
                     </div>
-                    <a href="{{ url_for('admin.ver_docente', id=docente.id) }}" class="btn btn-sm btn-primary ms-2">Ver</a>
+                    <a href="{{ url_for('admin.ver_docente', id=docente.id) }}" class="btn btn-sm ms-2" style="background: linear-gradient(135deg, #211D53 0%, #4852A2 100%); color: white;">Ver</a>
                 </div>
                 {% endfor %}
             {% else %}
@@ -89,30 +92,30 @@
     <!-- Recent Activity -->
     <div class="col-12 col-lg-6">
         <div class="recent-section h-100">
-            <h5 class="mb-3">Actividad Reciente</h5>
+            <h5 class="mb-3" style="color: #211D53; border-bottom: 2px solid #BFE2CC; padding-bottom: 10px;">Actividad Reciente</h5>
             {% if actividades_recientes %}
                 {% for actividad in actividades_recientes %}
                 <div class="activity-item">
-                    <div class="activity-bullet" style="background-color: {{ actividad.color or '#0d6efd' }};"></div>
+                    <div class="activity-bullet" style="background: linear-gradient(135deg, #4852A2 0%, #864F9F 100%);"></div>
                     <div class="flex-grow-1" style="min-width: 0;">
-                        <div style="font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ actividad.titulo }}</div>
-                        <div style="font-size: 13px; color: #666;">{{ actividad.docente }} - {{ actividad.fecha }}</div>
+                        <div style="font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #211D53;">{{ actividad.titulo }}</div>
+                        <div style="font-size: 13px; color: #6c757d;">{{ actividad.docente }} - {{ actividad.fecha }}</div>
                     </div>
                 </div>
                 {% endfor %}
             {% else %}
                 <div class="activity-item">
-                    <div class="activity-bullet" style="background-color: #0d6efd;"></div>
+                    <div class="activity-bullet" style="background: linear-gradient(135deg, #4852A2 0%, #864F9F 100%);"></div>
                     <div class="flex-grow-1">
-                        <div style="font-weight: 500;">Nuevo artículo registrado</div>
-                        <div style="font-size: 13px; color: #666;">Sistema - Hace 2 días</div>
+                        <div style="font-weight: 500; color: #211D53;">Nuevo artículo registrado</div>
+                        <div style="font-size: 13px; color: #6c757d;">Sistema - Hace 2 días</div>
                     </div>
                 </div>
                 <div class="activity-item">
-                    <div class="activity-bullet" style="background-color: #198754;"></div>
+                    <div class="activity-bullet" style="background: linear-gradient(135deg, #BFE2CC 0%, #a8d4b8 100%);"></div>
                     <div class="flex-grow-1">
-                        <div style="font-weight: 500;">Proyecto finalizado</div>
-                        <div style="font-size: 13px; color: #666;">Sistema - Hace 5 días</div>
+                        <div style="font-weight: 500; color: #211D53;">Proyecto finalizado</div>
+                        <div style="font-size: 13px; color: #6c757d;">Sistema - Hace 5 días</div>
                     </div>
                 </div>
             {% endif %}
@@ -132,7 +135,7 @@
         }
         
         .summary-card h6 {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
         }
         
         .summary-card-icon {
@@ -140,8 +143,9 @@
             height: 35px !important;
         }
         
-        .summary-card-icon i {
-            font-size: 16px !important;
+        .summary-card-icon img {
+            width: 18px !important;
+            height: 18px !important;
         }
         
         .recent-section {

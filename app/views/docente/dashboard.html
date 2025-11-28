@@ -2,12 +2,12 @@
 
 {% block docente_content %}
 <!-- Welcome Section -->
-<div class="welcome-section d-flex flex-column flex-sm-row align-items-center align-items-sm-start mb-4" style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-    <div class="user-avatar mb-3 mb-sm-0 me-sm-4" style="width: 80px; height: 80px; font-size: 32px; flex-shrink: 0;">
+<div class="welcome-section d-flex flex-column flex-sm-row align-items-center align-items-sm-start mb-4" style="background: linear-gradient(135deg, #ffffff 0%, rgba(191, 226, 204, 0.2) 100%); border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(33, 29, 83, 0.08); border-left: 4px solid #864F9F;">
+    <div class="user-avatar mb-3 mb-sm-0 me-sm-4" style="width: 80px; height: 80px; font-size: 32px; flex-shrink: 0; background: linear-gradient(135deg, #211D53 0%, #4852A2 100%);">
         {{ docente.nombre_completo[0] if docente.nombre_completo else 'D' }}
     </div>
     <div class="text-center text-sm-start">
-        <h2 class="mb-1" style="font-size: clamp(1.25rem, 4vw, 1.75rem); font-weight: bold;">
+        <h2 class="mb-1" style="font-size: clamp(1.25rem, 4vw, 1.75rem); font-weight: bold; color: #211D53;">
             Bienvenido, {% if docente.nombre_completo %}{{ docente.nombre_completo.split()[0] }}{% else %}Docente{% endif %}
         </h2>
         {% set empleo_actual = None %}
@@ -16,7 +16,7 @@
                 {% set empleo_actual = empleo %}
             {% endif %}
         {% endfor %}
-        <p class="text-muted mb-1" style="font-size: 14px;">
+        <p class="mb-1" style="font-size: 14px; color: #864F9F;">
             {% if empleo_actual and empleo_actual.area_adscripcion %}
                 {{ empleo_actual.area_adscripcion }}
             {% else %}
@@ -33,62 +33,62 @@
 <div class="row g-3 mb-4">
     <div class="col-6 col-lg-4">
         <div class="summary-card h-100">
-            <div class="summary-card-icon" style="background-color: #6f42c1;">
-                <i class="bi bi-mortarboard text-white" style="font-size: 20px;"></i>
+            <div class="summary-card-icon" style="background: linear-gradient(135deg, #864F9F 0%, #9c6fb0 100%);">
+                <img src="{{ url_for('static', filename='iconografia/CATEGORÍA.png') }}" alt="" style="width: 22px; height: 22px; filter: brightness(0) invert(1);">
             </div>
             <h6 class="mb-1">Formación Académica</h6>
             <h3 class="mb-2">{{ total_formaciones }}</h3>
-            <a href="{{ url_for('docente.formacion') }}" class="text-decoration-none small" style="color: #6f42c1;">Ver detalles →</a>
+            <a href="{{ url_for('docente.formacion') }}" class="text-decoration-none small" style="color: #864F9F;">Ver detalles →</a>
         </div>
     </div>
     <div class="col-6 col-lg-4">
         <div class="summary-card h-100">
-            <div class="summary-card-icon" style="background-color: #0d6efd;">
-                <i class="bi bi-briefcase text-white" style="font-size: 20px;"></i>
+            <div class="summary-card-icon" style="background: linear-gradient(135deg, #4852A2 0%, #5a6bb5 100%);">
+                <img src="{{ url_for('static', filename='iconografia/CARPETA.png') }}" alt="" style="width: 22px; height: 22px; filter: brightness(0) invert(1);">
             </div>
             <h6 class="mb-1">Empleos</h6>
             <h3 class="mb-2">{{ total_empleos }}</h3>
-            <a href="{{ url_for('docente.empleos') }}" class="text-decoration-none small" style="color: #0d6efd;">Ver detalles →</a>
+            <a href="{{ url_for('docente.empleos') }}" class="text-decoration-none small" style="color: #4852A2;">Ver detalles →</a>
         </div>
     </div>
     <div class="col-6 col-lg-4">
         <div class="summary-card h-100">
-            <div class="summary-card-icon" style="background-color: #198754;">
-                <i class="bi bi-file-text text-white" style="font-size: 20px;"></i>
+            <div class="summary-card-icon" style="background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);">
+                <img src="{{ url_for('static', filename='iconografia/DOCUMENTO-ARCHIVO.png') }}" alt="" style="width: 22px; height: 22px; filter: brightness(0) invert(1);">
             </div>
             <h6 class="mb-1">Artículos</h6>
             <h3 class="mb-2">{{ total_articulos }}</h3>
-            <a href="{{ url_for('docente.articulos') }}" class="text-decoration-none small" style="color: #198754;">Ver detalles →</a>
+            <a href="{{ url_for('docente.articulos') }}" class="text-decoration-none small" style="color: #2e7d32;">Ver detalles →</a>
         </div>
     </div>
     <div class="col-6 col-lg-4">
         <div class="summary-card h-100">
-            <div class="summary-card-icon" style="background-color: #ffc107;">
-                <i class="bi bi-book text-white" style="font-size: 20px;"></i>
+            <div class="summary-card-icon" style="background: linear-gradient(135deg, #211D53 0%, #4852A2 100%);">
+                <img src="{{ url_for('static', filename='iconografia/COMENTARIOS.png') }}" alt="" style="width: 22px; height: 22px; filter: brightness(0) invert(1);">
             </div>
             <h6 class="mb-1">Cursos</h6>
             <h3 class="mb-2">{{ total_cursos }}</h3>
-            <a href="#" class="text-decoration-none small" style="color: #ffc107;">Ver detalles →</a>
+            <a href="#" class="text-decoration-none small" style="color: #211D53;">Ver detalles →</a>
         </div>
     </div>
     <div class="col-6 col-lg-4">
         <div class="summary-card h-100">
-            <div class="summary-card-icon" style="background-color: #fd7e14;">
-                <i class="bi bi-award text-white" style="font-size: 20px;"></i>
+            <div class="summary-card-icon" style="background: linear-gradient(135deg, #864F9F 0%, #211D53 100%);">
+                <img src="{{ url_for('static', filename='iconografia/APROBAR.png') }}" alt="" style="width: 22px; height: 22px; filter: brightness(0) invert(1);">
             </div>
             <h6 class="mb-1">Proyectos</h6>
             <h3 class="mb-2">{{ total_proyectos }}</h3>
-            <a href="#" class="text-decoration-none small" style="color: #fd7e14;">Ver detalles →</a>
+            <a href="#" class="text-decoration-none small" style="color: #864F9F;">Ver detalles →</a>
         </div>
     </div>
     <div class="col-6 col-lg-4">
         <div class="summary-card h-100">
-            <div class="summary-card-icon" style="background-color: #e91e63;">
-                <i class="bi bi-code-slash text-white" style="font-size: 20px;"></i>
+            <div class="summary-card-icon" style="background: linear-gradient(135deg, #4852A2 0%, #864F9F 100%);">
+                <img src="{{ url_for('static', filename='iconografia/ESCANEAR.png') }}" alt="" style="width: 22px; height: 22px; filter: brightness(0) invert(1);">
             </div>
             <h6 class="mb-1">Desarrollos</h6>
             <h3 class="mb-2">{{ total_desarrollos }}</h3>
-            <a href="#" class="text-decoration-none small" style="color: #e91e63;">Ver detalles →</a>
+            <a href="#" class="text-decoration-none small" style="color: #4852A2;">Ver detalles →</a>
         </div>
     </div>
 </div>
@@ -97,16 +97,16 @@
 <div class="row g-3">
     <!-- Recent Activity -->
     <div class="col-12 col-lg-6">
-        <div class="card h-100" style="border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: none;">
+        <div class="card h-100" style="border-radius: 16px; box-shadow: 0 4px 15px rgba(33, 29, 83, 0.08); border: none;">
             <div class="card-body">
-                <h5 class="mb-3">Actividad Reciente</h5>
+                <h5 class="mb-3" style="color: #211D53; border-bottom: 2px solid #BFE2CC; padding-bottom: 10px;">Actividad Reciente</h5>
                 {% if actividades_recientes %}
                     {% for actividad in actividades_recientes %}
                     <div class="d-flex align-items-start mb-3">
-                        <div class="activity-bullet me-3" style="width: 8px; height: 8px; background-color: {{ actividad.color or '#0d6efd' }}; border-radius: 50%; margin-top: 6px; flex-shrink: 0;"></div>
+                        <div class="activity-bullet me-3" style="width: 10px; height: 10px; background: linear-gradient(135deg, #4852A2 0%, #864F9F 100%); border-radius: 50%; margin-top: 6px; flex-shrink: 0;"></div>
                         <div class="flex-grow-1 overflow-hidden">
-                            <div style="font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ actividad.titulo }}</div>
-                            <div style="font-size: 13px; color: #666;">{{ actividad.fecha }}</div>
+                            <div style="font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #211D53;">{{ actividad.titulo }}</div>
+                            <div style="font-size: 13px; color: #6c757d;">{{ actividad.fecha }}</div>
                         </div>
                     </div>
                     {% endfor %}
@@ -119,25 +119,25 @@
     
     <!-- Quick Actions -->
     <div class="col-12 col-lg-6">
-        <div class="card h-100" style="border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: none;">
+        <div class="card h-100" style="border-radius: 16px; box-shadow: 0 4px 15px rgba(33, 29, 83, 0.08); border: none;">
             <div class="card-body">
-                <h5 class="mb-3">Acciones Rápidas</h5>
+                <h5 class="mb-3" style="color: #211D53; border-bottom: 2px solid #BFE2CC; padding-bottom: 10px;">Acciones Rápidas</h5>
                 <div class="d-flex flex-column gap-3">
-                    <a href="{{ url_for('docente.nuevo_articulo') }}" class="text-decoration-none d-flex align-items-center p-2 rounded" style="background: #f8f9fa; transition: background 0.2s;">
-                        <i class="bi bi-file-text text-primary me-3" style="font-size: 1.25rem;"></i>
-                        <span>Agregar artículo científico</span>
+                    <a href="{{ url_for('docente.nuevo_articulo') }}" class="text-decoration-none d-flex align-items-center p-3 rounded quick-action-item" style="background: linear-gradient(135deg, rgba(191, 226, 204, 0.3) 0%, rgba(72, 82, 162, 0.1) 100%); border-left: 3px solid #4852A2;">
+                        <img src="{{ url_for('static', filename='iconografia/ADJUNTAR.png') }}" alt="" class="me-3" style="width: 22px; height: 22px; object-fit: contain;">
+                        <span style="color: #211D53;">Agregar artículo científico</span>
                     </a>
-                    <a href="{{ url_for('docente.nueva_formacion') }}" class="text-decoration-none d-flex align-items-center p-2 rounded" style="background: #f8f9fa; transition: background 0.2s;">
-                        <i class="bi bi-mortarboard text-primary me-3" style="font-size: 1.25rem;"></i>
-                        <span>Agregar formación académica</span>
+                    <a href="{{ url_for('docente.nueva_formacion') }}" class="text-decoration-none d-flex align-items-center p-3 rounded quick-action-item" style="background: linear-gradient(135deg, rgba(191, 226, 204, 0.3) 0%, rgba(72, 82, 162, 0.1) 100%); border-left: 3px solid #864F9F;">
+                        <img src="{{ url_for('static', filename='iconografia/SUBIR DOCUMENTO.png') }}" alt="" class="me-3" style="width: 22px; height: 22px; object-fit: contain;">
+                        <span style="color: #211D53;">Agregar formación académica</span>
                     </a>
-                    <a href="{{ url_for('docente.nuevo_empleo') }}" class="text-decoration-none d-flex align-items-center p-2 rounded" style="background: #f8f9fa; transition: background 0.2s;">
-                        <i class="bi bi-briefcase text-primary me-3" style="font-size: 1.25rem;"></i>
-                        <span>Agregar empleo</span>
+                    <a href="{{ url_for('docente.nuevo_empleo') }}" class="text-decoration-none d-flex align-items-center p-3 rounded quick-action-item" style="background: linear-gradient(135deg, rgba(191, 226, 204, 0.3) 0%, rgba(72, 82, 162, 0.1) 100%); border-left: 3px solid #4852A2;">
+                        <img src="{{ url_for('static', filename='iconografia/CARPETA.png') }}" alt="" class="me-3" style="width: 22px; height: 22px; object-fit: contain;">
+                        <span style="color: #211D53;">Agregar empleo</span>
                     </a>
-                    <a href="{{ url_for('cv.generar') }}" class="text-decoration-none d-flex align-items-center p-2 rounded" style="background: #f8f9fa; transition: background 0.2s;">
-                        <i class="bi bi-file-earmark-pdf text-success me-3" style="font-size: 1.25rem;"></i>
-                        <span>Generar mi CV</span>
+                    <a href="{{ url_for('cv.generar') }}" class="text-decoration-none d-flex align-items-center p-3 rounded" style="background: linear-gradient(135deg, #BFE2CC 0%, #a8d4b8 100%); border-left: 3px solid #2e7d32; transition: all 0.2s;">
+                        <img src="{{ url_for('static', filename='iconografia/PDF.png') }}" alt="" class="me-3" style="width: 22px; height: 22px; object-fit: contain;">
+                        <span style="color: #211D53; font-weight: 600;">Generar mi CV</span>
                     </a>
                 </div>
             </div>
@@ -146,6 +146,12 @@
 </div>
 
 <style>
+    /* Quick action hover */
+    .quick-action-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 2px 10px rgba(33, 29, 83, 0.1);
+    }
+    
     /* Responsive adjustments for dashboard */
     @media (max-width: 576px) {
         .welcome-section {
@@ -167,7 +173,7 @@
         }
         
         .summary-card h6 {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
         }
         
         .summary-card-icon {
@@ -175,8 +181,13 @@
             height: 35px !important;
         }
         
-        .summary-card-icon i {
-            font-size: 16px !important;
+        .summary-card-icon img {
+            width: 18px !important;
+            height: 18px !important;
+        }
+        
+        .quick-action-item {
+            padding: 0.75rem !important;
         }
     }
 </style>

@@ -1,74 +1,118 @@
-/* Estilos específicos para administrador */
+/* ============================================
+   MENTOR GT - Estilos Admin
+   Paleta: #211D53, #4852A2, #864F9F, #BFE2CC
+   ============================================ */
 
-/* Variables CSS */
 :root {
-    --admin-primary: #0d6efd;
+    --admin-primary: #211D53;
+    --admin-secondary: #4852A2;
+    --admin-accent: #864F9F;
+    --admin-success: #BFE2CC;
     --admin-sidebar-width: 250px;
     --admin-header-height: 70px;
 }
 
-/* Sidebar activo */
+/* ============================================
+   Sidebar activo
+   ============================================ */
 .list-group-item.active {
     background-color: var(--admin-primary);
     border-color: var(--admin-primary);
 }
 
 .list-group-item:hover {
-    background-color: #f8f9fa;
+    background-color: rgba(72, 82, 162, 0.1);
+    border-left-color: var(--admin-accent);
 }
 
-/* Cards con iconos */
+/* ============================================
+   Cards con iconos
+   ============================================ */
 .card.text-white {
-    border-radius: 8px;
+    border-radius: 12px;
 }
 
 .card.text-white .card-body {
     padding: 1.5rem;
 }
 
-/* Tablas */
+/* ============================================
+   Tablas
+   ============================================ */
 .table {
     background-color: white;
 }
 
 .table thead {
-    background-color: #f8f9fa;
+    background: linear-gradient(135deg, var(--admin-primary) 0%, var(--admin-secondary) 100%);
+    color: white;
 }
 
-/* Badges */
+.table thead th {
+    border: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+}
+
+/* ============================================
+   Badges
+   ============================================ */
 .badge {
     font-size: 0.85em;
     padding: 0.35em 0.65em;
+    border-radius: 6px;
 }
 
-/* Summary Cards Grid */
+.badge.bg-primary {
+    background: var(--admin-primary) !important;
+}
+
+.badge.bg-info {
+    background: var(--admin-secondary) !important;
+}
+
+.badge.bg-accent {
+    background: var(--admin-accent) !important;
+}
+
+/* ============================================
+   Summary Cards Grid
+   ============================================ */
 .summary-cards-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
 }
 
-/* Tabla de datos responsiva */
+/* ============================================
+   Tabla de datos responsiva
+   ============================================ */
 .data-table-wrapper {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    border-radius: 8px;
+    border-radius: 12px;
     background: white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(33, 29, 83, 0.1);
 }
 
 .data-table {
     margin-bottom: 0;
 }
 
-/* Acciones en tabla */
+/* ============================================
+   Acciones en tabla
+   ============================================ */
 .table-actions {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
 }
 
-/* Header de sección */
+/* ============================================
+   Header de sección
+   ============================================ */
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -80,9 +124,12 @@
 
 .section-header h4 {
     margin: 0;
+    color: var(--admin-primary);
 }
 
-/* Filtros */
+/* ============================================
+   Filtros
+   ============================================ */
 .filter-bar {
     display: flex;
     gap: 1rem;
@@ -91,16 +138,26 @@
     margin-bottom: 1.5rem;
     padding: 1rem;
     background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(33, 29, 83, 0.08);
+    border-left: 4px solid var(--admin-accent);
 }
 
 .filter-bar .form-control,
 .filter-bar .form-select {
     max-width: 250px;
+    border-radius: 8px;
 }
 
-/* Responsive para tablets */
+.filter-bar .form-control:focus,
+.filter-bar .form-select:focus {
+    border-color: var(--admin-secondary);
+    box-shadow: 0 0 0 3px rgba(72, 82, 162, 0.15);
+}
+
+/* ============================================
+   Responsive para tablets
+   ============================================ */
 @media (max-width: 992px) {
     .summary-cards-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -123,7 +180,9 @@
     }
 }
 
-/* Responsive para móviles */
+/* ============================================
+   Responsive para móviles
+   ============================================ */
 @media (max-width: 768px) {
     .summary-cards-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -147,7 +206,7 @@
         font-size: 0.85rem;
     }
     
-    /* Tabla responsiva */
+    /* Tabla responsiva - vista de tarjetas */
     .table thead {
         display: none;
     }
@@ -156,8 +215,9 @@
         display: block;
         margin-bottom: 1rem;
         border: 1px solid #dee2e6;
-        border-radius: 8px;
+        border-radius: 12px;
         padding: 0.5rem;
+        border-left: 4px solid var(--admin-secondary);
     }
     
     .table td {
@@ -176,7 +236,7 @@
     .table td::before {
         content: attr(data-label);
         font-weight: 600;
-        color: #333;
+        color: var(--admin-primary);
         flex-shrink: 0;
         margin-right: 1rem;
     }
@@ -186,7 +246,6 @@
         width: 100%;
     }
     
-    /* Cards de estadísticas en móvil */
     .card.text-white .card-body {
         padding: 1rem;
     }
@@ -196,7 +255,9 @@
     }
 }
 
-/* Responsive para móviles pequeños */
+/* ============================================
+   Responsive para móviles pequeños
+   ============================================ */
 @media (max-width: 480px) {
     .summary-cards-grid {
         grid-template-columns: 1fr;
@@ -215,21 +276,38 @@
     }
 }
 
-/* Animación de carga */
+/* ============================================
+   Animación de carga
+   ============================================ */
 .loading-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.9);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 9999;
 }
 
-/* Empty state */
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid var(--admin-success);
+    border-top-color: var(--admin-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   Empty state
+   ============================================ */
 .empty-state {
     text-align: center;
     padding: 3rem;
@@ -239,7 +317,8 @@
 .empty-state i {
     font-size: 4rem;
     margin-bottom: 1rem;
-    opacity: 0.5;
+    opacity: 0.3;
+    color: var(--admin-secondary);
 }
 
 @media (max-width: 768px) {
@@ -252,13 +331,26 @@
     }
 }
 
-/* Scroll suave */
-html {
-    scroll-behavior: smooth;
+/* ============================================
+   Focus y accesibilidad
+   ============================================ */
+:focus-visible {
+    outline: 2px solid var(--admin-accent);
+    outline-offset: 2px;
 }
 
-/* Focus visible para accesibilidad */
-:focus-visible {
-    outline: 2px solid var(--admin-primary);
-    outline-offset: 2px;
+/* ============================================
+   User Avatar
+   ============================================ */
+.user-avatar {
+    background: linear-gradient(135deg, var(--admin-primary) 0%, var(--admin-secondary) 100%);
+    color: white;
+    font-weight: bold;
+}
+
+/* ============================================
+   Scroll suave
+   ============================================ */
+html {
+    scroll-behavior: smooth;
 }

@@ -1,34 +1,46 @@
-/* Estilos específicos para profesor/docente */
+/* ============================================
+   MENTOR GT - Estilos Docente/Profesor
+   Paleta: #211D53, #4852A2, #864F9F, #BFE2CC
+   ============================================ */
 
-/* Variables CSS */
 :root {
-    --docente-primary: #198754;
-    --docente-secondary: #0d6efd;
+    --docente-primary: #211D53;
+    --docente-secondary: #4852A2;
+    --docente-accent: #864F9F;
+    --docente-success: #BFE2CC;
     --docente-sidebar-width: 250px;
 }
 
-/* Sidebar activo */
+/* ============================================
+   Sidebar activo
+   ============================================ */
 .list-group-item.active {
-    background-color: var(--docente-primary);
+    background: linear-gradient(135deg, var(--docente-primary) 0%, var(--docente-secondary) 100%);
     border-color: var(--docente-primary);
 }
 
 .list-group-item:hover {
-    background-color: #f8f9fa;
+    background-color: rgba(72, 82, 162, 0.1);
+    border-left-color: var(--docente-accent);
 }
 
-/* Cards de estadísticas */
+/* ============================================
+   Cards de estadísticas
+   ============================================ */
 .card.text-white {
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card.text-white:hover {
     transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(33, 29, 83, 0.2);
 }
 
-/* Lista de publicaciones */
+/* ============================================
+   Lista de publicaciones
+   ============================================ */
 .list-group-item h5 {
-    color: #2c3e50;
+    color: var(--docente-primary);
     margin-bottom: 0.5rem;
 }
 
@@ -37,25 +49,30 @@
     margin-bottom: 0.25rem;
 }
 
-/* Grid de estadísticas para docente */
+/* ============================================
+   Grid de estadísticas para docente
+   ============================================ */
 .docente-stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1.5rem;
 }
 
-/* Cards de secciones del CV */
+/* ============================================
+   Cards de secciones del CV
+   ============================================ */
 .cv-section-card {
     background: white;
     border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(33, 29, 83, 0.08);
     margin-bottom: 1.5rem;
     transition: box-shadow 0.3s ease;
+    border-left: 4px solid var(--docente-secondary);
 }
 
 .cv-section-card:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 20px rgba(33, 29, 83, 0.15);
 }
 
 .cv-section-header {
@@ -72,19 +89,23 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    color: var(--docente-primary);
 }
 
-/* Lista de items del CV */
+/* ============================================
+   Lista de items del CV
+   ============================================ */
 .cv-item {
     padding: 1rem;
     border-radius: 8px;
-    background: #f8f9fa;
+    background: linear-gradient(135deg, rgba(191, 226, 204, 0.2) 0%, rgba(72, 82, 162, 0.05) 100%);
     margin-bottom: 0.75rem;
     transition: background 0.2s;
+    border-left: 3px solid var(--docente-secondary);
 }
 
 .cv-item:hover {
-    background: #e9ecef;
+    background: linear-gradient(135deg, rgba(191, 226, 204, 0.3) 0%, rgba(72, 82, 162, 0.1) 100%);
 }
 
 .cv-item:last-child {
@@ -93,7 +114,7 @@
 
 .cv-item-title {
     font-weight: 600;
-    color: #333;
+    color: var(--docente-primary);
     margin-bottom: 0.25rem;
 }
 
@@ -114,14 +135,18 @@
     color: #6c757d;
 }
 
-/* Acciones de item */
+/* ============================================
+   Acciones de item
+   ============================================ */
 .cv-item-actions {
     display: flex;
     gap: 0.5rem;
     margin-top: 0.75rem;
 }
 
-/* Timeline de actividades */
+/* ============================================
+   Timeline de actividades
+   ============================================ */
 .activity-timeline {
     position: relative;
     padding-left: 2rem;
@@ -134,7 +159,7 @@
     top: 0;
     bottom: 0;
     width: 2px;
-    background: #e0e0e0;
+    background: linear-gradient(180deg, var(--docente-primary) 0%, var(--docente-success) 100%);
 }
 
 .activity-timeline-item {
@@ -155,12 +180,14 @@
     box-shadow: 0 0 0 2px var(--docente-secondary);
 }
 
-/* Progreso del CV */
+/* ============================================
+   Progreso del CV
+   ============================================ */
 .cv-progress {
     background: white;
     border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(33, 29, 83, 0.08);
 }
 
 .cv-progress-bar {
@@ -172,11 +199,13 @@
 
 .cv-progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--docente-primary), var(--docente-secondary));
+    background: linear-gradient(90deg, var(--docente-primary) 0%, var(--docente-accent) 50%, var(--docente-success) 100%);
     transition: width 0.5s ease;
 }
 
-/* Responsive para tablets */
+/* ============================================
+   Responsive para tablets
+   ============================================ */
 @media (max-width: 992px) {
     .docente-stats-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -194,7 +223,9 @@
     }
 }
 
-/* Responsive para móviles */
+/* ============================================
+   Responsive para móviles
+   ============================================ */
 @media (max-width: 768px) {
     .docente-stats-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -245,7 +276,9 @@
     }
 }
 
-/* Responsive para móviles pequeños */
+/* ============================================
+   Responsive para móviles pequeños
+   ============================================ */
 @media (max-width: 480px) {
     .docente-stats-grid {
         grid-template-columns: 1fr;
@@ -268,12 +301,14 @@
     }
 }
 
-/* Formularios del docente */
+/* ============================================
+   Formularios del docente
+   ============================================ */
 .docente-form {
     background: white;
     border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(33, 29, 83, 0.08);
 }
 
 .docente-form .form-group {
@@ -283,6 +318,13 @@
 .docente-form .form-label {
     font-weight: 500;
     margin-bottom: 0.5rem;
+    color: var(--docente-primary);
+}
+
+.docente-form .form-control:focus,
+.docente-form .form-select:focus {
+    border-color: var(--docente-secondary);
+    box-shadow: 0 0 0 3px rgba(72, 82, 162, 0.15);
 }
 
 @media (max-width: 768px) {
@@ -295,7 +337,9 @@
     }
 }
 
-/* Botones de acción flotantes */
+/* ============================================
+   Botones de acción flotantes
+   ============================================ */
 .floating-actions {
     position: fixed;
     bottom: 2rem;
@@ -313,7 +357,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 15px rgba(33, 29, 83, 0.25);
+    background: linear-gradient(135deg, var(--docente-primary) 0%, var(--docente-secondary) 100%);
+    border: none;
+    color: white;
+}
+
+.floating-actions .btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(33, 29, 83, 0.35);
 }
 
 @media (max-width: 768px) {
@@ -328,7 +380,9 @@
     }
 }
 
-/* Chatbot responsivo */
+/* ============================================
+   Chatbot responsivo
+   ============================================ */
 .chat-container {
     height: calc(100vh - 200px);
     min-height: 400px;
@@ -340,6 +394,7 @@
     flex: 1;
     overflow-y: auto;
     padding: 1rem;
+    background: linear-gradient(180deg, rgba(191, 226, 204, 0.1) 0%, rgba(72, 82, 162, 0.05) 100%);
 }
 
 .chat-input {
@@ -363,12 +418,15 @@
     }
 }
 
-/* Vista previa de CV responsiva */
+/* ============================================
+   Vista previa de CV responsiva
+   ============================================ */
 .cv-preview {
     background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    box-shadow: 0 2px 15px rgba(33, 29, 83, 0.1);
     overflow: hidden;
+    border: 2px solid var(--docente-secondary);
 }
 
 .cv-preview iframe,
@@ -387,18 +445,21 @@
     }
 }
 
-/* Sync ORCID */
+/* ============================================
+   Sync ORCID
+   ============================================ */
 .sync-card {
     background: white;
     border-radius: 12px;
     padding: 2rem;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 15px rgba(33, 29, 83, 0.1);
+    border-top: 4px solid var(--docente-accent);
 }
 
 .sync-icon {
     font-size: 4rem;
-    color: var(--docente-secondary);
+    color: var(--docente-accent);
     margin-bottom: 1rem;
 }
 
@@ -412,7 +473,9 @@
     }
 }
 
-/* Perfil del docente */
+/* ============================================
+   Perfil del docente
+   ============================================ */
 .profile-header {
     display: flex;
     gap: 2rem;
@@ -424,7 +487,7 @@
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--docente-primary), var(--docente-secondary));
+    background: linear-gradient(135deg, var(--docente-primary) 0%, var(--docente-accent) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -432,6 +495,7 @@
     font-size: 3rem;
     font-weight: bold;
     flex-shrink: 0;
+    box-shadow: 0 4px 20px rgba(33, 29, 83, 0.25);
 }
 
 .profile-info {
@@ -459,4 +523,48 @@
         height: 80px;
         font-size: 2rem;
     }
+}
+
+/* ============================================
+   Quick Actions Item
+   ============================================ */
+.quick-action-item {
+    border-left: 3px solid var(--docente-secondary);
+    transition: all 0.2s ease;
+}
+
+.quick-action-item:hover {
+    background: rgba(72, 82, 162, 0.1) !important;
+    border-left-color: var(--docente-accent);
+    transform: translateX(5px);
+}
+
+/* ============================================
+   User Avatar
+   ============================================ */
+.user-avatar {
+    background: linear-gradient(135deg, var(--docente-primary) 0%, var(--docente-secondary) 100%);
+    color: white;
+    font-weight: bold;
+}
+
+/* ============================================
+   Summary Card Icon Colors
+   ============================================ */
+.summary-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-primary {
+    background: linear-gradient(135deg, var(--docente-primary) 0%, var(--docente-secondary) 100%);
+}
+
+.icon-accent {
+    background: linear-gradient(135deg, var(--docente-accent) 0%, #9c6fb0 100%);
+}
+
+.icon-success {
+    background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);
 }
