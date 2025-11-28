@@ -42,7 +42,7 @@
     .logo-circle {
         width: 120px;
         height: 120px;
-        background: linear-gradient(135deg, #211D53 0%, #4852A2 100%);
+        background: #211D53;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -52,13 +52,12 @@
         position: relative;
         z-index: 10;
         border: 3px solid #BFE2CC;
+        overflow: hidden;
     }
     
-    .logo-circle .logo-text {
-        color: white;
-        font-size: 48px;
-        font-weight: bold;
-        letter-spacing: -2px;
+    .logo-circle img {
+        width: 70px;
+        height: auto;
     }
     
     .login-title {
@@ -179,7 +178,7 @@
     <div class="login-container">
     <div class="login-card">
         <div class="logo-circle">
-            <div class="logo-text">GT</div>
+            <img src="{{ url_for('static', filename='images/LOGO.png') }}" alt="Logo GT">
         </div>
         
         <h2 class="login-title">Sistema de Gestión de CVs Académicos</h2>
