@@ -3,9 +3,7 @@
 {% block docente_content %}
 <!-- Welcome Section -->
 <div class="d-flex flex-wrap align-items-center mb-4 p-4 bg-white rounded shadow-sm">
-  <div class="user-avatar me-4 mb-3 mb-md-0 d-flex justify-content-center align-items-center 
-              rounded-circle bg-primary text-white fw-bold"
-       style="width: 80px; height: 80px; font-size: 32px;">
+  <div class="user-avatar avatar-lg me-4 mb-3 mb-md-0 d-flex justify-content-center align-items-center rounded-circle bg-primary text-white fw-bold">
     {{ docente.nombre_completo[0] if docente.nombre_completo else 'D' }}
   </div>
   <div>
@@ -35,8 +33,7 @@
 <div class="row mb-4">
   <div class="col-sm-6 col-md-4 mb-3">
     <div class="summary-card h-100 text-center p-3 rounded shadow-sm">
-      <div class="summary-card-icon mb-2 d-inline-flex justify-content-center align-items-center rounded-circle"
-           style="background-color: #6f42c1; width:50px; height:50px;">
+      <div class="summary-card-icon mb-2 d-inline-flex justify-content-center align-items-center rounded-circle bg-purple">
         <i class="bi bi-mortarboard text-white fs-5"></i>
       </div>
       <h5 class="mb-2">Formación Académica</h5>
@@ -48,8 +45,7 @@
   <!-- Repite la misma estructura para las demás tarjetas -->
   <div class="col-sm-6 col-md-4 mb-3">
     <div class="summary-card h-100 text-center p-3 rounded shadow-sm">
-      <div class="summary-card-icon mb-2 d-inline-flex justify-content-center align-items-center rounded-circle"
-           style="background-color: #0d6efd; width:50px; height:50px;">
+      <div class="summary-card-icon mb-2 d-inline-flex justify-content-center align-items-center rounded-circle bg-primary">
         <i class="bi bi-briefcase text-white fs-5"></i>
       </div>
       <h5 class="mb-2">Empleos</h5>
@@ -71,8 +67,7 @@
         {% if actividades_recientes %}
           {% for actividad in actividades_recientes %}
           <div class="d-flex align-items-start mb-3">
-            <div class="activity-bullet me-3 rounded-circle"
-                 style="width: 8px; height: 8px; background-color: {{ actividad.color or '#0d6efd' }}; margin-top: 6px;"></div>
+              <div class="activity-bullet activity-bullet-sm me-3 rounded-circle" style="background-color: {{ actividad.color or '#0d6efd' }};"></div>
             <div>
               <div class="fw-medium">{{ actividad.titulo }}</div>
               <div class="small text-muted">{{ actividad.fecha }}</div>

@@ -44,3 +44,34 @@ img, iframe { max-width: 100%; height: auto; }
     .help-icon { display: none; }
 }
 
+/* New utility classes to replace inline styles */
+.avatar-lg { width: 80px; height: 80px; font-size: 32px; }
+.summary-card-icon { width: 50px; height: 50px; }
+.activity-bullet-sm { width: 8px; height: 8px; margin-top: 6px; }
+
+/* Table header styling used across docente templates */
+.table-head-muted {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+/* Chat/assistant container */
+.chat-container {
+    height: 500px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    margin-bottom: 20px;
+}
+
+/* Icon size helpers */
+.icon-48 { font-size: 48px; color: #ddd; }
+
+/* Custom background helpers */
+.bg-purple { background-color: #6f42c1 !important; }
+

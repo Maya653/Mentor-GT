@@ -11,7 +11,7 @@
         </div>
         <div class="card-body">
             <!-- Área de chat -->
-            <div id="chat-container" style="height: 500px; overflow-y: auto; border: 1px solid #ddd; padding: 20px; border-radius: 8px; background-color: #f8f9fa; margin-bottom: 20px;">
+            <div id="chat-container" class="chat-container">
                 <div class="bot-message">
                     <strong>🤖 Asistente:</strong>
                     <p>¡Hola! 👋 Soy tu asistente académico. Puedo ayudarte con:</p>
@@ -374,11 +374,11 @@ function agregarMensaje(texto, tipo) {
         // Reemplazar el link con un botón
         texto = texto.replace(
             /\[Haz clic aquí para descargar tu CV\]\([^)]+\)/,
-            `<div style="margin-top: 15px; text-align: center;">
+            `<div class="mt-3 text-center">
                 <a href="${pdfUrl}" download="${filename}" class="btn-download-cv">
                     <i class="bi bi-download"></i> 📥 DESCARGAR MI CV EN PDF
                 </a>
-                <p style="margin-top: 10px; font-size: 12px; color: #666;">
+                <p class="mt-2 small text-muted">
                     <i class="bi bi-info-circle"></i> Click para guardar el archivo
                 </p>
             </div>`
